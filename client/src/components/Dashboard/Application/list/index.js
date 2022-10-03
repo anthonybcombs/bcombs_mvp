@@ -384,6 +384,7 @@ export default function index({
 }) {
 
   console.log("appGroups select", appGroups);
+  console.log('applicationsssssss',applications)
   const getApplicationStatusVal = (student_status, verification, row) => {
     let studentStatusVal = "";
     let verificationVal = "";
@@ -467,6 +468,7 @@ export default function index({
   };
 
   const getStudentName = row => {
+
     if(row?.child?.firstname && row?.child?.lastname) {
       return (
         // <a href={"menteeprofile/" + row.id}>
@@ -801,6 +803,8 @@ export default function index({
   const handleExit = () => {
     setShowExportFilter(false);
   };
+
+  console.log('DATAAAAAAAAAA',data)
 
   return (
     <ApplicationListStyled>

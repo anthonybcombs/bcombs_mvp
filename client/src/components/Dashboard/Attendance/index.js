@@ -232,9 +232,10 @@ export default function index(props) {
 	// })
 	
 	const vendorIds = Array.isArray(vendors) && vendors.map(item => item.id);
-
-	const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form &&  ( /*formIds.includes(appGroup.form) || */ vendorIds.includes(appGroup.vendor)))|| appGroup.form === null);
-
+		console.log('appGroups',appGroups)
+	//  ( /*formIds.includes(appGroup.form) || */ /* vendorIds.includes(appGroup.vendor) */)
+	const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && (formIds.includes(appGroup.form)) ) || appGroup.form === null);
+			console.log('filteredGroups form.formAppGroups',form.formAppGroups)
 	const filteredFormList = form.formList
 	const isShow = !!selected.find(s => archivedGroups.find(a => a.app_group_id === s.app_group_id))
 
@@ -448,11 +449,11 @@ export default function index(props) {
 						<td>
 							{formGroup && formGroup.form_contents
 								? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms' + `&appGroupId=${group.app_grp_id}`}>Input</Link>
-								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${vendorDetails.id2}`}>Input</Link>
+								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${vendorDetails?.id2}`}>Input</Link>
 							} /
 							{formGroup && formGroup.form_contents
 								? <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=forms'}>View</Link>
-								: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${vendorDetails.id2}`}>View</Link>
+								: <Link to={'/dashboard/grades?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${vendorDetails?.id2}`}>View</Link>
 							}
 						</td>
 					</tr>
@@ -621,7 +622,7 @@ export default function index(props) {
 		}
 	}
 	console.log('filteredFormList', filteredFormList);
-  console.log('selectedVendor', selectedVendor);
+  console.log('filteredGroups', filteredGroups);
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Data</h2>
@@ -697,8 +698,8 @@ export default function index(props) {
 													<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link>
 												</td>
 												<td>
-													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${selectedVendor.id2}`}>Input</Link> /
-													<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${selectedVendor.id2}`}>View</Link>
+													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${selectedVendor?.id2}`}>Input</Link> /
+													<Link to={`/dashboard/grades?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${selectedVendor?.id2}`}>View</Link>
 												</td>
 											</tr>
 										)
@@ -732,11 +733,11 @@ export default function index(props) {
 														<div>{getTotalClassCountByForm(item.form_id)} / {getTotalCountByForm(item.form_id)}</div>
 													</td>
 													<td>
-														<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}&type=all&appGroupIds=${appGroupIdList}`}>Input</Link> /
+														<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}&type=all&appGroupIds=${appGroupIdList}&vendor=${selectedVendor?.id2}`}>Input</Link> /
 														<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}&appGroupIds=${appGroupIdList}`}>View</Link>
 													</td>
 													<td>
-														<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms&type=all' + `&appGroupIds=${appGroupIdList}`}>Input</Link>/
+														<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms&type=all' + `&appGroupIds=${appGroupIdList}&vendor=${selectedVendor?.id2}`}>Input</Link>/
 														<Link to={'/dashboard/grades?group_id=' + item?.form_id + '&group_type=forms&type=all'}>View</Link>
 
 														{/* <Link to={`/dashboard/grades/input?&group_id=${item.vendor}&group_type=forms&request_type=vendor`}>Input</Link> /

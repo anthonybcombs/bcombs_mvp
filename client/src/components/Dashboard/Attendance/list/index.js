@@ -804,12 +804,12 @@ export default function index() {
 				///filterApplications = applications.activeapplications;
 				filterApplications = applications.activeapplications.filter(application => {
 					const classTeachers = application.class_teacher && application.class_teacher.split(',');
-					return classTeachers && classTeachers.some(grpId => appGroupIds.includes(grpId))
-					//return appGroupIds.includes(application.class_teacher)
+					return classTeachers && classTeachers.some(grpId => appGroupIds?.includes(grpId))
+					//return appGroupIds?.includes(application.class_teacher)
 				});
 			} else {
 				filterApplications = applications.activeapplications.filter(application => {
-					return application && application.class_teacher && application.class_teacher.includes(appGroupId);
+					return application && application.class_teacher && application.class_teacher?.includes(appGroupId);
 				});
 			}
 			filterApplications = filterApplications.map(item => {
@@ -832,20 +832,20 @@ export default function index() {
 
 
 				if (item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '' && searchParams && searchParams.type !== 'all') {
-					return item.class_teacher.includes(appGroupId)
+					return item.class_teacher?.includes(appGroupId)
 				}
 				else if (item.class_teacher && appGroupIds && searchParams && searchParams.type === 'all' && item.form === searchParams.formId) {
 					//	let classTeacherArr = item.class_teacher.split(',');
-					let resp = appGroupIds.some(appId => item.class_teacher.includes(appId))
+					let resp = appGroupIds.some(appId => item.class_teacher?.includes(appId))
 
 					return resp;
-					//return classTeacherArr.some(appGrpId => appGroupIds.includes(appGrpId))
+					//return classTeacherArr.some(appGrpId => appGroupIds?.includes(appGrpId))
 				}
 
 				//return searchParams && searchParams.type === 'all' && item.class_teacher && item.form === searchParams.formId; 
-				// ( item.form === searchParams.formId  && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  ))) || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)
+				// ( item.form === searchParams.formId  && (item.class_teacher && (appGroupId && (item.class_teacher?.includes(appGroupId)) ||  ))) || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)
 			});
-			// const test123 = applications.customActiveApplications.filter(item =>  item.form === searchParams.formId && (item.class_teacher && (appGroupId && (item.class_teacher.includes(appGroupId)) ||  item.class_teacher.includes(appGroupIds)))  || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)  );
+			// const test123 = applications.customActiveApplications.filter(item =>  item.form === searchParams.formId && (item.class_teacher && (appGroupId && (item.class_teacher?.includes(appGroupId)) ||  item.class_teacher?.includes(appGroupIds)))  || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)  );
 
 			// if(searchParams.type === 'all'){
 			// 	filterApplications = filterApplications.map(item => {
@@ -1153,7 +1153,7 @@ export default function index() {
 			value = value.toLowerCase();
 			const filteredApplication = applicationList.filter(app => {
 				if (app.child) {
-					return app.child.lastname.toLowerCase().includes(value) || app.child.firstname.toLowerCase().includes(value);
+					return app.child.lastname.toLowerCase()?.includes(value) || app.child.firstname.toLowerCase()?.includes(value);
 				}
 			});
 			setFilteredApplicationList(filteredApplication);
@@ -1178,7 +1178,7 @@ export default function index() {
 
 			let currentGroup = groups && groups.application_groups.find(item => {
 				const classTeacher = item.class_teacher && item.class_teacher.split(',');
-				return classTeacher && classTeacher.includes(item.app_grp_id)
+				return classTeacher && classTeacher?.includes(item.app_grp_id)
 			});
 
 			let vendorId = parseInt(vendor_id);
@@ -1187,7 +1187,7 @@ export default function index() {
 			if (!currentGroup && currentVendor) {
 				currentGroup = currentVendor.app_groups && currentVendor.app_groups.find(appGrp => {
 					const classTeacher = app.class_teacher && app.class_teacher.split(',');
-					return classTeacher && classTeacher.includes(appGrp.app_grp_id)
+					return classTeacher && classTeacher?.includes(appGrp.app_grp_id)
 				});
 
 			}
@@ -1590,10 +1590,10 @@ export default function index() {
 									if (fields.length) {
 										const { value } = fields[0]
 										const { url } = value ? JSON.parse(value) : {}
-										profile = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
+										profile = url?.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
 									}
 								} else if (!app.form_contents && profile) {
-									profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
+									profile = profile?.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
 								}
 								return (
 									<div className="block">
