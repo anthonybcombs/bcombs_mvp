@@ -122,15 +122,16 @@ export default function index({
   useEffect(() => {
     setIsAppReminder(!!application.received_update);
 
-    if(!!application.received_update) {
+    if (!!application.received_update) {
       setSelectedClassTeacher([]);
     }
     else {
       setSelectedClassTeacher(updateApplication.class_teacher ?
         appGroups.filter(item => updateApplication.class_teacher.includes(item.app_grp_id))
-        : []);
+        :
+        appGroups.filter(item => application.class_teacher && application.class_teacher.includes(item.app_grp_id)))
     }
-    
+
   }, [application])
 
   console.log("appgroups...", appGroups);
@@ -158,7 +159,7 @@ export default function index({
     { name: "No longer a Student", value: "no_longer_student" },
     { name: "Missed opportunity", value: "missed_opportunity" },
     { name: "Pending Resubmission", value: "pending_resubmission" },
-      { name: "Resubmitted", value: "resubmitted" },
+    { name: "Resubmitted", value: "resubmitted" },
   ]
 
   const CLASS_TEACHER_OPTIONS = [
@@ -248,11 +249,11 @@ export default function index({
                     <div>
                       <label className="control-label">Group(s)</label>
                       <div
-                        // id={isAppReminder ? "AppReminder" : ""}
+                      // id={isAppReminder ? "AppReminder" : ""}
                       >
                         <Multiselect
                           id="classTeacherMultiselect"
-                          selectedValues={isAppReminder ? selectedClassTeacher : []}
+                          selectedValues={isAppReminder ? selectedClassTeacher : selectedClassTeacher}
                           className="form-control"
                           options={appGroups}
                           hasSelectAll={true}
@@ -294,7 +295,7 @@ export default function index({
                               if (e.target.checked) {
                                 setIsAppReminder(false);
                                 // handleGroupDetailsChange("vendors", formattedVendors);
-                                console.log('appGroupssss',appGroups)
+                                console.log('appGroupssss', appGroups)
                                 handleUpdateOnchange("class_teacher", appGroups.map(item => item.app_grp_id).join(','))
                               }
                               else {
