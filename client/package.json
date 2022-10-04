@@ -86,7 +86,7 @@
     "react-draggable": "^4.4.3",
     "react-easy-crop": "^2.1.1",
     "react-ellipsis-text": "^1.2.1",
-    "react-hook-form": "^4.9.3",
+    "react-hook-form": "^5.7.2",
     "react-icons": "^4.2.0",
     "react-linkify": "^1.0.0-alpha",
     "react-loadable": "^5.5.0",

@@ -22,6 +22,16 @@ import "./ApplicationForm.css";
 
 import { uuid } from "uuidv4";
 
+const FormErrorModal = styled.div`
+  .modal-content {
+    max-width: 600px;
+
+  }
+  .modal-container{
+    padding: 15px;
+  }
+`
+
 const ApplicationFormStyled = styled.div`
   padding: 20px;
   position: relative;
@@ -156,13 +166,56 @@ const customApplicationField = {
   insect_allergies: '',
   other_allergies: '',
   current_medications: '',
-  health_insurance_information: ''
+  health_insurance_information: '',
 }
 function isEmailAddress(str) {
   var pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   return pattern.test(str);  // returns a boolean 
 }
 
+const REQUIRED_FIELD_NAME = {
+  first_name: 'Firstname',
+  last_name: 'Lastname',
+  parent_last_name: 'Firstname',
+  parent_last_name: 'Lastname',
+  date_of_birth: 'Birthdate',
+  gender: 'Gender',
+  parent_gender: 'Gender',
+  address: 'Address',
+  city: 'City',
+  phone_number: 'Phone No.',
+  state: 'State',
+  allergies_to_medicine: 'Allergies to medicine',
+  food_allergies: 'Food Allergies',
+  insect_allergies: 'Insect Allergies',
+  other_allergies: 'Other Allergies',
+  business_email: 'Business Email',
+  email_address: 'Email',
+  email_invalid: 'Invalid Email Format',
+  phone_invalid: 'Invalid Phone Format',
+  child_email_invalid: 'Invalid Email Format',
+  child_phone_invalid: 'Invalid Phone Format',
+  goals_parent_program: 'Goals Parent Program',
+  goals_child_program: 'Goals Child Program',
+  person_recommend: 'Person Recommend',
+  zip_code: 'Zip Code',
+  password: 'Password',
+  confirmed_password: 'Confirm Password',
+  password_not_match: 'Password not Match',
+  mentee_gain: 'Mentee Gain',
+  school_name: 'School Name',
+  grade: 'Grade',
+  emergency_contacts: 'Emergency Contacts',
+  location_site: 'Location',
+  section_1_checked: 'Signature 1 Checkbox',
+  section_2_checked: 'Signature 2 Checkbox',
+  section_3_checked: 'Signature 3 Checkbox',
+  section_1_signature: 'Signature 1 Field',
+  section_2_signature: 'Signature 2 Field',
+  section_3_signature: 'Signature 3 Field',
+
+  child_lives_with: 'Child Lives With',
+}
 export default function index() {
 
   const [vendor, setVendor] = useState({});
@@ -186,7 +239,7 @@ export default function index() {
     }
   );
 
-  
+
 
 
   // if(applications.addapplication && applications.addapplication.message == "application created") {
@@ -202,6 +255,8 @@ export default function index() {
       //dispatch(requestVendor(vendor_id));
     }
   }, []);
+
+
 
   useEffect(() => {
 
@@ -249,7 +304,7 @@ export default function index() {
 
   if (vendor && vendor.id) {
 
- 
+
     let app_programs = []
 
     for (const program of vendor.app_programs) {
@@ -262,7 +317,7 @@ export default function index() {
     }
 
     vendor.app_programs = app_programs;
-    console.log('vendorrrr',vendor)
+    console.log('vendorrrr', vendor)
     if (vendor.is_daycare && vendor.is_daycare !== 2 && !isLot) {
       window.location.replace(`/application/${vendor_id}/daycare`);
     }
@@ -517,6 +572,7 @@ export default function index() {
       if (i == childsInformation.length) {
         items.push(
           <ChildFormStyled
+            emptyFields={emptyFields}
             handleChildFormDetailsChange={handleChildFormDetailsChange}
             childInformation={childsInformation[i - 1]}
             counter={i} key={i}
@@ -540,6 +596,7 @@ export default function index() {
         items.push(
           <div key={i}>
             <ChildFormStyled
+              emptyFields={emptyFields}
               handleChildFormDetailsChange={handleChildFormDetailsChange}
               childInformation={childsInformation[i - 1]}
               counter={i} key={i}
@@ -625,7 +682,8 @@ export default function index() {
   };
 
   const [parentsInformation, setParentsInformation] = useState([{ ...parentInfoObject }]);
-
+  const [emptyFields, setEmptyFields] = useState({});
+  const [isFormErrorModalVisible, setIsFormErrorModalVisible] = useState(false);
   const [emergencyContacts, setEmergencyContacts] = useState([...emergency_contacts]);
   const handleParentFormDetailsChange = (index, section, id, value) => {
 
@@ -642,7 +700,7 @@ export default function index() {
       emergency_contacts[index][id] = value;
       setEmergencyContacts([...emergencyContacts]);
 
-   
+
     }
   }
 
@@ -656,7 +714,7 @@ export default function index() {
     if (parentsInformation.length > 1) {
       let tempParentsInformation = parentsInformation;
 
- 
+
       tempParentsInformation.splice(index, 1)
       setParentsInformation([...tempParentsInformation]);
     }
@@ -700,17 +758,29 @@ export default function index() {
   }
 
   const { register, handleSubmit, errors, clearError, setError } = useForm({
-    mode: "onBlur",
-    reValidateMode: "onChange"
+    // mode: "onBlur",
+    // reValidateMode: "onChange",
+    submitFocusError: true,
   });
 
-  const isFormValid = (section) => {
 
+  useEffect(() => {
+
+
+  }, [errors]);
+
+
+  // console.log('errosssssrs',setFocus)
+
+  const isFormValid = (section) => {
+    console.log('Selected Step section', section)
+
+    let errorFields = {};
     if (selectedStep == 4) return true;
 
     let isValid = true
 
-    if (section == "1") {
+    if (section === 1) {
 
       let childs = childsInformation;
 
@@ -719,10 +789,28 @@ export default function index() {
         let profile = child.profile;
         let gi = child.general_information;
 
-    
+
         if ((profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
+          errorFields = {
+            ...errorFields,
+            child_email_invalid: true
+          };
           isValid = false;
-          break;
+
+        }
+        if (profile.phone_number !== '' && profile.phone_number.includes('_')) {
+
+          errorFields = {
+            ...errorFields,
+            child_phone_invalid: true
+          };
+          isValid = false;
+        }
+        else {
+          errorFields = {
+            ...errorFields,
+            child_phone_invalid: false
+          };
         }
 
         if (!profile.first_name ||
@@ -731,29 +819,85 @@ export default function index() {
           !profile.gender ||
           !profile.address ||
           !profile.city ||
-          (profile.phone_number !== '' && profile.phone_number.includes('_')) ||
+
+          /// (profile.phone_number !== '' && profile.phone_number.includes('_')) ||
           !profile.state ||
           !profile.zip_code ||
-          profile.zip_code.length < 5 ||
+          profile.zip_code === '' ||
+          (profile.zip_code && profile.zip_code.length < 5) ||
           // !profile.location_site ||
-          // !profile.child_lives_with ||
-          (isLot &&(!gi.allergies_to_medicine || !gi.food_allergies || !gi.insect_allergies || !gi.other_allergies )) ||
+          !profile.child_lives_with ||
+          (Array.isArray(profile.child_lives_with) && profile.child_lives_with.length === 0)  ||
+          gi.school_name === '' ||
+          gi.grade === '' ||
+          (isLot && (!gi.allergies_to_medicine || !gi.food_allergies || !gi.insect_allergies || !gi.other_allergies || !gi.mentee_gain)) ||
           (!isLot && (!gi.grade ||
             !gi.school_name ||
-            !gi.mentee_gain)) ||  
+            !gi.mentee_gain ||
+            !profile.location_site)) ||
+
           (gi.school_phone && gi.school_phone.includes('_')) ||
           (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.doctor_phone.includes('_')) ||
-          (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.hospital_phone.includes('_')) || 
-          (gi.business_email !== '' &&  !isEmailAddress(gi.business_email))
-          ) {
+          (childsInformation[i].emergency_care_information !== '' && childsInformation[i].emergency_care_information.hospital_phone.includes('_')) ||
+          (gi.business_email !== '' && !isEmailAddress(gi.business_email))
+
+
+        ) {
+
           isValid = false;
+          errorFields = {
+            ...errorFields,
+            first_name: profile.first_name === '',
+            last_name: profile.last_name === '',
+            date_of_birth: profile.date_of_birth === '',
+            gender: profile.gender === '',
+            address: profile.address === '',
+            city: profile.city === '',
+            state: profile.state === '',
+            zip_code: profile.zip_code === '' || (profile.zip_code && profile.zip_code.length < 5),
+            school_name: profile.school_name === '',
+            is_entrepreneur: profile.is_entrepreneur === '',
+            school_name: gi.school_name === '',
+            grade: gi.grade === '',
+            mentee_gain: gi.mentee_gain === '',
+            child_lives_with: (Array.isArray(profile.child_lives_with) && profile.child_lives_with.length === 0) || profile.child_lives_with === '',
+
+          }
+
+          if (isLot) {
+            errorFields = {
+              ...errorFields,
+              allergies_to_medicine: gi.allergies_to_medicine === '',
+              food_allergies: gi.food_allergies === '',
+              insect_allergies: gi.insect_allergies === '',
+              other_allergies: gi.other_allergies === '',
+              // business_email: gi.business_email === '' || !isEmailAddress(gi.business_email),
+              emergency_care_information: childsInformation[i].emergency_care_information === '',
+
+            };
+          }
+          else {
+            errorFields = {
+              ...errorFields,
+              location_site: profile.location_site === ''
+
+            };
+
+          }
           break;
         }
       }
-    } else if (section == "2") {
 
+      return {
+        isValid,
+        errors: errorFields
+      };
+    } else if (section === 2) {
+      isValid = true;
       let parents = parentsInformation;
 
+      console.log('Parent Validation isParentAddressRequired', isParentAddressRequired)
+      console.log('Parent Validation parents', parents)
       for (let i = 0; i < parentsInformation.length; i++) {
         let parent = parents[i];
         let profile = parent.profile;
@@ -761,34 +905,123 @@ export default function index() {
 
         if (profile.first_name === '' || profile.last_name === '') {
           isValid = false;
-          break;
+
+        }
+
+        if (profile.password === '' || profile.confirmed_password === '') {
+          isValid = false;
+
         }
         if ((profile.email_address !== '' && !isEmailAddress(profile.email_address))) {
           isValid = false;
-          break;
-        }
-        if ((profile.phone_number !== '' && profile.phone_number.includes('_'))) {
-          isValid = false;
-          break;
+          errorFields = {
+            ...errorFields,
+            email_invalid: true
+          }
 
         }
+        else {
+          errorFields = {
+            ...errorFields,
+            email_invalid: false
+          }
+        }
+
+        // if (profile.phone_number !== '' && profile.phone_number.includes('_')) {
+
+        //   errorFields = {
+        //     ...errorFields,
+        //     phone_invalid: true
+        //   };
+        //   isValid = false;
+        // } else {
+        //   errorFields = {
+        //     ...errorFields,
+        //     phone_invalid: false
+        //   }
+        // }
+
+        if ((profile.phone_number !== '' && profile.phone_number.includes('_'))) {
+          isValid = false;
+          errorFields = {
+            ...errorFields,
+            phone_invalid: true
+          }
+        }
+        else {
+          errorFields = {
+            ...errorFields,
+            phone_invalid: false
+          }
+        }
+
+        if (profile.password !== '' && profile.password !== profile.confirmed_password) {
+          isValid = false;
+          errorFields = {
+            ...errorFields,
+            password_not_match: true
+          }
+        }
+        else {
+          errorFields = {
+            ...errorFields,
+            password_not_match: false
+          }
+        }
+
+        console.log('profileee !profile.goals_parent_program', !profile.goals_parent_program)
+        console.log('profileee profileeeee', profile)
         if (!profile.first_name ||
           !profile.last_name ||
           !profile.password ||
           !profile.confirmed_password ||
-          !(profile.password == profile.confirmed_password) ||
+
           !profile.phone_number ||
           !profile.email_address ||
-          !profile.goals_parent_program ||
-          !profile.goals_child_program ||
-          !profile.person_recommend,
-          !profile.gender ||
+          profile.goals_parent_program === '' ||
+          profile.goals_child_program === '' ||
+          profile.person_recommend === '' ||
+          !profile.gender // ||
           // !profile.date_of_birth ||
-          (isParentAddressRequired && (!profile.address || !profile.zip_code || profile.zip_code.length < 5 || !profile.state || !profile.city))
+          //(isParentAddressRequired && (!profile.address || !profile.zip_code || profile.zip_code.length < 5 || !profile.state || !profile.city))
         ) {
+          console.log('profileee profileeeee invaliddddddddddd')
+
+
+          errorFields = {
+            ...errorFields,
+            parent_first_name: profile.first_name === '',
+            parent_last_name: profile.last_name === '',
+            password: profile.password === '' || !(profile.password == profile.confirmed_password) || (profile.password !== profile.confirmed_password),
+            confirmed_password: profile.confirmed_password === '',
+            phone_number: profile.phone_number === '',
+            email_address: profile.email_address === '',
+            goals_parent_program: profile.goals_parent_program === '',
+            goals_child_program: profile.goals_child_program === '',
+            person_recommend: profile.person_recommend === '',
+            parent_gender: profile.gender === ''
+          }
           isValid = false;
+          console.log('profileee profileeeee invaliddddddddddd', errorFields)
+        }
+
+        if (!isValid) {
           break;
         }
+
+
+        // if(isParentAddressRequired) {
+        //   errorFields = {
+        //     ...errorFields,
+        //     address: profile.address === '',
+        //     zip_code: profile.zip_code === '',
+        //     state: profile.state === '',
+        //     city: profile.city === ''
+
+        //   };
+        // }
+
+
       }
 
       for (let i = 0; i < 2; i++) {
@@ -800,15 +1033,39 @@ export default function index() {
           (emergencyContacts[i].work_phone && emergencyContacts[i].work_phone.includes('_')) ||
           !emergencyContacts[i].relationship_to_child) {
           isValid = false;
+
+
+          errorFields = {
+            ...errorFields,
+            emergency_contacts: true
+          }
+
           break;
         }
       }
+      console.log('Parent Validation isValid', isValid)
+      console.log('Parent Validation errorFields', errorFields)
+      return {
+        isValid,
+        errors: errorFields
+      };
 
-    } else if (section == "3") {
-
+    } else if (section === 3) {
+      console.log('errorFields termsWaiver',termsWaiver)
       if ((!termsWaiver.section1.checked || !termsWaiver.section1.signature) && vendor.section1_show > 0 ||
         (!termsWaiver.section2.checked || !termsWaiver.section1.signature) && vendor.section2_show > 0 ||
         (!termsWaiver.section3.checked || !termsWaiver.section3.signature) && vendor.section3_show > 0) {
+
+        errorFields = {
+          ...errorFields,
+          section_1_checked: !termsWaiver.section1.checked && vendor.section1_show > 0,
+          section_2_checked: !termsWaiver.section2.checked && vendor.section1_show > 0,
+          section_3_checked: !termsWaiver.section2.checked && vendor.section3_show > 0,
+          section_1_signature: !termsWaiver.section1.signature && vendor.section2_show > 0,
+          section_2_signature: !termsWaiver.section2.signature && vendor.section2_show > 0,
+          section_3_signature: !termsWaiver.section2.signature && vendor.section3_show > 0,
+        }
+
         isValid = false;
       }
 
@@ -822,7 +1079,10 @@ export default function index() {
       //   }
     }
 
-    return isValid;
+    return {
+      isValid,
+      errors: errorFields
+    };
   }
 
   const getNavItemClass = (step) => {
@@ -835,7 +1095,7 @@ export default function index() {
 
     if (step > 1) {
       for (let i = 1; i < step; i++) {
-        if (!isFormValid(i)) {
+        if (!isFormValid(i).isValid) {
           tempClass += "disabled";
           break;
         }
@@ -921,7 +1181,7 @@ export default function index() {
           new Date(parent.profile.date_of_birth),
           DATE_FORMAT) : '',
         gender: parent.profile.gender,
-        age:  parent.profile.date_of_birth ? getAge(parent.profile.date_of_birth) : 0,
+        age: parent.profile.date_of_birth ? getAge(parent.profile.date_of_birth) : 0,
         ethnicities: getAppEtnicities(parent.profile.ethinicity),
         image: parent.profile.image,
       })
@@ -1007,21 +1267,21 @@ export default function index() {
           hospital_preference: childsInformation[i].emergency_care_information.hospital_preference,
           hospital_phone: childsInformation[i].emergency_care_information.hospital_phone,
           is_entrepreneur: childsInformation[i].general_information.is_entrepreneur,
-            include_in_directory: childsInformation[i].general_information.include_in_directory,
-            business_name: childsInformation[i].general_information.business_name,
-            business_website: childsInformation[i].general_information.business_website,
-            business_phone: childsInformation[i].general_information.business_phone,
-            business_email: childsInformation[i].general_information.business_email,
-            business_industry: childsInformation[i].general_information.business_industry,
-            business_address: childsInformation[i].general_information.business_address,
-            business_description: childsInformation[i].general_information.business_description,
-            employment_status: childsInformation[i].general_information.employment_status,
-            allergies_to_medicine: childsInformation[i].general_information.allergies_to_medicine,
-            food_allergies: childsInformation[i].general_information.food_allergies,
-            insect_allergies: childsInformation[i].general_information.insect_allergies,
-            other_allergies: childsInformation[i].general_information.other_allergies,
-            current_medications: childsInformation[i].general_information.current_medications,
-            health_insurance_information: childsInformation[i].general_information.health_insurance_information,
+          include_in_directory: childsInformation[i].general_information.include_in_directory,
+          business_name: childsInformation[i].general_information.business_name,
+          business_website: childsInformation[i].general_information.business_website,
+          business_phone: childsInformation[i].general_information.business_phone,
+          business_email: childsInformation[i].general_information.business_email,
+          business_industry: childsInformation[i].general_information.business_industry,
+          business_address: childsInformation[i].general_information.business_address,
+          business_description: childsInformation[i].general_information.business_description,
+          employment_status: childsInformation[i].general_information.employment_status,
+          allergies_to_medicine: childsInformation[i].general_information.allergies_to_medicine,
+          food_allergies: childsInformation[i].general_information.food_allergies,
+          insect_allergies: childsInformation[i].general_information.insect_allergies,
+          other_allergies: childsInformation[i].general_information.other_allergies,
+          current_medications: childsInformation[i].general_information.current_medications,
+          health_insurance_information: childsInformation[i].general_information.health_insurance_information,
         },
         parents: setupParentsList(childsInformation[i].profile),
         section1_signature: termsWaiver.section1.signature,
@@ -1043,6 +1303,7 @@ export default function index() {
       payload.push(request_params);
     }
     console.log('Request Add Application Payload', payload)
+
     dispatch(requestAddApplication(payload));
   }
 
@@ -1075,6 +1336,7 @@ export default function index() {
     window.location.replace(window.location.origin);
   }
 
+  console.log('emptyFieldsssssssssss', emptyFields)
   return (
     <ApplicationFormStyled
       id="applicationForm">
@@ -1296,7 +1558,8 @@ export default function index() {
                         }
                       </div>
                       {selectedStep == 4 && <hr className="style-eight"></hr>}
-                      <div className={(selectedStep == 2 || selectedStep == 4) ? "" : "hide"}>
+                      {/* <div className={(selectedStep === 2 || selectedStep === 4) ? "" : "hide"}> */}
+                      {(selectedStep === 2 || selectedStep === 4) && <div>
                         <ParentFormStyled
                           handleParentFormDetailsChange={handleParentFormDetailsChange}
                           parentsInformation={parentsInformation}
@@ -1310,11 +1573,14 @@ export default function index() {
                           ProfileImg={ProfileImg}
                           setIsParentAddressRequired={setIsParentAddressRequired}
                           isLot={isLot}
+                          selectedStep={selectedStep}
+                          emptyFields={emptyFields}
                         />
-                      </div>
+                      </div>}
                       {selectedStep == 4 && <hr className="style-eight"></hr>}
                       <div className={(selectedStep == 3 || selectedStep == 4) ? "" : "hide"}>
                         <TermsWaiverFormStyled
+                          emptyFields={emptyFields}
                           handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
                           termsWaiver={termsWaiver}
                           register={register}
@@ -1326,22 +1592,29 @@ export default function index() {
                         {
                           selectedStep < 4 &&
                           <button
-                            type="button"
+                            type="submit"
                             className="right"
                             onClick={(e) => {
                               e.preventDefault();
-                                console.log('isFormValid(selectedStep)',isFormValid(selectedStep))
-                              if (!isFormValid(selectedStep)) {
+
+                              /// setEmptyFields({});
+
+    
+                              if (!isFormValid(selectedStep).isValid) {
+
                                 formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
+                                setEmptyFields(isFormValid(selectedStep).errors)
+                                setIsFormErrorModalVisible(true);
                                 e.preventDefault();
                                 return;
                               };
+                              e.preventDefault();
                               clearError();
                               if (selectedStep == 1) handleWizardSelection(2);
                               else if (selectedStep == 2) handleWizardSelection(3)
                               else if (selectedStep == 3) handleWizardSelection(4)
 
-                              //scrollToTop("smooth");
+                              scrollToTop("smooth");
 
                               window.scrollTo(0, 0)
 
@@ -1355,8 +1628,14 @@ export default function index() {
                           <a href="#" className="left" onClick={(e) => {
                             e.preventDefault();
                             console.log('Selected Step', selectedStep)
-                            if (selectedStep == 3) handleWizardSelection(2);
-                            else if (selectedStep == 2) handleWizardSelection(1)
+                            if (selectedStep === 3) {
+                              console.log('Selected Step 333', selectedStep)
+                              handleWizardSelection(2);
+                            }
+                            else if (selectedStep === 2) {
+                              console.log('Selected Step 222', selectedStep)
+                              handleWizardSelection(1)
+                            }
                             //else if(selectedStep == 4) handleWizardSelection(3)
 
                             scrollToTop("smooth");
@@ -1380,6 +1659,26 @@ export default function index() {
           </div>
         )
       }
+      {isFormErrorModalVisible && <FormErrorModal>
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <span onClick={() => {
+                setIsFormErrorModalVisible(false)
+              }} className="close">
+                &times;
+              </span>
+            </div>
+            <div className="modal-container">
+              <div><b style={{ color: 'red' }}>Error(s):</b> <b>Please review the following field(s):</b></div>
+              {console.log('Object.keys(emptyFields)', Object.keys(emptyFields))}
+              {Object.keys(emptyFields).length > 0 && Object.keys(emptyFields).filter(key => emptyFields[key]).map((key, index) => {
+                return REQUIRED_FIELD_NAME[key] && <div style={{ marginTop: 12 }} key={index}><b>{REQUIRED_FIELD_NAME[key]}</b></div>
+              }).filter(item => item)}
+            </div>
+          </div>
+        </div>
+      </FormErrorModal>}
 
       <a href="#" className="to-top"></a>
     </ApplicationFormStyled>

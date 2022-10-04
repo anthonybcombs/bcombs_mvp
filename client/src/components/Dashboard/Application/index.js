@@ -717,6 +717,7 @@ export default function index() {
           setSelectedForm('lot');
         }
         else if (hasDefaultVendor) {
+          defaultVendor = hasDefaultVendor;
           setSelectedVendor(hasDefaultVendor);
           setAppGroups(hasDefaultVendor?.app_groups);
         }
@@ -748,8 +749,11 @@ export default function index() {
           categories: []
         }))
         console.log('defaultVendorrrrrrrrrrrrrrrr',defaultVendor)
-        // dispatch(requestGetApplications( defaultVendor?.id));
-        dispatch(requestGetVendorReminders({ vendor: defaultVendor?.id }));
+        if(defaultVendor) {
+          dispatch(requestGetApplications(defaultVendor?.id));
+          dispatch(requestGetVendorReminders({ vendor: defaultVendor?.id }));
+        }
+
       }
 
 
@@ -2141,9 +2145,10 @@ export default function index() {
                     setSelectedForm(target.value);
                     setAppGroups(selectedVendor.app_groups);
                     window.history.replaceState("", "", "?vendor=" + selectedVendor?.id2);
-                    if (applications.activeapplications.length === 0) {
-                      dispatch(requestGetApplications(selectedVendor.id));
-                    }
+                    // if (applications.activeapplications.length === 0) {
+                    //   dispatch(requestGetApplications(selectedVendor.id));
+                    // }
+                    dispatch(requestGetApplications(selectedVendor.id));
 
                   } else {
                     setSelectedForm(target.value);

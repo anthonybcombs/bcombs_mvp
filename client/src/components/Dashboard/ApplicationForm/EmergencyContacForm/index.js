@@ -98,7 +98,8 @@ export default function index({
   register,
   errors,
   pastEmergencyContacts = [],
-  isVendorView
+  isVendorView,
+  emptyFields = {}
 }) {
   const GENDER_OPTIONS = [
     { id: 1, value: "Male", name: "Male" },
@@ -129,14 +130,24 @@ export default function index({
             {!isReadonly && i <= 1 && <span className="required">*</span>}
             <input
               name={"ec_firstname_" + i}
-              className={
-                isReadonly &&
-                !isVendorView &&
-                pastEmergencyContacts &&
-                pastEmergencyContacts.length > 0 &&
-                (pastEmergencyContacts[i].first_name || pastEmergencyContacts[i].first_name == "") &&
-                pastEmergencyContacts[i].first_name != parentEmergencyContacts[i].first_name ?
-                "field-input highlights" : "field-input"
+              // className={
+              //   isReadonly &&
+              //     !isVendorView &&
+              //     pastEmergencyContacts &&
+              //     pastEmergencyContacts.length > 0 &&
+              //     (pastEmergencyContacts[i].first_name || pastEmergencyContacts[i].first_name == "") &&
+              //     pastEmergencyContacts[i].first_name != parentEmergencyContacts[i].first_name ?
+              //     "field-input highlights" : "field-input"
+              // }
+              className={`${(emptyFields.emergency_contacts && i <= 1 && parentEmergencyContacts[i].first_name === '') && 'highlights'} 
+              ${isReadonly &&
+                  !isVendorView &&
+                  pastEmergencyContacts &&
+                  pastEmergencyContacts.length > 0 &&
+                  (pastEmergencyContacts[i].first_name || pastEmergencyContacts[i].first_name == "") &&
+                  pastEmergencyContacts[i].first_name != parentEmergencyContacts[i].first_name ?
+                  "field-input highlights" : "field-input"}
+            `
               }
               onChange={({ target }) => {
                 handleParentFormDetailsChange(
@@ -162,14 +173,25 @@ export default function index({
             {!isReadonly && i <= 1 && <span className="required">*</span>}
             <input
               name={"ec_lastname_" + i}
-              className={
-                isReadonly &&
-                !isVendorView &&
-                pastEmergencyContacts &&
-                pastEmergencyContacts.length > 0 &&
-                (pastEmergencyContacts[i].last_name || pastEmergencyContacts[i].last_name == "") &&
-                pastEmergencyContacts[i].last_name != parentEmergencyContacts[i].last_name ?
-                "field-input highlights" : "field-input"
+              // className={
+              // isReadonly &&
+              // !isVendorView &&
+              // pastEmergencyContacts &&
+              // pastEmergencyContacts.length > 0 &&
+              // (pastEmergencyContacts[i].last_name || pastEmergencyContacts[i].last_name == "") &&
+              // pastEmergencyContacts[i].last_name != parentEmergencyContacts[i].last_name ?
+              // "field-input highlights" : "field-input"
+              // }
+
+              className={`${(emptyFields.emergency_contacts && i <= 1 && parentEmergencyContacts[i].last_name === '') && 'highlights'} 
+                 ${isReadonly &&
+                  !isVendorView &&
+                  pastEmergencyContacts &&
+                  pastEmergencyContacts.length > 0 &&
+                  (pastEmergencyContacts[i].last_name || pastEmergencyContacts[i].last_name == "") &&
+                  pastEmergencyContacts[i].last_name != parentEmergencyContacts[i].last_name ?
+                  "field-input highlights" : "field-input"}
+               `
               }
               onChange={({ target }) => {
                 handleParentFormDetailsChange(
@@ -197,7 +219,18 @@ export default function index({
               <div className="select-field-wrapper">
                 <select
                   name={"ec_gender_" + i}
-                  className="input-field"
+                  //  className="input-field"
+
+                  className={`${(emptyFields.emergency_contacts && i <= 1 && parentEmergencyContacts[i].gender === '') && 'dropdown-highlights'} 
+                   ${isReadonly &&
+                      !isVendorView &&
+                      pastEmergencyContacts &&
+                      pastEmergencyContacts.length > 0 &&
+                      (pastEmergencyContacts[i].gender || pastEmergencyContacts[i].gender == "") &&
+                      pastEmergencyContacts[i].gender != parentEmergencyContacts[i].gender ?
+                      "field-input highlights" : "field-input"}
+                  `
+                  }
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
                       i,
@@ -210,7 +243,7 @@ export default function index({
                   ref={register({
                     required: i <= 1
                   })}>
-                  <option value="">Select Type</option>
+                  <option value="">Type</option>
                   <optgroup label="Gender">
                     {GENDER_OPTIONS.map(opt => (
                       <option key={opt.id} value={opt.name}>
@@ -233,12 +266,12 @@ export default function index({
                 name={"ec_gender_" + i}
                 className={
                   isReadonly &&
-                  !isVendorView &&
-                  pastEmergencyContacts &&
-                  pastEmergencyContacts.length > 0 &&
-                  (pastEmergencyContacts[i].gender || pastEmergencyContacts[i].gender == "") &&
-                  pastEmergencyContacts[i].gender != parentEmergencyContacts[i].gender ?
-                  "field-input highlights" : "field-input"
+                    !isVendorView &&
+                    pastEmergencyContacts &&
+                    pastEmergencyContacts.length > 0 &&
+                    (pastEmergencyContacts[i].gender || pastEmergencyContacts[i].gender == "") &&
+                    pastEmergencyContacts[i].gender != parentEmergencyContacts[i].gender ?
+                    "field-input highlights" : "field-input"
                 }
                 defaultValue={parentEmergencyContacts[i].gender}
                 readOnly={isReadonly}
@@ -255,7 +288,7 @@ export default function index({
             {!isReadonly ? (
               <NumberFormat
                 name={"mobile_phone_" + i}
-                className="input-field"
+                className={`${(emptyFields.emergency_contacts && i <= 1 && parentEmergencyContacts[i].mobile_phone === '') && 'dropdown-highlights'} field-input`}
                 onChange={({ target }) => {
                   handleParentFormDetailsChange(
                     i,
@@ -283,15 +316,25 @@ export default function index({
             ) : (
               <input
                 name={"mobile_phone_" + i}
-                className={
-                  isReadonly &&
-                  !isVendorView &&
-                  pastEmergencyContacts &&
-                  pastEmergencyContacts.length > 0 &&
-                  (pastEmergencyContacts[i].mobile_phone || pastEmergencyContacts[i].mobile_phone == "") &&
-                  pastEmergencyContacts[i].mobile_phone != parentEmergencyContacts[i].mobile_phone ?
-                  "field-input highlights" : "field-input"
+                className={`${(emptyFields.emergency_contacts && i <= 1 && parentEmergencyContacts[i].mobile_phone === '') && 'dropdown-highlights'} 
+                ${isReadonly &&
+                    !isVendorView &&
+                    pastEmergencyContacts &&
+                    pastEmergencyContacts.length > 0 &&
+                    (pastEmergencyContacts[i].mobile_phone || pastEmergencyContacts[i].mobile_phone == "") &&
+                    pastEmergencyContacts[i].mobile_phone != parentEmergencyContacts[i].mobile_phone ?
+                    "field-input highlights" : "field-input"}
+               `
                 }
+                // className={
+                //   isReadonly &&
+                //   !isVendorView &&
+                //   pastEmergencyContacts &&
+                //   pastEmergencyContacts.length > 0 &&
+                //   (pastEmergencyContacts[i].mobile_phone || pastEmergencyContacts[i].mobile_phone == "") &&
+                //   pastEmergencyContacts[i].mobile_phone != parentEmergencyContacts[i].mobile_phone ?
+                //   "field-input highlights" : "field-input"
+                // }
                 onChange={({ target }) => {
                   handleParentFormDetailsChange(
                     i,
@@ -316,11 +359,11 @@ export default function index({
             />
           </td>
           <td>
-          {/* {!isReadonly && i <= 1 && <span className="required">*</span>} */}
+            {/* {!isReadonly && i <= 1 && <span className="required">*</span>} */}
             {!isReadonly ? (
               <NumberFormat
                 name={"work_phone_" + i}
-                className="input-field"
+                className="field-input"
                 onChange={({ target }) => {
                   handleParentFormDetailsChange(
                     i,
@@ -348,15 +391,15 @@ export default function index({
             ) : (
               <input
                 name={"work_phone_" + i}
-                name={"mobile_phone_" + i}
+                //  name={"mobile_phone_" + i}
                 className={
                   isReadonly &&
-                  !isVendorView &&
-                  pastEmergencyContacts &&
-                  pastEmergencyContacts.length > 0 &&
-                  (pastEmergencyContacts[i].work_phone || pastEmergencyContacts[i].work_phone == "") &&
-                  pastEmergencyContacts[i].work_phone != parentEmergencyContacts[i].work_phone ?
-                  "field-input highlights" : "field-input"
+                    !isVendorView &&
+                    pastEmergencyContacts &&
+                    pastEmergencyContacts.length > 0 &&
+                    (pastEmergencyContacts[i].work_phone || pastEmergencyContacts[i].work_phone == "") &&
+                    pastEmergencyContacts[i].work_phone != parentEmergencyContacts[i].work_phone ?
+                    "field-input highlights" : "field-input"
                 }
                 onChange={({ target }) => {
                   handleParentFormDetailsChange(
@@ -379,15 +422,26 @@ export default function index({
               field={errors["work_phone_" + i]}
               errorType="completed"
               message="Phone Number must be consist of 10 digits."
-            />     
+            />
           </td>
           <td>
             {!isReadonly && i <= 1 && <span className="required">*</span>}
             {!isReadonly ? (
-              <div className="select-field-wrapper">
+              // <div className="select-field-wrapper">
                 <select
                   name={"relationship_to_child_" + i}
-                  className="input-field"
+                  className={`${(emptyFields.emergency_contacts && i <= 1 && parentEmergencyContacts[i].relationship_to_child === '') && 'dropdown-highlights'} field-input`}
+
+                  //   className={`${(emptyFields.emergency_contacts && i <= 1 && parentEmergencyContacts[i].relationship_to_child === '') && 'dropdown-highlights'} 
+                  //   ${isReadonly &&
+                  //      !isVendorView &&
+                  //      pastEmergencyContacts &&
+                  //      pastEmergencyContacts.length > 0 &&
+                  //      (pastEmergencyContacts[i].gender || pastEmergencyContacts[i].gender == "") &&
+                  //      pastEmergencyContacts[i].gender != parentEmergencyContacts[i].gender ?
+                  //      "field-input highlights" : "field-input"}
+                  //  `
+                  //  }
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
                       i,
@@ -402,7 +456,7 @@ export default function index({
                   ref={register({
                     required: i <= 1
                   })}>
-                  <option value="">Select Type</option>
+                  <option value="">Type</option>
                   {/* {RELATION_TO_CHILD_OPTIONS.map(opt => (
                     <option key={opt.id} value={opt.name}>
                       {opt.name}
@@ -435,18 +489,18 @@ export default function index({
                       </option>
                     ))}
                 </select>
-              </div>
+              // </div>
             ) : (
               <input
                 name={"relationship_to_child_" + i}
                 className={
                   isReadonly &&
-                  !isVendorView &&
-                  pastEmergencyContacts &&
-                  pastEmergencyContacts.length > 0 &&
-                  (pastEmergencyContacts[i].relationship_to_child || pastEmergencyContacts[i].relationship_to_child == "") &&
-                  pastEmergencyContacts[i].relationship_to_child != parentEmergencyContacts[i].relationship_to_child ?
-                  "field-input highlights" : "field-input"
+                    !isVendorView &&
+                    pastEmergencyContacts &&
+                    pastEmergencyContacts.length > 0 &&
+                    (pastEmergencyContacts[i].relationship_to_child || pastEmergencyContacts[i].relationship_to_child == "") &&
+                    pastEmergencyContacts[i].relationship_to_child != parentEmergencyContacts[i].relationship_to_child ?
+                    "field-input highlights" : "field-input"
                 }
                 defaultValue={parentEmergencyContacts[i].relationship_to_child}
                 readOnly={isReadonly}

@@ -49,7 +49,8 @@ export default function index({
   errors,
   name,
   text,
-  isReadonly = false
+  isReadonly = false,
+  emptyFields = {}
 }) {
 
  
@@ -75,8 +76,8 @@ export default function index({
                 ref={register({required: true})}
                 disabled={isReadonly}
               />
-              <span 
-                style={{"borderColor": (errors.section3_checkbox) ? "red": "" }} 
+            <span 
+                style={{"borderColor": (errors.section3_checkbox || emptyFields?.section_3_checked) ? "red": "" }} 
                 className="checkmark">  
               </span>
             </label>
@@ -87,7 +88,7 @@ export default function index({
                 <input
                   id="section3_signature"
                   name="section3_signature"
-                  className="field-input"
+                  className={`field-input ${emptyFields?.section_3_signature && !isReadonly && 'highlights'} `}
                   placeholder="Electronic Signature"
                   onChange={({ target }) => {
                     handleWaiverFormDetailsChange("section3", "signature", target.value)
