@@ -440,7 +440,29 @@ export default function index({
     );
   };
 
-  const getPrimaryParentName = (parents, id) => {
+  const getParentFromFormData = formData => {
+    const parentData = formData.find(item => {
+      const label = item.label.toLowerCase();
+      return    label.includes('parent') && label.includes('name');
+    });
+
+    const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
+    console.log('parentFields',parentFields)
+    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"',"")} ${parentFields[1].value.replaceAll('"',"")}` : ''
+  }
+
+  
+  const getChildFromFormData = formData => {
+    const parentData = formData.find(item => {
+      const label = item.label.toLowerCase();
+      return   (label.includes('mentee') && label.includes('name')) ||  (label.includes('child') && label.includes('name'));
+    });
+
+    const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
+    console.log('parentFields',parentFields)
+    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"',"")} ${parentFields[1].value.replaceAll('"',"")}` : ''
+  }
+  const getPrimaryParentName = (parents, id, data) => {
     if (parents && parents.length > 0) {
       return (
         // <a href={"parentprofile/" + id}>
@@ -449,6 +471,13 @@ export default function index({
         <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
       );
     } else {
+      if(isCustomForm) {
+
+
+        const parentName =  getParentFromFormData(data?.form_contents?.formData || []);
+
+        return parentName;
+      }
       return "";
     }
   };
@@ -456,7 +485,7 @@ export default function index({
   const DATE_FORMAT = "LLL dd, yyyy";
 
   const getAgeBdate = child => {
-    console.log('Childdddddddd', child)
+
     if (!child || (!child.age && child <= -1)) return "";
 
     let birthdate = child.birthdate && format(new Date(child.birthdate), DATE_FORMAT);
@@ -469,7 +498,19 @@ export default function index({
 
   const getStudentName = row => {
 
+    const parentName =  getParentFromFormData(row?.form_contents?.formData || []);
+
+
     if(row?.child?.firstname && row?.child?.lastname) {
+
+
+      if(parentName && (parentName === `${row?.child?.firstname} ${row?.child?.lastname}`)) {
+        const childName = getChildFromFormData(row?.form_contents?.formData || []);
+
+        return childName;
+      }
+
+
       return (
         // <a href={"menteeprofile/" + row.id}>
         //   <span>{row?.child.firstname + " " + row?.child.lastname}</span>
@@ -499,7 +540,7 @@ export default function index({
       name: "Parent name",
       selector: "parentName",
       sortable: true,
-      cell: row => getPrimaryParentName(row.parents, row.id)
+      cell: row => getPrimaryParentName(row.parents, row.id, row)
     },
     {
       name: "Group(s)",
@@ -727,7 +768,6 @@ export default function index({
     return name_match && class_match && color_match && status_match && group_match;
   });
 
-  console.log("data", data);
 
   const subHeaderComponentMemo = useMemo(() => {
     const handleClear = () => {
