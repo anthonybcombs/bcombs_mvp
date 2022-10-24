@@ -613,7 +613,7 @@ export default function Layout({ children }) {
                                 onClick={() => {
                                   dispatch(requestLogout());
                                   setIsPopOverVisible(false);
-                                  navigate("/", { replace: true });
+                                  navigate("/login", { replace: true });
                                 }}>
                                 {/* <FontAwesomeIcon icon={faSignOutAlt} /> */}
                                 <span>Logout</span>
