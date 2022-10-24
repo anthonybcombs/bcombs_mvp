@@ -180,8 +180,8 @@ export default function App() {
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <Router>
             <AyncDashboardMyContactsPublic path="/mycalendars/public/:id" />
-            <AsyncAuth path="/">
-              <AsyncLogin default />
+            <AsyncAuth path="/login">
+              <AsyncLogin  default />
               <AsyncCreateUser path="auth/create" />
               <AsyncForgotPassword path="auth/forgot-password" />
             </AsyncAuth>
