@@ -370,6 +370,28 @@ const ExportFilter = ({
     return child.age + " (" + birthdate + ")";
   };
 
+  
+  const getParentFromFormData = formData => {
+    const parentData = formData.find(item => {
+      const label = item.label.toLowerCase();
+      return    label.includes('parent') && label.includes('name');
+    });
+
+    const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
+    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"',"")} ${parentFields[1].value.replaceAll('"',"")}` : ''
+  }
+
+  
+  const getChildFromFormData = formData => {
+    const parentData = formData.find(item => {
+      const label = item.label.toLowerCase();
+      return   (label.includes('mentee') && label.includes('name')) ||  (label.includes('child') && label.includes('name'));
+    });
+
+    const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
+    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"',"")} ${parentFields[1].value.replaceAll('"',"")}` : ''
+  }
+
   let exportApplications = [];
   let rowKeys = [];
 
@@ -498,19 +520,24 @@ const ExportFilter = ({
 
       }
 
-      console.log('formattedApplication', formattedApplication)
 
       if (reportType === 'biographical_data') {
         const keys = Object.keys(formattedApplication);
-        const parentNameKey = keys.find(key => key.toLowerCase().includes('parent') && key.toLowerCase().includes('name'));
+
+        let parentFullName = getParentFromFormData(application?.form_contents?.formData)
+        parentFullName = parentFullName.replace(/\s{2,}/g, ' ');
+        let childFullName = getChildFromFormData(application?.form_contents?.formData)
+        childFullName = childFullName.replace(/\s{2,}/g, ' ');
+    
+        // const parentNameKey =  keys.find(key => key.toLowerCase().includes('parent') && key.toLowerCase().includes('name'));
         const parentPhoneKey = keys.find(key => key.toLowerCase().includes('parent') && key.toLowerCase().includes('phone'));
         const emailKey = keys.find(key => key.toLowerCase().includes('parent') && key.toLowerCase().includes('email'));
         const menteePhoneKey = keys.find(key => key.toLowerCase().includes('mentee') && key.toLowerCase().includes('phone'));
         const addressKey = keys.find(key => key.toLowerCase().includes('mailing') || key.toLowerCase().includes('address'));
-
+    
         const gradeKey = keys.find(key => key.toLowerCase().includes('grade'));
-        const childName = formattedApplication.child.split(' ');
-
+        const childName = childFullName.split(' ');
+   
         let updatedApplication = [
           childName[0],
           childName[1],
@@ -519,7 +546,7 @@ const ExportFilter = ({
           formattedApplication[menteePhoneKey] || '',
           formattedApplication[addressKey] || '',
           formattedApplication[gradeKey] || '',
-          formattedApplication[parentNameKey] || '',
+          parentFullName || '',
           formattedApplication[parentPhoneKey] || '',
           formattedApplication[emailKey] || '',
           formattedApplication[addressKey] || '',
@@ -541,6 +568,27 @@ const ExportFilter = ({
         exportApplications.push(updatedApplication);
       }
       else {
+
+
+       
+        if(formattedApplication['child']) {
+          let childFullName = getChildFromFormData(application?.form_contents?.formData)
+          childFullName = childFullName.replace(/\s{2,}/g, ' ');
+          formattedApplication = {
+            ...formattedApplication,
+            'child': childFullName
+          }
+        }
+
+        if(formattedApplication['Parent / Guardian Name']) {
+          let parentFullName = getParentFromFormData(application?.form_contents?.formData)
+          parentFullName = parentFullName.replace(/\s{2,}/g, ' ');
+          formattedApplication = {
+            ...formattedApplication,
+            'Parent / Guardian Name': parentFullName
+          }
+        }
+
 
         let initialApplication = {
           // 'Id': formattedApplication['Id'],
