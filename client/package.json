@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "homepage":".",
   "scripts": {
     "start": "parcel ./src/index.html",
     "build": "NODE_ENV=production parcel build ./src/index.html && cp src/_redirects dist/_redirects",
     "test": "jest --watchAll",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "homepage": "."
   },
   "jest": {
     "moduleNameMapper": {
