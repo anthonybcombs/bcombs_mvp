@@ -167,6 +167,10 @@ const AsyncDisplayCalendar = Loadable({
   loading: Loading
 });
 
+const AsyncLandingPage = Loadable({
+  loader: () => import('./components/LandingPage'),
+  loading: Loading
+});
 
 export default function App() {
   const dispatch = useDispatch();
@@ -175,13 +179,14 @@ export default function App() {
   }, []);
   return (
     <>
+
       <Layout>
         <div data-testid="app">
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <Router>
             <AyncDashboardMyContactsPublic path="/mycalendars/public/:id" />
             <AsyncAuth path="/">
-              <AsyncLogin  default />
+            <AsyncLandingPage path="/"  default />
               <AsyncLogin  path="login"  />
               <AsyncCreateUser path="auth/create" />
               <AsyncForgotPassword path="auth/forgot-password" />
