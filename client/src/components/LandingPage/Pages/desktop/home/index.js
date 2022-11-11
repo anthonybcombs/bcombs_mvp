@@ -14,7 +14,7 @@ import BenefitsDelivered from '../../../Resources/images/Benefits-Delivered-1920
 import BcombsSiteIcon from '../../../Resources/images/BCombs_Site-icon-1920w.png';
 
 const DesktopPage = props => {
-    return <div style={{ height: 1000}} id="dmRoot" dataPageAlias="home" className="supportsFontIcons supportsFontIcons dmRoot dmDesktopBody fix-mobile-scrolling addCanvasBorder dmResellerSite dmLargeBody responsiveTablet " style={{ padding: 0, margin: 0 }}>
+    return <div style={{ height: 1000 }} id="dmRoot" dataPageAlias="home" className="supportsFontIcons supportsFontIcons dmRoot dmDesktopBody fix-mobile-scrolling addCanvasBorder dmResellerSite dmLargeBody responsiveTablet " style={{ padding: 0, margin: 0 }}>
         {/* ========= Site Content ========= */}
         <div id="dm" className="dmwr">
             <div className="dm_wrapper standard-var5 widgetStyle-3 standard">
@@ -966,7 +966,7 @@ const DesktopPage = props => {
                                                                     <div className="dmRespColsWrapper" id={1856712618}>
                                                                         <div className="dmRespCol large-12 medium-12 small-12 u_1095447401" id={1095447401}>
                                                                             <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1994451322}>
-                                                                                <h2 className="text-align-center" style={{textAlign:'center' }}> <span style={{ display: 'unset'}}>Still
+                                                                                <h2 className="text-align-center" style={{ textAlign: 'center' }}> <span style={{ display: 'unset' }}>Still
                                                                                     using:</span>
                                                                                 </h2>
                                                                             </div>
@@ -982,53 +982,40 @@ const DesktopPage = props => {
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                     
+
                                                                             <div className="dmRespRow u_1287229030" id={1287229030}>
                                                                                 <div className="dmRespColsWrapper" id={1294397268}>
-                                                                                    <div className="u_1073903950 dmRespCol small-12 large-undefined medium-undefined medium-4 large-4" id={1073903950}>
-                                                                                        <div className="u_1586563672 dmRespRow" id={1586563672}>
-                                                                                            <div className="dmRespColsWrapper" id={1758924848}>
-                                                                                                <div className="u_1430870106 dmRespCol small-12 large-5 medium-5" id={1430870106}>
-                                                                                                    <div className="u_1139347429 dmPhotoGallery newPhotoGallery dmPhotoGalleryResp" galleryoptionsparams="{thumbnailsPerRow: 3, rowsToShow: 3, imageScaleMethod: true}" data-desktop-layout="classic-rounded" data-desktop-columns={1} dataElementType="dPhotoGalleryId" data-desktop-text-layout="over" id={1139347429} data-link-gallery="true" data-placeholder="false" data-rows-to-show={100}>
-                                                                                                        <ul className="dmPhotoGalleryHolder clearfix gallery shadowEffectToChildren gallery4inArow" id={1407542909}>
-                                                                                                            <li className="photoGalleryThumbs" id={1672569426}>
-                                                                                                            
-                                                                                                               <div className="image-container revealed" id={1294552624}>
-                                                                                                                    <a data-dm-multisize-attr="href" data-image-url="/Resources/images/Paper-and-pen.jpg" id={1592935897}><img irh irw alt="" src={PaperAndPen} id={1132507964} onerror="handleImageLoadError(this)" /></a>
-                                                                                                                </div>
-                                                                                                                <div className="caption-container" style={{ display: 'none' }} id={1400601907}>
-                                                                                                                    <span className="caption-inner" id={1984721373}>
-                                                                                                                        <h3 className="caption-title" id={1078926201}>
-                                                                                                                        </h3>
-                                                                                                                        <div className="caption-text" id={1448824757}>
-                                                                                                                        </div>
-                                                                                                                        <a className="caption-button dmWidget clearfix" id={1725422533}>
-                                                                                                                            <span className="iconBg" id={1635810048}>
-                                                                                                                                <span className="icon hasFontIcon icon-star" id={1206088709} />
-                                                                                                                            </span>
-                                                                                                                            <span className="text" id={1918444021}>Button</span>
-                                                                                                                        </a>
-                                                                                                                    </span>
-                                                                                                                </div>
-                                                                                                            </li>
-                                                                                                        </ul>
-                                                                                                        <div className="photoGalleryViewAll link" isall="true" dataViewall="View more" dataViewless="View less" style={{ display: 'none' }} id={1980512002}>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div className="u_1963393776 dmRespCol small-12 large-7 medium-7" id={1963393776}>
-                                                                                                    <div className="u_1860902120 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1860902120} style={{ transition: 'none 0s ease 0s', textAlign: 'left' }}>
-                                                                                                        <h3 className="m-text-align-center">
-                                                                                                            <span style={{ display: 'unset' }}>Pen
-                                                                                                                &amp;
-                                                                                                                Paper</span>
-                                                                                                        </h3>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
+                                                                                    <div style={{
+                                                                                        margin: 5
+                                                                                    }} className="u_1073903950 dmRespCol small-12 large-undefined medium-undefined medium-4 large-4" id="1073903950"> <div className="u_1586563672 dmRespRow" id="1586563672"> <div className="dmRespColsWrapper" id="1758924848"> <div className="u_1430870106 dmRespCol small-12 large-5 medium-5" id="1430870106"> <div className="u_1139347429 dmPhotoGallery newPhotoGallery dmPhotoGalleryResp text-layout-over captionAlignment-undefined photo-gallery-done" galleryoptionsparams="{thumbnailsPerRow: 3, rowsToShow: 3, imageScaleMethod: true}" data-desktop-layout="classic-rounded" data-desktop-columns="1" data-element-type="dPhotoGalleryId" data-desktop-text-layout="over" id="1139347429" data-link-gallery="true" data-placeholder="false" data-rows-to-show="100" editablewidget="true" data-widget-type="photoGallery"> <ul className="dmPhotoGalleryHolder clearfix gallery shadowEffectToChildren gallery4inArow" id="1407542909">
+                                                                                    </ul>
+                                                                                        <div className="layout-container classic-rounded"><div className="photogallery-row" data-index="0"><div className="photogallery-column  column-1" data-index="0">
+                                                                                            <li className="photoGalleryThumbs animated null" id="1672569426" data-index="0"> <div className="thumbnailInnerWrapper" style={{ opacity: 1 }}>
+                                                                                                <div className="image-container revealed" id="1294552624"> <a data-dm-multisize-attr="href" data-image-url="https://irp.cdn-website.com/da53c60f/dms3rep/multi/Paper-and-pen.jpg" id="1592935897" style={{
+                                                                                                    backgroundImage: `url("${PaperAndPen}")`
+                                                                                                }}><img irh="" irw="" alt="" data-src="https://irp.cdn-website.com/da53c60f/dms3rep/multi/Paper-and-pen.jpg" id="1132507964" onerror="handleImageLoadError(this)" /></a>
+                                                                                                </div><div className="caption-container" style={{ display: "none" }} id="1400601907"> <span className="caption-inner" id="1984721373"> <h3 className="caption-title" id="1078926201"></h3>
+                                                                                                    <div className="caption-text" id="1448824757"></div>
+                                                                                                    <a className="caption-button dmWidget clearfix" id="1725422533"> <span className="iconBg" id="1635810048"> <span className="icon hasFontIcon icon-star" id="1206088709"></span>
+                                                                                                    </span>
+                                                                                                        <span className="text" id="1918444021">Button</span>
+                                                                                                    </a>
+                                                                                                </span>
+                                                                                                </div></div>
+
+                                                                                            </li></div></div></div><div className="photoGalleryViewAll link" isall="true" data-viewall="View more" data-viewless="View less" style={{ display: 'none' }} id="1980512002"></div>
+                                                                                    </div>
+                                                                                    </div>
+                                                                                        <div className="u_1963393776 dmRespCol small-12 large-7 medium-7" id="1963393776"> <div className="u_1860902120 dmNewParagraph" data-element-type="paragraph" data-version="5" id="1860902120" style={{
+                                                                                            transition: 'none 0s ease 0s',
+                                                                                            textAlign: 'left'
+                                                                                        }}> <h3 className="m-text-align-center"><span style={{ display: 'unset' }}>Pen &amp; Paper</span></h3>
+                                                                                        </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div className="u_1126849785 dmRespCol small-12 large-undefined medium-undefined medium-4 large-4" id={1126849785}>
+                                                                                    </div>
+                                                                                    </div>
+                                                                                    {/* <div className="u_1126849785 dmRespCol small-12 large-undefined medium-undefined medium-4 large-4" id={1126849785}>
                                                                                         <div className="u_1633385493 dmRespRow" id={1633385493}>
                                                                                             <div className="dmRespColsWrapper" id={1508948343}>
                                                                                                 <div className="u_1634357579 dmRespCol small-12 large-5 medium-5" id={1634357579}>
@@ -1068,8 +1055,68 @@ const DesktopPage = props => {
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
+                                                                                    </div> */}
+                                                                                    <div style={{
+                                                                                        margin: 5
+                                                                                    }}  className="u_1073903950 dmRespCol small-12 large-undefined medium-undefined medium-4 large-4" id="1073903950"> <div className="u_1586563672 dmRespRow" id="1586563672"> <div className="dmRespColsWrapper" id="1758924848"> <div className="u_1430870106 dmRespCol small-12 large-5 medium-5" id="1430870106"> <div className="u_1139347429 dmPhotoGallery newPhotoGallery dmPhotoGalleryResp text-layout-over captionAlignment-undefined photo-gallery-done" galleryoptionsparams="{thumbnailsPerRow: 3, rowsToShow: 3, imageScaleMethod: true}" data-desktop-layout="classic-rounded" data-desktop-columns="1" data-element-type="dPhotoGalleryId" data-desktop-text-layout="over" id="1139347429" data-link-gallery="true" data-placeholder="false" data-rows-to-show="100" editablewidget="true" data-widget-type="photoGallery"> <ul className="dmPhotoGalleryHolder clearfix gallery shadowEffectToChildren gallery4inArow" id="1407542909">
+                                                                                    </ul>
+                                                                                        <div className="layout-container classic-rounded"><div className="photogallery-row" data-index="0"><div className="photogallery-column  column-1" data-index="0">
+                                                                                            <li className="photoGalleryThumbs animated null" id="1672569426" data-index="0"> <div className="thumbnailInnerWrapper" style={{ opacity: 1 }}>
+                                                                                                <div className="image-container revealed" id="1294552624"> <a data-dm-multisize-attr="href" data-image-url="https://irp.cdn-website.com/da53c60f/dms3rep/multi/Paper-and-pen.jpg" id="1592935897" style={{
+                                                                                                    backgroundImage: `url("${Excel}")`
+                                                                                                }}><img irh="" irw="" alt="" data-src="https://irp.cdn-website.com/da53c60f/dms3rep/multi/Paper-and-pen.jpg" id="1132507964" onerror="handleImageLoadError(this)" /></a>
+                                                                                                </div><div className="caption-container" style={{ display: "none" }} id="1400601907"> <span className="caption-inner" id="1984721373"> <h3 className="caption-title" id="1078926201"></h3>
+                                                                                                    <div className="caption-text" id="1448824757"></div>
+                                                                                                    <a className="caption-button dmWidget clearfix" id="1725422533"> <span className="iconBg" id="1635810048"> <span className="icon hasFontIcon icon-star" id="1206088709"></span>
+                                                                                                    </span>
+                                                                                                        <span className="text" id="1918444021">Button</span>
+                                                                                                    </a>
+                                                                                                </span>
+                                                                                                </div></div>
+
+                                                                                            </li></div></div></div><div className="photoGalleryViewAll link" isall="true" data-viewall="View more" data-viewless="View less" style={{ display: 'none' }} id="1980512002"></div>
                                                                                     </div>
-                                                                                    <div className="u_1501669102 dmRespCol small-12 large-undefined medium-undefined medium-4 large-4" id={1501669102}>
+                                                                                    </div>
+                                                                                        <div className="u_1963393776 dmRespCol small-12 large-7 medium-7" id="1963393776"> <div className="u_1860902120 dmNewParagraph" data-element-type="paragraph" data-version="5" id="1860902120" style={{
+                                                                                            transition: 'none 0s ease 0s',
+                                                                                            textAlign: 'left'
+                                                                                        }}> <h3 className="m-text-align-center"><span style={{ display: 'unset' }}>Spread Sheets</span></h3>
+                                                                                        </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    </div>
+                                                                                    </div>
+                                                                                    <div style={{
+                                                                                        margin: 5
+                                                                                    }}  className="u_1073903950 dmRespCol small-12 large-undefined medium-undefined medium-4 large-4" id="1073903950"> <div className="u_1586563672 dmRespRow" id="1586563672"> <div className="dmRespColsWrapper" id="1758924848"> <div className="u_1430870106 dmRespCol small-12 large-5 medium-5" id="1430870106"> <div className="u_1139347429 dmPhotoGallery newPhotoGallery dmPhotoGalleryResp text-layout-over captionAlignment-undefined photo-gallery-done" galleryoptionsparams="{thumbnailsPerRow: 3, rowsToShow: 3, imageScaleMethod: true}" data-desktop-layout="classic-rounded" data-desktop-columns="1" data-element-type="dPhotoGalleryId" data-desktop-text-layout="over" id="1139347429" data-link-gallery="true" data-placeholder="false" data-rows-to-show="100" editablewidget="true" data-widget-type="photoGallery"> <ul className="dmPhotoGalleryHolder clearfix gallery shadowEffectToChildren gallery4inArow" id="1407542909">
+                                                                                    </ul>
+                                                                                        <div className="layout-container classic-rounded"><div className="photogallery-row" data-index="0"><div className="photogallery-column  column-1" data-index="0">
+                                                                                            <li className="photoGalleryThumbs animated null" id="1672569426" data-index="0"> <div className="thumbnailInnerWrapper" style={{ opacity: 1 }}>
+                                                                                                <div className="image-container revealed" id="1294552624"> <a data-dm-multisize-attr="href" data-image-url="https://irp.cdn-website.com/da53c60f/dms3rep/multi/Paper-and-pen.jpg" id="1592935897" style={{
+                                                                                                    backgroundImage: `url("${OnlineForm}")`
+                                                                                                }}><img irh="" irw="" alt="" data-src="https://irp.cdn-website.com/da53c60f/dms3rep/multi/Paper-and-pen.jpg" id="1132507964" onerror="handleImageLoadError(this)" /></a>
+                                                                                                </div><div className="caption-container" style={{ display: "none" }} id="1400601907"> <span className="caption-inner" id="1984721373"> <h3 className="caption-title" id="1078926201"></h3>
+                                                                                                    <div className="caption-text" id="1448824757"></div>
+                                                                                                    <a className="caption-button dmWidget clearfix" id="1725422533"> <span className="iconBg" id="1635810048"> <span className="icon hasFontIcon icon-star" id="1206088709"></span>
+                                                                                                    </span>
+                                                                                                        <span className="text" id="1918444021">Button</span>
+                                                                                                    </a>
+                                                                                                </span>
+                                                                                                </div></div>
+
+                                                                                            </li></div></div></div><div className="photoGalleryViewAll link" isall="true" data-viewall="View more" data-viewless="View less" style={{ display: 'none' }} id="1980512002"></div>
+                                                                                    </div>
+                                                                                    </div>
+                                                                                        <div className="u_1963393776 dmRespCol small-12 large-7 medium-7" id="1963393776"> <div className="u_1860902120 dmNewParagraph" data-element-type="paragraph" data-version="5" id="1860902120" style={{
+                                                                                            transition: 'none 0s ease 0s',
+                                                                                            textAlign: 'left'
+                                                                                        }}> <h3 className="m-text-align-center"><span style={{ display: 'unset' }}>Online Forms</span></h3>
+                                                                                        </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    </div>
+                                                                                    </div>
+                                                                                    {/* <div className="u_1501669102 dmRespCol small-12 large-undefined medium-undefined medium-4 large-4" id={1501669102}>
                                                                                         <div className="u_1212728206 dmRespRow" id={1212728206}>
                                                                                             <div className="dmRespColsWrapper" id={1424002905}>
                                                                                                 <div className="u_1611124510 dmRespCol small-12 large-5 medium-5" id={1611124510}>
@@ -1109,7 +1156,7 @@ const DesktopPage = props => {
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div>
+                                                                                    </div> */}
                                                                                 </div>
                                                                             </div>
                                                                             <div className="u_1083421637 imageWidget align-center" dataElementType="image" dataWidgetType="image" id={1083421637}> <a href="./" id={1916513519} raw_url="/home/" data-target-page-alias="home"><img src={MetricAndAnalysis} alt="" id={1980538435} className dataDmImagePath="/Resources/images/Operations-%20Data%20Tracking-%20Metric%20Analysis_1.png" width={1371} height={476} onerror="handleImageLoadError(this)" /></a>
