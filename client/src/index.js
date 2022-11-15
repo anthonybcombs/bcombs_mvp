@@ -8,6 +8,9 @@ import { defaultTheme } from "./helpers/Theme.js";
 import { store } from "./redux/saga";
 import App from "./App";
 const GlobalStyle = createGlobalStyle`
+body {
+  overflow: none !important;
+}
   *:focus {
     outline: none;
   }
@@ -151,7 +154,8 @@ const GlobalStyle = createGlobalStyle`
   body{
     margin:0;
     padding:0;
-    background-image: url(${backgroundImg});    
+    
+    background-image:${props => (!props.isLandingPage && `url(${backgroundImg})`)};    
     min-width:400px;
     line-height:initial;
     //font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
@@ -352,7 +356,9 @@ let history = createHistory(window);
 ReactDOM.render(
   <Provider store={store}>
     <LocationProvider history={history}>
-      <GlobalStyle />
+      <GlobalStyle
+        isLandingPage={location.pathname === '/'}
+      />
       <ThemeContext.Provider value={defaultTheme}>
         <App />
       </ThemeContext.Provider>

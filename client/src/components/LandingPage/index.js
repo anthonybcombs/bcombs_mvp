@@ -1,0 +1,43 @@
+import React, { useEffect, useState } from 'react'
+
+
+import './styles.css';
+
+import DesktopPage from './Pages/desktop/home/index.js';
+// import './Style/desktop.css';
+
+// const template = { __html: DesktopPage };
+
+const LandingPage = props => {
+
+    return  <DesktopPage/>
+
+    // return <div className='about center'>
+    //     <h1>
+    //         This is  <span className='about__name'>Bcombs</span> Test Page
+    //     </h1>
+
+
+    //     <p className='about__desc'>
+    //         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+    //     </p>
+
+    //     <div className='about__contact center'>
+    //         <span type='button' className='btn btn--outline'>
+    //             Home
+    //         </span>
+
+    //         <span type='button' className='btn btn--outline'>
+    //             About
+    //         </span>
+
+    //         <span type='button' className='btn btn--outline'>
+    //             Contacts
+    //         </span>
+
+
+    //     </div>
+    // </div>
+};
+
+export default LandingPage
