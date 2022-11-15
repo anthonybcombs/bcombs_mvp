@@ -35,7 +35,7 @@ const DesktopPage = props => {
                                                                         <div dataElementType="spacer" className="dmSpacer" id={1611415711} />
                                                                     </div>
                                                                     <div className="u_1012876683 dmRespCol small-12 large-5 medium-5" id={1012876683}>
-                                                                        <div className="u_1292964449 imageWidget align-center" dataElementType="image" dataWidgetType="image" id={1292964449}><img src={BcombsAppBlackText} width={614} height={161} onerror="handleImageLoadError(this)" />
+                                                                        <div style={{ margin: '0 auto'}} className="u_1292964449 imageWidget align-center" dataElementType="image" dataWidgetType="image" id={1292964449}><img src={BcombsAppBlackText} width={614} height={161} onerror="handleImageLoadError(this)" />
                                                                         </div>
                                                                     </div>
                                                                     <div className="u_1044536395 dmRespCol small-12 large-2 medium-2" id={1044536395}> <a dataDisplayType="block" className="u_1395758421 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="/login" dataElementType="dButtonLinkId" id={1395758421} data-buttonstyle="FLAT_ROUND_ICON" icon-name="icon-caret-right" raw_url="/home/" data-target-page-alias="home"> <span className="iconBg" aria-hidden="true" id={1401719004}> <span className="icon hasFontIconstar hasFontIcon icon-caret-right" id={1360238032} />
@@ -81,15 +81,15 @@ const DesktopPage = props => {
                                                                                     </div>
                                                                                     <div className="u_1453347549 dmRespCol small-12 large-7 medium-7" id={1453347549}>
                                                                                         <div className="dmNewParagraph u_1787721266" dataElementType="paragraph" dataVersion={5} id={1787721266} style={{ transition: 'none 0s ease 0s', textAlign: 'left', display: 'block' }}>
-                                                                                            <h1 className="m-text-align-center text-align-right" style={{ lineHeight: '1.7' }}>
+                                                                                            <h1 className="m-text-align-center text-align-right" style={{ lineHeight: '1.2', textAlign: 'right' }}>
                                                                                                 <span style={{ display: 'initial' }}>SAVE
                                                                                                     TIME.</span>
                                                                                             </h1>
-                                                                                            <h1 className="m-text-align-center text-align-right" style={{ lineHeight: '1.7' }}>
+                                                                                            <h1 className="m-text-align-center text-align-right" style={{ lineHeight: '1.2', textAlign: 'right' }}>
                                                                                                 <span style={{ display: 'initial' }}>REDUCE
                                                                                                     EFFORT.</span>
                                                                                             </h1>
-                                                                                            <h1 className="m-text-align-center text-align-right" style={{ lineHeight: '1.7' }}>
+                                                                                            <h1 className="m-text-align-center text-align-right" style={{ lineHeight: '1.2', textAlign: 'right' }}>
                                                                                                 <span style={{ display: 'initial' }}>INCRASE
                                                                                                     IMPACT.</span>
                                                                                             </h1>
@@ -147,7 +147,7 @@ const DesktopPage = props => {
                                                                     <div className="dmRespColsWrapper" id={1027462133}>
                                                                         <div className="dmRespCol large-12 medium-12 small-12" id={1301741309}>
                                                                             <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1408625624}>
-                                                                                <h2 className="text-align-center"> <span style={{ display: 'unset' }}>Solution</span>
+                                                                                <h2 className="text-align-center" style={{ textAlign: 'center'}}> <span style={{ display: 'unset' }}>Solution</span>
                                                                                 </h2>
                                                                             </div>
                                                                             <div className="u_1953423639 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1953423639}>
@@ -398,8 +398,8 @@ const DesktopPage = props => {
                                                                                 <div className="dmRespColsWrapper" id={1619431296}>
                                                                                     <div className="u_1056072134 dmRespCol small-12 medium-12 large-12" id={1056072134}>
                                                                                         <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1134221766}>
-                                                                                            <h2 className="text-align-center">
-                                                                                                <span style={{ color: 'rgb(255, 255, 255)', display: 'unset' }}>Dealing
+                                                                                            <h2 className="text-align-center" style={{ textAlign: 'center'}}>
+                                                                                                <span style={{ color: 'rgb(255, 255, 255)', display: 'unset', textAlign: 'center' }}>Dealing
                                                                                                     with…</span>
                                                                                             </h2>
                                                                                         </div>
@@ -498,13 +498,13 @@ const DesktopPage = props => {
                                                                                                                     </svg>
                                                                                                                 </div>
                                                                                                                 <div className="u_1984275078 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1984275078} style={{ transition: 'none 0s ease 0s', textAlign: 'left', display: 'block' }}>
-                                                                                                                    <h4 className="m-size-14 text-align-center">
+                                                                                                                    <h4 className="m-size-14 text-align-center" style={{ textAlign: 'center', marginBottom: -5}}>
                                                                                                                         <span className="m-font-size-14" m-font-size-set="true" style={{ display: 'unset', color: 'rgb(51, 51, 51)' }}>A
                                                                                                                             Small
                                                                                                                             Team
                                                                                                                             /</span>
                                                                                                                     </h4>
-                                                                                                                    <h4 className="m-size-14 text-align-center">
+                                                                                                                    <h4 className="m-size-14 text-align-center" style={{ textAlign: 'center', marginTop: 5 }}>
                                                                                                                         <span className="m-font-size-14" m-font-size-set="true" style={{ display: 'unset', color: 'rgb(51, 51, 51)' }}>Volunteer
                                                                                                                             Lead</span>
                                                                                                                     </h4>
@@ -567,7 +567,7 @@ const DesktopPage = props => {
                                                                                                                     </svg>
                                                                                                                 </div>
                                                                                                                 <div className="u_1282687804 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1282687804} style={{ transition: 'none 0s ease 0s', textAlign: 'left', display: 'block' }}>
-                                                                                                                    <h4 className="text-align-center m-size-14">
+                                                                                                                    <h4 className="text-align-center m-size-14" style={{ textAlign: 'center'}}>
                                                                                                                         <span className="m-font-size-14" m-font-size-set="true" style={{ color: 'rgb(51, 51, 51)', display: 'unset' }}>A
                                                                                                                             Need
                                                                                                                             for
@@ -671,7 +671,7 @@ const DesktopPage = props => {
                                                                                                                     </svg>
                                                                                                                 </div>
                                                                                                                 <div className="u_1316304601 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1316304601} style={{ transition: 'none 0s ease 0s', textAlign: 'left', display: 'block' }}>
-                                                                                                                    <h4 className="m-size-14 text-align-center">
+                                                                                                                    <h4 className="m-size-14 text-align-center" style={{ textAlign: 'center' }}>
                                                                                                                         <span className="m-font-size-14" m-font-size-set="true" style={{ display: 'unset', color: 'rgb(51, 51, 51)' }}>Multiple
                                                                                                                             IT
                                                                                                                             Systems</span>
@@ -692,7 +692,7 @@ const DesktopPage = props => {
                                                                                                                     </svg>
                                                                                                                 </div>
                                                                                                                 <div className="u_1544401132 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1544401132} style={{ transition: 'none 0s ease 0s', textAlign: 'left', display: 'block' }}>
-                                                                                                                    <h4 className="text-align-center m-size-14">
+                                                                                                                    <h4 className="text-align-center m-size-14" style={{ textAlign: 'center'}}>
                                                                                                                         <span className="m-font-size-14" m-font-size-set="true" style={{ color: 'rgb(51, 51, 51)', display: 'unset' }}>Expensive
                                                                                                                             IT
                                                                                                                             Solutions</span>
@@ -719,7 +719,7 @@ const DesktopPage = props => {
                                                                                                                     </svg>
                                                                                                                 </div>
                                                                                                                 <div className="u_1324757530 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1324757530} style={{ transition: 'none 0s ease 0s', textAlign: 'left', display: 'block' }}>
-                                                                                                                    <h4 className="m-size-14 text-align-center">
+                                                                                                                    <h4 className="m-size-14 text-align-center" style={{ textAlign: 'center' }}>
                                                                                                                         <span className="m-font-size-14" m-font-size-set="true" style={{ display: 'unset', color: 'rgb(51, 51, 51)' }}>Different
                                                                                                                             Processes
                                                                                                                             Across
@@ -831,7 +831,7 @@ const DesktopPage = props => {
                                                                                                                     </svg>
                                                                                                                 </div>
                                                                                                                 <div className="u_1386103918 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1386103918} style={{ transition: 'none 0s ease 0s', textAlign: 'left', display: 'block' }}>
-                                                                                                                    <h4 className="m-size-14 text-align-center">
+                                                                                                                    <h4 className="m-size-14 text-align-center" style={{ textAlign: 'center'}}>
                                                                                                                         <span className="m-font-size-14" m-font-size-set="true" style={{ display: 'unset', color: 'rgb(51, 51, 51)' }}>Multiple
                                                                                                                             Manual
                                                                                                                             Processes</span>
@@ -927,7 +927,7 @@ const DesktopPage = props => {
                                                                                                                     </svg>
                                                                                                                 </div>
                                                                                                                 <div className="u_1174490274 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1174490274} style={{ transition: 'none 0s ease 0s', textAlign: 'left', display: 'block' }}>
-                                                                                                                    <h4 className="text-align-center m-size-14">
+                                                                                                                    <h4 className="text-align-center m-size-14" style={{ textAlign: 'center'}}>
                                                                                                                         <span className="m-font-size-14" m-font-size-set="true" style={{ color: 'rgb(51, 51, 51)', display: 'unset' }}>Issues
                                                                                                                             analyzing
                                                                                                                             Metrics</span>
@@ -1159,8 +1159,8 @@ const DesktopPage = props => {
                                                                                     </div> */}
                                                                                 </div>
                                                                             </div>
-                                                                            <div className="u_1083421637 imageWidget align-center" dataElementType="image" dataWidgetType="image" id={1083421637}> <a href="./" id={1916513519} raw_url="/home/" data-target-page-alias="home"><img src={MetricAndAnalysis} alt="" id={1980538435} className dataDmImagePath="/Resources/images/Operations-%20Data%20Tracking-%20Metric%20Analysis_1.png" width={1371} height={476} onerror="handleImageLoadError(this)" /></a>
-                                                                            </div>
+                                                                            {/* <div className="u_1083421637 imageWidget align-center" dataElementType="image" dataWidgetType="image" id={1083421637}> <a href="./" id={1916513519} raw_url="/home/" data-target-page-alias="home"><img src={MetricAndAnalysis} alt="" id={1980538435} className dataDmImagePath="/Resources/images/Operations-%20Data%20Tracking-%20Metric%20Analysis_1.png" width={1371} height={476} onerror="handleImageLoadError(this)" /></a>
+                                                                            </div> */}
                                                                             <a dataDisplayType="block" className="u_1265394600 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="./#Contact" dataElementType="dButtonLinkId" id={1265394600} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1017732430}> <span className="icon hasFontIcon icon-star" id={1951591837} />
                                                                             </span>
                                                                                 <span className="text" id={1378051218}>TRY
@@ -1176,7 +1176,7 @@ const DesktopPage = props => {
                                                                                 <div className="dmRespColsWrapper" id={1459788769}>
                                                                                     <div className="u_1629138886 dmRespCol small-12 medium-12 large-12" id={1629138886}>
                                                                                         <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1951209770}>
-                                                                                            <h2 className="m-size-40 text-align-center size-50">
+                                                                                            <h2 className="m-size-40 text-align-center size-50" style={{ textAlign: 'center'}}>
                                                                                                 <span className="m-font-size-40 font-size-50" style={{ color: 'rgb(255, 255, 255)', display: 'unset' }}>Benefits
                                                                                                     Delivered</span>
                                                                                             </h2>
@@ -1464,7 +1464,7 @@ const DesktopPage = props => {
                                                                                 <img src={BcombsSiteIcon} alt="" id={1872357266} className dataDmImagePath="/Resources/images/BCombs_Site-icon.png" width={280} height={280} onerror="handleImageLoadError(this)" />
                                                                             </div>
                                                                             <div className="u_1540871748 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1540871748} style={{ transition: 'none 0s ease 0s', textAlign: 'left', display: 'block' }}>
-                                                                                <h2 className="text-align-center" style={{ lineHeight: '1.2' }}> <span style={{ display: 'unset' }}>Testimonials</span>
+                                                                                <h2 className="text-align-center" style={{ lineHeight: '1.2', textAlign: 'center' }}> <span style={{ display: 'unset' }}>Testimonials</span>
                                                                                 </h2>
                                                                             </div>
                                                                             <div className="dmRespRow u_1688451252" id={1688451252}>
