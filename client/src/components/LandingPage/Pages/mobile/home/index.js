@@ -506,7 +506,7 @@ const MobilePage = props => {
                                                                                         <span
                                                                                             style={{ display: "initial" }}
                                                                                         >
-                                                                                            INCRASE IMPACT.
+                                                                                            INCREASE IMPACT.
                                                                                         </span>
                                                                                     </h1>
                                                                                 </div>
@@ -700,11 +700,7 @@ const MobilePage = props => {
                                                                         <p className="text-align-center">
                                                                             {" "}
                                                                             <span style={{ display: "unset" }}>
-                                                                                BCombs is a software platform to help
-                                                                                youth mentoring nonprofits simplify
-                                                                                their operations and spend their time,
-                                                                                energy, and resources on what matters
-                                                                                most, serving youth.
+                                                                            BCombs is a software platform to help nonprofits that work with youth and families simplify their operations and spend their time, energy, and resources on what matters most, serving youth.
                                                                             </span>
                                                                         </p>
                                                                     </div>
@@ -942,11 +938,7 @@ const MobilePage = props => {
                                                                                                     <span
                                                                                                         style={{ display: "unset" }}
                                                                                                     >
-                                                                                                        We provide solutions that
-                                                                                                        help Universities become
-                                                                                                        more efficient, making it
-                                                                                                        easier for them to focus on
-                                                                                                        their mission.
+                                                                                                       We provide solutions that help Nonprofits, Municipalities, Schools and Universities become more efficient, making it easier for them to focus on their mission.
                                                                                                     </span>
                                                                                                 </p>
                                                                                             </div>
@@ -1135,13 +1127,7 @@ const MobilePage = props => {
                                                                                                     <span
                                                                                                         style={{ display: "unset" }}
                                                                                                     >
-                                                                                                        Our technology streamlines
-                                                                                                        and automate processes,
-                                                                                                        gathers needed information
-                                                                                                        and metrics, making
-                                                                                                        accessibility and
-                                                                                                        information more readily
-                                                                                                        available.
+                                                                                                       Our technology streamlines and automate processes, gathers needed information and metrics, making accessibility and information more readily available.
                                                                                                     </span>
                                                                                                 </p>
                                                                                             </div>
@@ -3212,6 +3198,7 @@ const MobilePage = props => {
                                                                                                 <div
                                                                                                     className="dmRespColsWrapper"
                                                                                                     id={1932618308}
+                                                                                                    style={{ display: 'block', textAlign: 'center'}}
                                                                                                 >
                                                                                                     {" "}
                                                                                                     <div
@@ -3291,7 +3278,7 @@ const MobilePage = props => {
                                                                                                             }}
                                                                                                         >
                                                                                                             {" "}
-                                                                                                            <p className="size-18 m-text-align-center m-size-18">
+                                                                                                            <p className="size-18 m-text-align-center m-size-18" style={{ textAlign: 'center'}}>
                                                                                                                 {" "}
                                                                                                                 <span
                                                                                                                     className="font-size-18 m-font-size-18"
@@ -3318,6 +3305,7 @@ const MobilePage = props => {
                                                                                                 <div
                                                                                                     className="dmRespColsWrapper"
                                                                                                     id={1216827476}
+                                                                                                    style={{ display: 'block', textAlign: 'center'}}
                                                                                                 >
                                                                                                     {" "}
                                                                                                     <div
@@ -3397,7 +3385,7 @@ const MobilePage = props => {
                                                                                                             }}
                                                                                                         >
                                                                                                             {" "}
-                                                                                                            <p className="m-size-18 m-text-align-center size-18">
+                                                                                                            <p className="m-size-18 m-text-align-center size-18" style={{ textAlign: 'center'}}>
                                                                                                                 {" "}
                                                                                                                 <span
                                                                                                                     className="m-font-size-18 font-size-18"
@@ -3425,6 +3413,7 @@ const MobilePage = props => {
                                                                                                 <div
                                                                                                     className="dmRespColsWrapper"
                                                                                                     id={1287147746}
+                                                                                                    style={{ display: 'block'}}
                                                                                                 >
                                                                                                     {" "}
                                                                                                     <div
@@ -3504,7 +3493,7 @@ const MobilePage = props => {
                                                                                                             }}
                                                                                                         >
                                                                                                             {" "}
-                                                                                                            <p className="m-size-18 m-text-align-center size-18">
+                                                                                                            <p className="m-size-18 m-text-align-center size-18" style={{ textAlign: 'center'}}>
                                                                                                                 {" "}
                                                                                                                 <span
                                                                                                                     className="m-font-size-18 font-size-18"
@@ -3531,6 +3520,7 @@ const MobilePage = props => {
                                                                                                 <div
                                                                                                     className="dmRespColsWrapper"
                                                                                                     id={1540852784}
+                                                                                                    style={{ display: 'block'}}
                                                                                                 >
                                                                                                     {" "}
                                                                                                     <div
@@ -3610,7 +3600,7 @@ const MobilePage = props => {
                                                                                                             }}
                                                                                                         >
                                                                                                             {" "}
-                                                                                                            <p className="m-size-18 m-text-align-center size-18">
+                                                                                                            <p className="m-size-18 m-text-align-center size-18" style={{ textAlign: 'center'}}>
                                                                                                                 {" "}
                                                                                                                 <span
                                                                                                                     className="m-font-size-18 font-size-18"
@@ -3638,11 +3628,13 @@ const MobilePage = props => {
                                                                                                 <div
                                                                                                     className="dmRespColsWrapper"
                                                                                                     id={1335931609}
+                                                                                                    style={{ display: 'block'}}
                                                                                                 >
                                                                                                     {" "}
                                                                                                     <div
                                                                                                         className="u_1561870354 dmRespCol small-12 large-1 medium-1"
                                                                                                         id={1561870354}
+                                                                                                 
                                                                                                     >
                                                                                                         {" "}
                                                                                                         <div
@@ -3717,7 +3709,7 @@ const MobilePage = props => {
                                                                                                             }}
                                                                                                         >
                                                                                                             {" "}
-                                                                                                            <p className="m-size-18 m-text-align-center size-18">
+                                                                                                            <p className="m-size-18 m-text-align-center size-18"   style={{ textAlign: 'center'}}>
                                                                                                                 {" "}
                                                                                                                 <span
                                                                                                                     className="m-font-size-18 font-size-18"
@@ -3747,6 +3739,7 @@ const MobilePage = props => {
                                                                                                 <div
                                                                                                     className="dmRespColsWrapper"
                                                                                                     id={1176785902}
+                                                                                                    style={{ display: 'block'}}
                                                                                                 >
                                                                                                     {" "}
                                                                                                     <div
@@ -3826,7 +3819,7 @@ const MobilePage = props => {
                                                                                                             }}
                                                                                                         >
                                                                                                             {" "}
-                                                                                                            <p className="m-size-18 m-text-align-center size-18">
+                                                                                                            <p className="m-size-18 m-text-align-center size-18" style={{ textAlign: 'center'}}>
                                                                                                                 {" "}
                                                                                                                 <span
                                                                                                                     className="m-font-size-18 font-size-18"
@@ -4157,7 +4150,7 @@ const MobilePage = props => {
                                                                                                 fontWeight: "bold"
                                                                                             }}
                                                                                         >
-                                                                                            President
+                                                                                            BOARD MEMBER
                                                                                         </span>
                                                                                     </p>
                                                                                 </div>
@@ -4315,7 +4308,7 @@ const MobilePage = props => {
                                                                                                 fontWeight: "bold"
                                                                                             }}
                                                                                         >
-                                                                                            BOARD CHAIR
+                                                                                            PAST BOARD CHAIR
                                                                                         </span>
                                                                                     </p>
                                                                                 </div>
@@ -4471,7 +4464,7 @@ const MobilePage = props => {
                                                                                                 display: "unset"
                                                                                             }}
                                                                                         >
-                                                                                            Office of the Governor
+                                                                                            FORMERLY OFFICE OF THE GOVERNOR
                                                                                         </span>
                                                                                     </p>
                                                                                 </div>
