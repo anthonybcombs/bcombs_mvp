@@ -9,11 +9,11 @@ import BcombsFinalLogo from '../../../Resources/images/BCombs_Final-Logo2-1920w.
 import PaperAndPen from '../../../Resources/images/Paper-and-pen-1920w.jpg';
 import Excel from "../../../Resources/images/Excel-1920w.jpg";
 import OnlineForm from '../../../Resources/images/Online-form-1920w.jpg';
-import MetricAndAnalysis from '../../../Resources/images/Operations-DataTracking-MetricAnalysis_1.png';
 import BenefitsDelivered from '../../../Resources/images/Benefits-Delivered-1920w.png';
 import BcombsSiteIcon from '../../../Resources/images/BCombs_Site-icon-1920w.png';
 
 const DesktopPage = props => {
+
     return <div style={{ height: 1000 }} id="dmRoot" dataPageAlias="home" className="supportsFontIcons supportsFontIcons dmRoot dmDesktopBody fix-mobile-scrolling addCanvasBorder dmResellerSite dmLargeBody responsiveTablet " style={{ padding: 0, margin: 0 }}>
         {/* ========= Site Content ========= */}
         <div id="dm" className="dmwr">
@@ -993,7 +993,7 @@ const DesktopPage = props => {
                                                                                             <li className="photoGalleryThumbs animated null" id="1672569426" data-index="0"> <div className="thumbnailInnerWrapper" style={{ opacity: 1 }}>
                                                                                                 <div className="image-container revealed" id="1294552624"> <a data-dm-multisize-attr="href" data-image-url="https://irp.cdn-website.com/da53c60f/dms3rep/multi/Paper-and-pen.jpg" id="1592935897" style={{
                                                                                                     backgroundImage: `url("${PaperAndPen}")`
-                                                                                                }}><img irh="" irw="" alt="" data-src="https://irp.cdn-website.com/da53c60f/dms3rep/multi/Paper-and-pen.jpg" id="1132507964" onerror="handleImageLoadError(this)" /></a>
+                                                                                                }}><img irh="" irw="" alt="" data-src={PaperAndPen} id="1132507964" onerror="handleImageLoadError(this)" /></a>
                                                                                                 </div><div className="caption-container" style={{ display: "none" }} id="1400601907"> <span className="caption-inner" id="1984721373"> <h3 className="caption-title" id="1078926201"></h3>
                                                                                                     <div className="caption-text" id="1448824757"></div>
                                                                                                     <a className="caption-button dmWidget clearfix" id="1725422533"> <span className="iconBg" id="1635810048"> <span className="icon hasFontIcon icon-star" id="1206088709"></span>

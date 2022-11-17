@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 import '../../../Style/mobile.css';
 import './style.css';
 
-import BcombsAppBlackText from '../../../Resources/images/BCombs-App-Black-text-1920w.png'
-import AppMobile from '../../../Resources/images/BCombs-App-Mobile-1920w.png';
-import BcombsFinalLogo from '../../../Resources/images/BCombs_Final-Logo2-1920w.png';
+// import BcombsAppBlackText from '../../../Resources/images/BCombs-App-Black-text-1920w.png'
+// import AppMobile from '../../../Resources/images/BCombs-App-Mobile-1920w.png';
+// import BcombsFinalLogo from '../../../Resources/images/BCombs_Final-Logo2-1920w.png';
 import PaperAndPen from '../../../Resources/images/Paper-and-pen-640w.jpg';
 import Excel from "../../../Resources/images/Excel-640w.jpg";
 import OnlineForm from '../../../Resources/images/Online-form-640w.jpg';
-import MetricAndAnalysis from '../../../Resources/images/Operations-DataTracking-MetricAnalysis_1-396w.png';
+// import MetricAndAnalysis from '../../../Resources/images/Operations-DataTracking-MetricAnalysis_1-396w.png';
 import BenefitsDelivered from '../../..//Resources/images/Benefits-Delivered-396w.png';
 import BcombsSiteIcon from '../../../Resources/images/BCombs_Site-icon-90w.png';
 
@@ -668,6 +668,7 @@ const MobilePage = props => {
                                                             <div
                                                                 className="dmRespColsWrapper"
                                                                 id={1027462133}
+                                                                style={{ padding: '18px !important' }}
                                                             >
                                                                 {" "}
                                                                 <div
@@ -767,7 +768,7 @@ const MobilePage = props => {
                                                                         <div
                                                                             className="dmRespColsWrapper"
                                                                             id={1111480750}
-                                                                            style={{ display: 'block' }}
+                                                                            style={{ display: 'block', padding: 18 }}
                                                                         >
                                                                             {" "}
                                                                             <div
@@ -783,6 +784,7 @@ const MobilePage = props => {
                                                                                     <div
                                                                                         className="dmRespColsWrapper"
                                                                                         id={1701177513}
+                                                                                        style={{ display: 'block'}}
                                                                                     >
                                                                                         {" "}
                                                                                         <div
@@ -884,7 +886,7 @@ const MobilePage = props => {
                                                                                             id={1093381198}
                                                                                         >
                                                                                             {" "}
-                                                                                            {/* <div
+                                                                                            <div
                                                                                                 className="u_1429756368 dmNewParagraph"
                                                                                                 data-element-type="paragraph"
                                                                                                 data-version={5}
@@ -910,7 +912,7 @@ const MobilePage = props => {
                                                                                                         01.
                                                                                                     </span>
                                                                                                 </p>
-                                                                                            </div> */}
+                                                                                            </div>
                                                                                             <div
                                                                                                 className="u_1772478683 dmNewParagraph"
                                                                                                 data-element-type="paragraph"
@@ -965,6 +967,7 @@ const MobilePage = props => {
                                                                                     <div
                                                                                         className="dmRespColsWrapper"
                                                                                         id={1256779253}
+                                                                                        style={{ display: 'block'}}
                                                                                     >
                                                                                         {" "}
                                                                                         <div
@@ -1076,7 +1079,7 @@ const MobilePage = props => {
                                                                                             id={1680713405}
                                                                                         >
                                                                                             {" "}
-                                                                                            {/* <div
+                                                                                            <div
                                                                                                 className="u_1856787293 dmNewParagraph"
                                                                                                 data-element-type="paragraph"
                                                                                                 data-version={5}
@@ -1102,7 +1105,7 @@ const MobilePage = props => {
                                                                                                         02.
                                                                                                     </span>
                                                                                                 </p>
-                                                                                            </div> */}
+                                                                                            </div>
                                                                                             <div
                                                                                                 className="u_1541999731 dmNewParagraph"
                                                                                                 data-element-type="paragraph"

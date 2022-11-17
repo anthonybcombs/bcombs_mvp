@@ -13,6 +13,24 @@
   font-style: normal;
 }
 
+/* #dm .dmBody div.u_1856787293, #dm .dmBody div.u_1429756368 {
+  top: -955px !important;
+} */
+
+*#dm *.dmBody div.u_1440166053 {
+  /* background-repeat: no-repeat !important; */
+  background-image: url(../../../Resources/images/Rectangle39-640w.png) !important;
+  /* background-size: cover !important; */
+}
+
+
+*#dm *.dmBody div.u_1387330376 {
+  /* background-repeat: no-repeat !important; */
+  background-image: url(../../../Resources/images/Rectangle39-640w.png) !important;
+  /* background-size: cover !important; */
+}
+
+
 img[width][height] {height: auto;}
 
     body[data-page-alias="home"] #dm [data-show-on-page-only="home"]{
