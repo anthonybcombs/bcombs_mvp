@@ -3,41 +3,50 @@ import React, { useEffect, useState } from 'react'
 
 import './styles.css';
 
-import DesktopPage from './Pages/desktop/home/index.js';
+// import DesktopPage from './Pages/desktop/home/index.js';
+
+// import TabletPage from './Pages/tablet/home/index.js';
+// import MobilePage from './Pages/mobile/home/index.js';
+
+
+// const DesktopPage = import('./Pages/desktop/home/index.js'))
+// const MobilePage = React.lazy(() => import('./Pages/mobile/home/index.js'));
+// const TabletPage = React.lazy(() => import('./Pages/tablet/home/index.js'));
+
 // import './Style/desktop.css';
 
 // const template = { __html: DesktopPage };
 
 const LandingPage = props => {
 
-    return  <DesktopPage/>
 
-    // return <div className='about center'>
-    //     <h1>
-    //         This is  <span className='about__name'>Bcombs</span> Test Page
-    //     </h1>
+    const [width, setWidth] = useState(window.innerWidth);
+
+    function handleWindowSizeChange() {
+        setWidth(window.innerWidth);
+    }
+    useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        }
+    }, []);
+    let LandingPageComponent = null;
+
+    if (width <= 768) {
+        LandingPageComponent = React.lazy(() => import('./Pages/mobile/home/index.js'))
+    }
+    else if (width > 768 && width <= 1007) {
+        LandingPageComponent = React.lazy(() => import('./Pages/tablet/home/index.js'))
+    }
+    else {
+        LandingPageComponent = React.lazy(() => import('./Pages/desktop/home/index.js'))
+    }
+    return <React.Suspense fallback={<></>}>
+        <LandingPageComponent />
+    </React.Suspense>
 
 
-    //     <p className='about__desc'>
-    //         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-    //     </p>
-
-    //     <div className='about__contact center'>
-    //         <span type='button' className='btn btn--outline'>
-    //             Home
-    //         </span>
-
-    //         <span type='button' className='btn btn--outline'>
-    //             About
-    //         </span>
-
-    //         <span type='button' className='btn btn--outline'>
-    //             Contacts
-    //         </span>
-
-
-    //     </div>
-    // </div>
 };
 
 export default LandingPage

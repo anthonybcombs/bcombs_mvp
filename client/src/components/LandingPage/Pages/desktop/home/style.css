@@ -6,10 +6,30 @@
 
 @font-face {
   font-family: "Comfortaa-VariableFont_wght";
-  src: url("../../..//Resources/files/Comfortaa-VariableFont_wght-708e_400.ttf");
+  src: url("../../../Resources/files/Comfortaa-VariableFont_wght-708e_400.ttf");
   font-weight: 400;
   font-style: normal;
 }
+
+*#dm *.dmBody div.u_1440166053 {
+  /* background-repeat: no-repeat !important; */
+  background-image: url(../../../Resources/images/Rectangle39-1920w.png) !important;
+  /* background-size: cover !important; */
+}
+
+
+*#dm *.dmBody div.u_1387330376 {
+  /* background-repeat: no-repeat !important; */
+  background-image: url(../../../Resources/images/Rectangle39-1920w.png) !important;
+  /* background-size: cover !important; */
+}
+
+#dm .dmBody div.u_1429756368, #dm .dmBody div.u_1856787293 {
+  top:-40px !important;
+  right: -50px !important;
+}
+
+
 
 img[width][height] {height: auto;}
 

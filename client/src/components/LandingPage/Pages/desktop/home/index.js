@@ -9,11 +9,11 @@ import BcombsFinalLogo from '../../../Resources/images/BCombs_Final-Logo2-1920w.
 import PaperAndPen from '../../../Resources/images/Paper-and-pen-1920w.jpg';
 import Excel from "../../../Resources/images/Excel-1920w.jpg";
 import OnlineForm from '../../../Resources/images/Online-form-1920w.jpg';
-import MetricAndAnalysis from '../../../Resources/images/Operations-DataTracking-MetricAnalysis_1.png';
 import BenefitsDelivered from '../../../Resources/images/Benefits-Delivered-1920w.png';
 import BcombsSiteIcon from '../../../Resources/images/BCombs_Site-icon-1920w.png';
 
 const DesktopPage = props => {
+
     return <div style={{ height: 1000 }} id="dmRoot" dataPageAlias="home" className="supportsFontIcons supportsFontIcons dmRoot dmDesktopBody fix-mobile-scrolling addCanvasBorder dmResellerSite dmLargeBody responsiveTablet " style={{ padding: 0, margin: 0 }}>
         {/* ========= Site Content ========= */}
         <div id="dm" className="dmwr">
@@ -90,7 +90,7 @@ const DesktopPage = props => {
                                                                                                     EFFORT.</span>
                                                                                             </h1>
                                                                                             <h1 className="m-text-align-center text-align-right" style={{ lineHeight: '1.2', textAlign: 'right' }}>
-                                                                                                <span style={{ display: 'initial' }}>INCRASE
+                                                                                                <span style={{ display: 'initial' }}>INCREASE
                                                                                                     IMPACT.</span>
                                                                                             </h1>
                                                                                         </div>
@@ -151,12 +151,7 @@ const DesktopPage = props => {
                                                                                 </h2>
                                                                             </div>
                                                                             <div className="u_1953423639 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1953423639}>
-                                                                                <p className="text-align-center"> <span style={{ display: 'unset' }}>BCombs is a
-                                                                                    software platform to help youth
-                                                                                    mentoring nonprofits simplify their
-                                                                                    operations and spend their time,
-                                                                                    energy, and resources on what
-                                                                                    matters most, serving youth.</span>
+                                                                                <p className="text-align-center"> <span style={{ display: 'unset' }}>BCombs is a software platform to help nonprofits that work with youth and families simplify their operations and spend their time, energy, and resources on what matters most, serving youth.</span>
                                                                                 </p>
                                                                             </div>
                                                                             <div className="dmRespRow u_1826450282" id={1826450282}>
@@ -248,19 +243,7 @@ const DesktopPage = props => {
                                                                                                     </div>
                                                                                                     <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1897906212}>
                                                                                                         <p className="m-text-align-center">
-                                                                                                            <span style={{ display: 'unset' }}>We
-                                                                                                                provide
-                                                                                                                solutions
-                                                                                                                that help
-                                                                                                                Universities
-                                                                                                                become more
-                                                                                                                efficient,
-                                                                                                                making it
-                                                                                                                easier for
-                                                                                                                them to
-                                                                                                                focus on
-                                                                                                                their
-                                                                                                                mission.</span>
+                                                                                                            <span style={{ display: 'unset' }}>We provide solutions that help Nonprofits, Municipalities, Schools and Universities become more efficient, making it easier for them to focus on their mission.</span>
                                                                                                         </p>
                                                                                                     </div>
                                                                                                 </div>
@@ -993,7 +976,7 @@ const DesktopPage = props => {
                                                                                             <li className="photoGalleryThumbs animated null" id="1672569426" data-index="0"> <div className="thumbnailInnerWrapper" style={{ opacity: 1 }}>
                                                                                                 <div className="image-container revealed" id="1294552624"> <a data-dm-multisize-attr="href" data-image-url="https://irp.cdn-website.com/da53c60f/dms3rep/multi/Paper-and-pen.jpg" id="1592935897" style={{
                                                                                                     backgroundImage: `url("${PaperAndPen}")`
-                                                                                                }}><img irh="" irw="" alt="" data-src="https://irp.cdn-website.com/da53c60f/dms3rep/multi/Paper-and-pen.jpg" id="1132507964" onerror="handleImageLoadError(this)" /></a>
+                                                                                                }}><img irh="" irw="" alt="" data-src={PaperAndPen} id="1132507964" onerror="handleImageLoadError(this)" /></a>
                                                                                                 </div><div className="caption-container" style={{ display: "none" }} id="1400601907"> <span className="caption-inner" id="1984721373"> <h3 className="caption-title" id="1078926201"></h3>
                                                                                                     <div className="caption-text" id="1448824757"></div>
                                                                                                     <a className="caption-button dmWidget clearfix" id="1725422533"> <span className="iconBg" id="1635810048"> <span className="icon hasFontIcon icon-star" id="1206088709"></span>
@@ -1522,7 +1505,7 @@ const DesktopPage = props => {
                                                                                         </div>
                                                                                         <div className="u_1072455418 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1072455418}>
                                                                                             <p className="text-align-center m-size-10 size-13">
-                                                                                                <span className="font-size-13 m-font-size-10" style={{ display: 'unset', textTransform: 'uppercase', fontWeight: 'bold' }}>President</span>
+                                                                                                <span className="font-size-13 m-font-size-10" style={{ display: 'unset', textTransform: 'uppercase', fontWeight: 'bold' }}>BOARD MEMBER</span>
                                                                                             </p>
                                                                                         </div>
                                                                                         <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1812603895}>
@@ -1577,7 +1560,7 @@ const DesktopPage = props => {
                                                                                         </div>
                                                                                         <div className="u_1433541193 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1433541193}>
                                                                                             <p className="text-align-center m-size-10 size-13">
-                                                                                                <span className="font-size-13 m-font-size-10" style={{ display: 'unset', textTransform: 'uppercase', fontWeight: 'bold' }}>BOARD
+                                                                                                <span className="font-size-13 m-font-size-10" style={{ display: 'unset', textTransform: 'uppercase', fontWeight: 'bold' }}>PAST BOARD
                                                                                                     CHAIR</span>
                                                                                             </p>
                                                                                         </div>
@@ -1630,8 +1613,7 @@ const DesktopPage = props => {
                                                                                         </div>
                                                                                         <div className="u_1501534744 dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1501534744}>
                                                                                             <p className="m-size-10 text-align-center size-13">
-                                                                                                <span className="m-font-size-10 font-size-13" style={{ fontWeight: 'bold', textTransform: 'uppercase', display: 'unset' }}>Office
-                                                                                                    of the Governor</span>
+                                                                                                <span className="m-font-size-10 font-size-13" style={{ fontWeight: 'bold', textTransform: 'uppercase', display: 'unset' }}>FORMERLY OFFICE OF THE GOVERNOR</span>
                                                                                             </p>
                                                                                         </div>
                                                                                         <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1958765785}>

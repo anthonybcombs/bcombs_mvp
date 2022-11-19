@@ -168,7 +168,14 @@ const AsyncDisplayCalendar = Loadable({
 });
 
 const AsyncLandingPage = Loadable({
-  loader: () => import('./components/LandingPage'),
+  loader: () => {
+
+    // if(window.innerWidth <= 768) {
+    //   return import('./components/LandingPage/Pages/mobile/home/index.js');
+    // }
+      return  import('./components/LandingPage');
+    // return import('./components/LandingPage/Pages/tablet/home/index.js');
+  },
   loading: Loading
 });
 
