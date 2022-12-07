@@ -296,7 +296,7 @@ export default function Layout({ children }) {
                 ) {
                   return (
                     <>
-                      <Link data-testid="app-header-login" to="/">
+                      <Link data-testid="app-header-login" to="/login">
                         Login
                       </Link>
                       {/* <Link data-testid="app-header-register" to="/auth/create">

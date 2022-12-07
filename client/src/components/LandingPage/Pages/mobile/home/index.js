@@ -514,7 +514,7 @@ const MobilePage = props => {
                                                                                     data-display-type="block"
                                                                                     className="u_1265853154 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
                                                                                     file="false"
-                                                                                    href="./#Contact"
+                                                                                    href="auth/create"
                                                                                     data-element-type="dButtonLinkId"
                                                                                     id={1265853154}
                                                                                     raw_url="/home/"
@@ -1141,7 +1141,7 @@ const MobilePage = props => {
                                                                         data-display-type="block"
                                                                         className="u_1632178657 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
                                                                         file="false"
-                                                                        href="./#Contact"
+                                                                        href="auth/create"
                                                                         data-element-type="dButtonLinkId"
                                                                         id={1632178657}
                                                                         raw_url="/home/"
@@ -2306,7 +2306,7 @@ const MobilePage = props => {
                                                                                     data-display-type="block"
                                                                                     className="u_1305716070 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
                                                                                     file="false"
-                                                                                    href="./#Contact"
+                                                                                    href="auth/create"
                                                                                     data-element-type="dButtonLinkId"
                                                                                     id={1305716070}
                                                                                     raw_url="/home/"
@@ -3023,7 +3023,7 @@ const MobilePage = props => {
                                                                         data-display-type="block"
                                                                         className="u_1265394600 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
                                                                         file="false"
-                                                                        href="./#Contact"
+                                                                        href="auth/create"
                                                                         data-element-type="dButtonLinkId"
                                                                         id={1265394600}
                                                                         raw_url="/home/"
@@ -3871,7 +3871,7 @@ const MobilePage = props => {
                                                                                     data-display-type="block"
                                                                                     className="u_1740679039 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
                                                                                     file="false"
-                                                                                    href="./#Contact"
+                                                                                    href="auth/create"
                                                                                     data-element-type="dButtonLinkId"
                                                                                     id={1740679039}
                                                                                     raw_url="/home/"
