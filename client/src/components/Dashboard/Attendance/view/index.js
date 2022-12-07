@@ -20,7 +20,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { requestAttendance, requestEventAttendance } from '../../../../redux/actions/Attendance';
-import { requestGetApplications, requestGetCustomApplications } from '../../../../redux/actions/Application';
+import { requestGetApplications, requestGetCustomApplications, requestGetCustomApplicationByVendor } from '../../../../redux/actions/Application';
 // import { requestGetForms, requestGetFormById } from '../../../../redux/actions/FormBuilder';
 import { requestUserGroup } from '../../../../redux/actions/Groups';
 import { requestVendor } from '../../../../redux/actions/Vendors';
@@ -471,6 +471,41 @@ const isDateInstance = () => {
 	return Object.prototype.toString.call(date) === "[object Date]"
 }
 
+const getChildFromFormData = formData => {
+    const parentData = formData.find(item => {
+      const label = item.label.toLowerCase();
+      return   (label.includes('mentee') && label.includes('name')) ||  (label.includes('child') && label.includes('name'));
+    });
+
+    const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
+    console.log('parentFields',parentFields)
+    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"',"")} ${parentFields[1].value.replaceAll('"',"")}` : ''
+  }
+
+// const getStudentName = row => {
+
+    
+//     if(row?.child?.firstname && row?.child?.lastname) {
+
+
+//       if(parentName && (parentName === `${row?.child?.firstname} ${row?.child?.lastname}`)) {
+//         const childName = getChildFromFormData(row?.form_contents?.formData || []);
+
+//         return childName;
+//       }
+
+
+//       return (
+//         // <a href={"menteeprofile/" + row.id}>
+//         //   <span>{row?.child.firstname + " " + row?.child.lastname}</span>
+//         // </a>
+//         <span>{row?.child.firstname + " " + row?.child.lastname}</span>
+//       )
+//     } else {
+//       return "";
+//     }
+//   }
+
 const DateCustomInput = ({ value, onClick, name, className, placeholder, label }) => (
 	<div className="field">
 		<input
@@ -674,6 +709,10 @@ export default function index(props) {
 		if (vendors && vendors.length > 0 && searchParams && searchParams.type !== 'custom') {
 			dispatch(requestGetApplications(vendors[0].id))
 		}
+		else if(vendors && vendors.length > 0 && searchParams && searchParams.type === 'custom' ) {
+			
+			dispatch(requestGetCustomApplicationByVendor(vendors[0].id))
+		}
 	}, [vendors]);
 
 	useEffect(() => {
@@ -695,14 +734,31 @@ export default function index(props) {
 	}, []);
 	useEffect(() => {
 
+		const appGroupIDLists = searchParams.appGroupIds.split(',')
+					
+		
 		if (attendance.list) {
 			
+			// const activeAppszz =  applications.activeapplications && applications.activeapplications.filter(item => {
+			// 	// ebdd7331-1849-11ed-9ebd-72ed28470cbe
+			// 	// ebdd7331-1849-11ed-9ebd-72ed28470cbe
+			// 	return item.form === searchParams.formId
+
+			// });
+
+			// console.log('activeAppszzzzzzzzzzzzzz', activeAppszz)
+			// console.log('activeAppszz',activeAppszz)
+
+
 			let filteredAttendance = [...( attendance.list || [])]
+			console.log('filteredAttendance',filteredAttendance)
 			if(searchParams && searchParams.type === 'all') {
 				filteredAttendance = filteredAttendance.filter(att => {
 					const isBcombs = applications.activeapplications.some(item => item.child.ch_id === att.child_id)
 					return isBcombs;
 				});
+
+				consle.log('filteredAttendance',filteredAttendance)
 
 			}
 
@@ -713,22 +769,47 @@ export default function index(props) {
 
 				let formApplication = {};
 
-
+			
 				if (searchParams && searchParams.type === 'custom' && searchParams.appGroupIds) {
 					const appGroupIDList = searchParams.appGroupIds.split(',')
-					formApplication = applications.activeapplications.find(item => {
-						if ((item.app_id === att.child_id) && (item.form === searchParams.formId)) {
+					
+					
+					
+					formApplication = applications.customActiveApplications.find(item => {
+
+						/// item.child.ch_id === att.child_id || 
+						if ((item.app_id === att.child_id) && item.form === searchParams.formId) {
 							const classTeacher = item.class_teacher && item.class_teacher.split(',');
-							return appGroupIDList.some(appGrpId => classTeacher.includes(appGrpId))
-						}
+				
+							return classTeacher && classTeacher.some(grpId => appGroupIDList?.includes(grpId))
+
+						 }	
+
+						// return item.app_id === att.child_id && item.form === searchParams.formId
+						// return item.child.ch_id === att.child_id || item.app_id === att.child_id
+					
 
 					});
 
+				
 				}
 				else if (searchParams && searchParams.type === 'custom' && !searchParams.appGroupIds) {
 					formApplication = applications.activeapplications.find(item => (item.class_teacher && item.class_teacher.includes(app_group_id)) && (item.app_id === att.child_id) && (item.form === searchParams.formId));
 				}
 
+
+				// let customApplicationData = null;
+
+				// if(formApplication?.form_contents) {
+				// 	const contents = JSON.parse(formApplication?.form_contents);
+				// 	// console.log('contents',contents)
+				// 	console.log('contentszxczxc2222222',formApplication)
+				// 	console.log('contentszxczxc',contents)
+				// 	const dataaa = getChildFromFormData(contents.formData);
+				// 	console.log('zzzzzzzzzxxz',dataaa)
+
+				// 	// getChildFromFormData
+				// }
 				return {
 					...accum,
 					[att.child_id]: {
@@ -750,6 +831,8 @@ export default function index(props) {
 					},
 				};
 			}, {});
+
+			console.log('currentAttendan@@@@ce',currentAttendance)
 
 			currentAttendance = Object.keys(currentAttendance)
 				.map(key => {
@@ -784,7 +867,10 @@ export default function index(props) {
 
 			if (searchParams && searchParams.type === 'custom') {
 				currentAttendance = currentAttendance.filter(item => item.custom && item.custom.id)
+	
 			}
+
+	
 			else {
 				// currentAttendance = currentAttendance.filter(item => (item.firstname && item.lastname) || item.fullname)
 			}
@@ -868,7 +954,7 @@ export default function index(props) {
 				if (fields.length) {
 					const { value } = fields[0]
 					const { url } = value ? JSON.parse(value) : {}
-					profile = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
+					profile = url && url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
 				}
 			}
 

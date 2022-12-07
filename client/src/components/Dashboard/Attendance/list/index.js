@@ -872,6 +872,7 @@ export default function index() {
 
 	useEffect(() => {
 
+		console.log('attendance.list',attendance.list)
 		if (attendance.list) {
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(
@@ -883,6 +884,8 @@ export default function index() {
 					is_following: currentAttendance?.is_following,
 				};
 			});
+			console.log('updatedApplicationList',updatedApplicationList)
+
 			setApplicationList(updatedApplicationList);
 			setDefaultApplicationList(updatedApplicationList);
 			setFilteredApplicationList(updatedApplicationList);
@@ -1020,12 +1023,17 @@ export default function index() {
 		// dispatch(requestUpdateAttendance(payload));
 		setIsConfirmationVisible(true);
 	};
-
+	console.log('applicationListzz2222222zzzzz', applications.activeapplications)
+	console.log('applicationListzz2222222zzzzz applicationList',  applicationList)
 	const handleAttendanceSave = () => {
 		//reset();
 
 		const attendanceList = applicationList.map(app => {
 
+			if(name === 'custom' ) {
+
+			}
+			// applications.activeapplications.find(activeApp => activeApp.child.ch_id)
 			return {
 				app_id: app.app_id,
 				app_group_id: app.class_teacher,
