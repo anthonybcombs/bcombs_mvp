@@ -734,7 +734,7 @@ export default function index(props) {
 	}, []);
 	useEffect(() => {
 
-		const appGroupIDLists = searchParams.appGroupIds.split(',')
+		const appGroupIDLists = searchParams.appGroupIds &&  searchParams.appGroupIds.split(',')
 					
 		
 		if (attendance.list) {
@@ -830,7 +830,6 @@ export default function index(props) {
 				};
 			}, {});
 
-			console.log('currentAttendan@@@@ce',currentAttendance)
 
 			currentAttendance = Object.keys(currentAttendance)
 				.map(key => {
