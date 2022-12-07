@@ -897,7 +897,8 @@ export default function index() {
 			setApplicationList(defaultApplicationList);
 			const redirect = () => {
 				setTimeout(() => {
-					window.location.replace(`/dashboard/studentdata${vendor_id ? `?vendor=${vendor_id}` : ''}`);
+					// ${vendor_id ? `?vendor=${vendor_id}` : ''}
+					window.location.replace(`/dashboard/studentdata`);
 				}, 2000);
 				//window.location.replace(`/dashboard/studentdata`);
 			};
@@ -1340,11 +1341,13 @@ export default function index() {
 		});
 	};
 
+	// ${vendor_id ? `?vendor=${vendor_id}` : ''} for back link
 	return (
 		<ClassListViewStyled>
 			<h2>Attendance</h2>
 			<div id="attendanceContainer" style={{ marginTop: 12 }}>
-				<Link to={`/dashboard/studentdata${vendor_id ? `?vendor=${vendor_id}` : ''}`} className="back-btn">
+
+				<Link to={`/dashboard/studentdata`} className="back-btn">
 					<FontAwesomeIcon className="back-icon" icon={faAngleLeft} />
 					Back
 				</Link>
