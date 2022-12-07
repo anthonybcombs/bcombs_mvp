@@ -163,6 +163,9 @@ export const updateChildAttendance = async (attendance) => {
     console.log('Update Child Attendance', attendance)
     if(attendance) {
       for(const att of attendance.attendance_list) {
+        let groupId = att.app_group_id || attendance.app_group_id;
+        groupId = groupId.split(',');
+        groupId = groupId[0];
         const response = await db.query(`SELECT attendance_id 
         FROM attendance WHERE app_group_id=UUID_TO_BIN(?) 
         AND child_id=UUID_TO_BIN(?) 
@@ -205,7 +208,7 @@ export const updateChildAttendance = async (attendance) => {
               )
             `,
             [
-              att.app_group_id || attendance.app_group_id,
+              groupId,
               att.child_id,
               att.attendance_status,
               attendance.attendance_type,
@@ -248,7 +251,7 @@ export const updateChildAttendance = async (attendance) => {
             att.volunteer_hours || 0,
             att.mentoring_hours || 0,
             att.is_excused || 0,
-            att.app_group_id || attendance.app_group_id,
+            groupId,
             att.child_id,
             attendance.attendance_date,
             ]
