@@ -734,7 +734,7 @@ export default function index(props) {
 	}, []);
 	useEffect(() => {
 
-		const appGroupIDLists = searchParams.appGroupIds.split(',')
+		const appGroupIDLists = searchParams.appGroupIds &&  searchParams.appGroupIds.split(',')
 					
 		
 		if (attendance.list) {
@@ -751,14 +751,12 @@ export default function index(props) {
 
 
 			let filteredAttendance = [...( attendance.list || [])]
-			console.log('filteredAttendance',filteredAttendance)
+
 			if(searchParams && searchParams.type === 'all') {
 				filteredAttendance = filteredAttendance.filter(att => {
 					const isBcombs = applications.activeapplications.some(item => item.child.ch_id === att.child_id)
 					return isBcombs;
 				});
-
-				consle.log('filteredAttendance',filteredAttendance)
 
 			}
 
@@ -778,14 +776,14 @@ export default function index(props) {
 					formApplication = applications.customActiveApplications.find(item => {
 
 						/// item.child.ch_id === att.child_id || 
-						if ((item.app_id === att.child_id) && item.form === searchParams.formId) {
-							const classTeacher = item.class_teacher && item.class_teacher.split(',');
+						// if ((item.app_id === att.child_id) && item.form === searchParams.formId) {
+						// 	const classTeacher = item.class_teacher && item.class_teacher.split(',');
 				
-							return classTeacher && classTeacher.some(grpId => appGroupIDList?.includes(grpId))
+						// 	return classTeacher && classTeacher.some(grpId => appGroupIDList?.includes(grpId))
 
-						 }	
+						//  }	
 
-						// return item.app_id === att.child_id && item.form === searchParams.formId
+						return item.app_id === att.child_id && item.form === searchParams.formId
 						// return item.child.ch_id === att.child_id || item.app_id === att.child_id
 					
 
@@ -832,7 +830,6 @@ export default function index(props) {
 				};
 			}, {});
 
-			console.log('currentAttendan@@@@ce',currentAttendance)
 
 			currentAttendance = Object.keys(currentAttendance)
 				.map(key => {
