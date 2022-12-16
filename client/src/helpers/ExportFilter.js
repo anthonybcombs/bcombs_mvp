@@ -307,8 +307,11 @@ const ExportFilter = ({
       studentStatusVal = "Waiting List";
     } else if (student_status == "no_longer_student") {
       studentStatusVal = "No longer a Student";
-    } else if (student_status == "missed_oppurtunity") {
-      studentStatusVal = "Missed oppurtunity";
+    } else if (student_status == "missed_opportunity") {
+      studentStatusVal = "Missed opportunity";
+    }
+    else if (student_status == "resubmitted") {
+      studentStatusVal = "Resubmitted";
     }
 
     return studentStatusVal;
