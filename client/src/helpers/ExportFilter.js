@@ -158,7 +158,7 @@ const ExportFilter = ({
   ];
 
   const REPORT_OPTIONS = [
-    { name: "All", value: "all" },
+    { name: "All Data", value: "all" },
     { name: "Biographical Data", value: "biographical_data" },
   ];
 
