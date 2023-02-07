@@ -118,7 +118,6 @@ function isJsonString(jsonString) {
 
     if (typeof data === 'string') {
       data = JSON.parse(data);
-      console.log('dataaaaaaa', data)
     }
     // Handle non-exception-throwing cases:
     // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
@@ -159,6 +158,7 @@ const ExportFilter = ({
   ];
 
   const REPORT_OPTIONS = [
+    { name: "All", value: "all" },
     { name: "Biographical Data", value: "biographical_data" },
   ];
 
@@ -193,11 +193,11 @@ const ExportFilter = ({
   const [appGroupText, setAppGroupText] = useState("");
   const [locationSites, setLocationSites] = useState([]);
   const [appPrograms, setAppPrograms] = useState([]);
-  const [reportType, setReportType] = useState('');
-  console.log('applicationszzzzzzzzzzz', applications)
+  const [reportType, setReportType] = useState('all');
+  console.log('Applications', applications)
   const appGroupIds = appGroups.map(item => item.app_grp_id);
-  console.log('locationSiteszzzzzzzzzz appGroups', appGroups)
-  console.log('locationSiteszzzzzzzzzz locationSites', locationSites)
+  console.log('App Groups', appGroups)
+  console.log('Locations', locationSites)
   const locationSiteForms = isCustomForm ? locationSites.map(item => {
     const currentAppGroups = appGroups.find(item2 => item2.name === item.name)
 
@@ -244,9 +244,17 @@ const ExportFilter = ({
       // }
     }
 
+    if(item?.child?.programs) {
+      console.log('Found a child with Programs', item)
+    }
+
+    if(item?.child?.location_site) {
+      console.log('Found a child with Location Site', item)
+    }
     if (appPrograms.length > 0) {
       program_match = false;
       for (const program of appPrograms) {
+        
         if (item?.child?.programs?.includes(program.name)) {
           program_match = true;
           break;
@@ -257,9 +265,9 @@ const ExportFilter = ({
     if (locationSites.length > 0) {
       location_match = false;
       for (const locationSite of locationSites) {
-        console.log('locationSite', locationSite)
-        if (item?.child?.location_site) {
 
+        if (item?.child?.location_site) {
+          console.log('Application Location Site Application', item)
           if (item?.child?.location_site?.includes(locationSite.name)) {
 
             location_match = true;
@@ -420,7 +428,7 @@ const ExportFilter = ({
   // }
 
   let exportFilename;
-
+  console.log('isCustomForm',isCustomForm)
 
   if (isCustomForm) {
     console.log("this is my custom form");
@@ -951,7 +959,7 @@ const ExportFilter = ({
           }
         } else {
 
-          if (reportType === '') {
+          if (reportType === 'all') {
             if (key1 == "emergency_contacts") {
               try {
                 const ecs = JSON.parse(application[key1]);
@@ -1044,6 +1052,7 @@ const ExportFilter = ({
 
           }
         }
+        console.log('initialApplication',initialApplication)
         rowKeys = Object.keys(initialApplication);
 
         // initialApplication = Object.values(initialApplication);
@@ -1228,8 +1237,8 @@ const ExportFilter = ({
                   onChange={e => {
                     setReportType(e.target.value);
                   }}>
-
-                  <option value="">Please Select</option>
+{/* 
+                  <option value="">Please Select</option> */}
                   {REPORT_OPTIONS.map((opt, i) => (
                     <option key={i} value={opt.value}>
                       {opt.name}
