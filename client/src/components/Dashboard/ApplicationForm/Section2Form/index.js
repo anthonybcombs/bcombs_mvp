@@ -95,7 +95,7 @@ export default function index({
                   }}
                   ref={register({required: true})}
                   readOnly={isReadonly}
-                  // value={section2.signature}
+                  value={section2?.signature}
                 />
                 <label className="field-label" htmlFor="section2_signature"><span className="required">*</span> Electronic Signature</label>
               </div>

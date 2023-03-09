@@ -161,3 +161,13 @@ export const exportHeaders = {
         new_parentId: 'Parent Id'
     }
 }
+
+export const getChildFromFormData = formData => {
+    const parentData = formData.find(item => {
+      const label = item.label.toLowerCase();
+      return  label.includes('name');
+    });
+    const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
+    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"',"")} ${parentFields[1].value.replaceAll('"',"")}` : ''
+  }
+  

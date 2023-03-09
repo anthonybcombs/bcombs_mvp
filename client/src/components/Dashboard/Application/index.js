@@ -585,7 +585,7 @@ export default function index() {
       }
     );
 
-    console.log('groups',groups)
+  console.log('groups', groups)
   if (updateSubmittedForm.message === 'successfully update your application form') {
     window.location.reload()
   }
@@ -674,13 +674,13 @@ export default function index() {
   }, [addForm])
 
   useEffect(() => {
-    console.log('vendorssssssssss',vendors)
+
     if (vendors && vendors.length > 0 && vendors[0].id) {
       if (queryParams && queryParams.vendor) {
         const newDefaultVendor = vendors.filter((vendor) => {
           return vendor.id2 == queryParams.vendor
         });
-        console.log('newDefaultVendor', newDefaultVendor)
+
 
         setSelectedVendor(newDefaultVendor[0]);
 
@@ -710,7 +710,7 @@ export default function index() {
 
         let defaultVendor = null;
         const hasDefaultVendor = vendors.find(item => item.is_default);
-        console.log('hasDefaultVendor', hasDefaultVendor)
+
         if (auth && auth?.nickname === 'lot') {
           defaultVendor = vendors[vendors.length - 1]
           setSelectedVendor(defaultVendor);
@@ -748,8 +748,8 @@ export default function index() {
           isOwner: !!(auth.user_id == defaultVendor?.user),
           categories: []
         }))
-        console.log('defaultVendorrrrrrrrrrrrrrrr',defaultVendor)
-        if(defaultVendor) {
+
+        if (defaultVendor) {
           dispatch(requestGetApplications(defaultVendor?.id));
           dispatch(requestGetVendorReminders({ vendor: defaultVendor?.id }));
         }
@@ -763,7 +763,6 @@ export default function index() {
     }
   }, [vendors, queryParams?.vendor]);
 
-    console.log('Selected vendor12131112131211333', selectedVendor)
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
 
@@ -806,7 +805,7 @@ export default function index() {
     setAppGroups(formAppGroups);
   }, [formAppGroups])
 
-  
+
 
   const handleSelectedLabel = ({ value, opt }) => {
     setView("");
@@ -2055,11 +2054,7 @@ export default function index() {
 
   let vendorOptions = vendors && vendors.length > 0 ? vendors.sort((a, b) => a.name.localeCompare(b.name)) : [];
   let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
-  console.log('selectedVendorrrrrrrrrr', selectedVendor)
-  console.log('vendorssssssss', vendors)
-  console.log('vendorssssssss appGroups', appGroups)
-  console.log('vendorssssssss applications', applications)
-  console.log('vendorssssssss renderForms', renderForms)
+
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2377,15 +2372,27 @@ export default function index() {
             />
           )}
           {(selectNonMenuOption && view == "application" || view === 'builderForm') && (
-            <EditApplicationStyled
-              application={selectedApplication}
-              updateApplication={updateApplication}
-              vendor={selectedVendor}
-              appGroups={appGroups}
-              onSubmit={onSubmit}
-              handleUpdateOnchange={handleUpdateOnchange}
-              updateLoading={loading.application}
-            />
+            <div>
+              <span style={{
+                cursor: 'pointer',
+                margin: 12,
+                float: 'right',
+                fontWeight: '600'
+              }} onClick={() => {
+                handleSelectedLabel({ value: "Application Status", opt: 'applicationstatus' });
+              }}>
+                Back to Application Summary
+              </span>
+              <EditApplicationStyled
+                application={selectedApplication}
+                updateApplication={updateApplication}
+                vendor={selectedVendor}
+                appGroups={appGroups}
+                onSubmit={onSubmit}
+                handleUpdateOnchange={handleUpdateOnchange}
+                updateLoading={loading.application}
+              />
+            </div>
           )}
         </div>
       </div>
@@ -2424,6 +2431,16 @@ export default function index() {
       {
         (showApplication && (["application", "builderForm"].includes(view))) && (
           <div>
+            <span style={{
+              cursor: 'pointer',
+              margin: 12,
+              float: 'right',
+              fontWeight: '600'
+            }} onClick={() => {
+              handleSelectedLabel({ value: "Application Status", opt: 'applicationstatus' });
+            }}>
+              Back to Application Summary
+            </span>
             <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
               <div id="dataTableContainer">
                 {
@@ -2499,6 +2516,7 @@ export default function index() {
         <Loading />
       ) : (
         <>
+
           <ApplicationFormStyled
             key={applicationFormKey}
             className="print-container"

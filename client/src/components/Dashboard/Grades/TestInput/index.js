@@ -11,7 +11,7 @@ import GradeInput from './gradeInput'
 import {
   requestGetApplications,
   requestGetCustomApplications,
-  requestGetApplicationByUserId 
+  requestGetApplicationByUserId
   //requestGetCustomApplicationByVendor,
 } from '../../../../redux/actions/Application';
 //import { requestUserGroup } from '../../../../redux/actions/Groups';
@@ -29,6 +29,9 @@ import ExportTestGradeDialogStyled from './ExpotTestGradeDialog';
 import ConfirmDialog from './ConfirmDialog'
 // import { REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED } from '../../../../redux/actions/Constant';
 
+import { getChildFromFormData } from '../../../../helpers/ExportHeaders';
+
+
 export default ({ child_id }) => {
   const { auth, gradeInput: { gradeList }, groups: { application_groups }, loading: { gradeLoading }, vendors, applications, form } = useSelector(({ auth, gradeInput, groups, loading, vendors, applications, form }) => {
 
@@ -41,8 +44,8 @@ export default ({ child_id }) => {
   const { group_id, group_type, return_page, request_type, type, appGroupIds = null, is_parent = null, parent_ids = null, selected_child = null, vendor } = parse(queryLocation.search)
   const isVendor = request_type === 'vendor'
   const DATE_FORMAT = "MM/dd/yyyy";
-  console.log('applications gradeList',gradeList)
-  console.log('applications',applications)
+  console.log('applications gradeList', gradeList)
+  console.log('applications', applications)
 
   let exportTestData = [];
   let exportGradesData = [];
@@ -116,15 +119,28 @@ export default ({ child_id }) => {
     return grades;
   }
 
-  console.log('gradeList', gradeList);
+
 
   if (gradeList.length > 0) {
     gradeList.map((gr) => {
 
       const stardarizedTestList = gr.standardized_test;
+      let formVal = null;
+      let studentName = '';
+      if (gr?.form_contents) {
+        formVal = JSON.parse(gr?.form_contents);
+        formVal = formVal?.formData || [];
+        studentName = getChildFromFormData(formVal);
+        
+      }
+      else {
+        studentName = (gr.lastname ?  `${gr.lastname},` : '') + ' ' + (gr.firstname || '')
+      }
 
       if (stardarizedTestList.length > 0) {
         stardarizedTestList.map((st) => {
+
+
           const row = {
             // 'Student Name': gr.lastname + ', ' + gr.firstname,
             // 'Student ID': gr.child_id,
@@ -141,7 +157,7 @@ export default ({ child_id }) => {
             // 'ST % State': st.state_percentage,
             // 'ST % Nationality': st.nationality_percentage
 
-            'Student Name': gr.lastname + ', ' + gr.firstname,
+            'Student Name': studentName, 
             'Student ID': gr.child_id,
             'App Group ID': gr.app_group_id,
             'ST ID': '',
@@ -158,11 +174,14 @@ export default ({ child_id }) => {
             'ST % Nationality': ''
           }
 
+
           exportTestData.push(row);
+
         });
+
       } else {
         const row = {
-          'Student Name': gr.lastname + ', ' + gr.firstname,
+          'Student Name': studentName,
           'Student ID': gr.child_id,
           'App Group ID': gr.app_group_id,
           'ST ID': '',
@@ -189,7 +208,7 @@ export default ({ child_id }) => {
           const pClass = populateClass(cg.grades);
 
           const row = {
-            'Student Name': gr.lastname + ', ' + gr.firstname,
+            'Student Name': studentName,
             'Student ID': gr.child_id,
             'App Group ID': gr.app_group_id,
             'Cumulative Grade ID': '',
@@ -216,7 +235,7 @@ export default ({ child_id }) => {
         const pClass = populateClass(cg.grades || {});
 
         const row = {
-          'Student Name': gr.lastname + ', ' + gr.firstname,
+          'Student Name': studentName,
           'Student ID': gr.child_id,
           'App Group ID': gr.app_group_id,
           'Cumulative Grade ID': '',
@@ -328,17 +347,17 @@ export default ({ child_id }) => {
     if (group_id && group_type) {
 
       if ((isVendor || type === 'all')) {
-        if (vendors && (Array.isArray(vendors) )) {
+        if (vendors && (Array.isArray(vendors))) {
           const vendorId = parseInt(vendor);
           const currentVendor = vendors.find(item => item.id2 === vendorId);
-          
-          if(currentVendor){
+
+          if (currentVendor) {
             dispatch(requestGetStudentCumulativeGradeByVendor(currentVendor.id))
           }
-         
+
         }
 
-   
+
         else {
           dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
         }
@@ -360,14 +379,14 @@ export default ({ child_id }) => {
 
       }
     }
-    else if(is_parent) {
+    else if (is_parent) {
       dispatch(requestGetStudentCumulativeGradeByParent(parentIds))
     }
   }
 
   useEffect(() => {
     requestList();
-    if (request_type === 'forms' ) {
+    if (request_type === 'forms') {
       dispatch(requestGetCustomApplications(group_id));
     }
 
@@ -392,7 +411,7 @@ export default ({ child_id }) => {
       const currentVendor = vendors.find(item => item.id2 === vendorId);
       if (type && type === 'all' && !is_parent) {
 
-        console.log('currentVendorzzz',currentVendor)
+        console.log('currentVendorzzz', currentVendor)
         dispatch(requestGetStudentCumulativeGradeByVendor(currentVendor.id));
         dispatch(requestGetApplications(currentVendor.id));
       }
@@ -400,8 +419,8 @@ export default ({ child_id }) => {
 
       dispatch(requestVendorAppGroups(currentVendor.id))
     }
-    else if(is_parent && auth) {
-      if(auth.user_id) {
+    else if (is_parent && auth) {
+      if (auth.user_id) {
         dispatch(requestGetApplicationByUserId(auth.user_id))
       }
     }
@@ -530,7 +549,7 @@ export default ({ child_id }) => {
     if (is_parent) {
       window.location.replace(`/dashboard/myapplication`)
     }
-    else { 
+    else {
       const backUrl = child_id
         ? `/dashboard/grades/profile/${child_id}?group_id=${group_id}&group_type=${group_type}&request_type=${request_type}${vendor ? `vendor=${vendor}` : ''}`
         : (!return_page && (group_id || group_type))
@@ -540,6 +559,7 @@ export default ({ child_id }) => {
     }
 
   }
+  console.log('exportTestData', exportTestData)
 
   return (
     <GradeInputStyled>
@@ -611,7 +631,7 @@ export default ({ child_id }) => {
             selectedChild={selected_child}
             isParent={is_parent}
             vendorId={group_id}
-            
+
           />
           <div className='gradeInputView-header' style={{ 'marginTop': '1rem' }}>
             <div className='action left'></div>
