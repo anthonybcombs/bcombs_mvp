@@ -22,6 +22,8 @@ export default function index({
   //     setAppGroupText(appGroups[0].app_grp_id);
   // }, [appGroups])
 
+  console.log('updatedGroups',updatedGroups.find(item => item.app_grp_id === '5e64e7af-b493-11ec-93fb-8e5e4cc226cc'))
+  console.log('dataa', data)
   return ReactDOM.createPortal(
     <ExportTestGradeDialogStyled
       data-testid='app-big-calendar-create-modal'
@@ -46,9 +48,9 @@ export default function index({
                 value={appGroupText}
                 onChange={e => {
                   console.log(e.target.value);
-                  setAppGroupText(e.target.value);
+                  setAppGroupText('5e64e7af-b493-11ec-93fb-8e5e4cc226cc');
                   if(e.target.value)
-                    onGetGroupGradeTest(e.target.value);
+                    onGetGroupGradeTest('5e64e7af-b493-11ec-93fb-8e5e4cc226cc');
                 }}>
                 <option value="" disabled>Select Application Group</option>
                 {updatedGroups.map((opt, i) => (
@@ -74,7 +76,7 @@ export default function index({
             <button
               className='modalBtn'
               disabled={!appGroupText || loading}
-            >
+            > 
               Export
             </button>
           </CSVLink>

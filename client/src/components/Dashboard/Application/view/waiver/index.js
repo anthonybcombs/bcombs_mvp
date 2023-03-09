@@ -28,8 +28,6 @@ export default function index({
 }) {
 
 
-  console.log("selected vendor", vendor);
-  console.log("application", application);
 
   const pDate = isReadonly ? 
                 moment(application.section1_date_signed).format("MM/DD/yyyy") :

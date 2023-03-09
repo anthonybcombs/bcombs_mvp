@@ -95,7 +95,7 @@ export default function index({
                   }}
                   ref={register({required: true})}
                   readOnly={isReadonly}
-                  // value={section3.signature}
+                  value={section3?.signature}
                 />
                 <label className="field-label" htmlFor="section3_signature"><span className="required">*</span> Electronic Signature</label>
               </div>
@@ -113,7 +113,6 @@ export default function index({
                   name="terms_date"
                   className="field-input"
                   placeholder="Date"
-                  readOnly
                   defaultValue={pDate}
                   readOnly={isReadonly}
                 />
