@@ -29,14 +29,14 @@ export default function index({
 
 
 
-  const pDate = isReadonly ? 
-                moment(application.section1_date_signed).format("MM/DD/yyyy") :
-                moment().format("MM/DD/yyyy")
-                
+  const pDate = isReadonly ?
+    moment(application.section1_date_signed).format("MM/DD/yyyy") :
+    moment().format("MM/DD/yyyy")
+ 
   return (
     <TermsWaiverFormViewStyled className="printpage-break waiver-information">
       <div id="applicationForm">
-        {
+        {/* {
           (application.section1_name && application.section1_text) ?
           <>
             <Section1FormStyled 
@@ -54,8 +54,22 @@ export default function index({
           </>
           :
           ""
-        }
-        {
+        } */}
+        <>
+          <Section1FormStyled
+            handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+            section1={termsWaiver?.section1}
+            pDate={pDate}
+            register={register}
+            errors={errors}
+            name={application?.section1_name}
+            text={application?.section1_text}
+            isReadonly={isVendorView ? true : isReadonly}
+          />
+          <br />
+          <br />
+        </>
+        {/* {
           (application.section2_name && application.section2_text) ? 
           <>
             <Section2FormStyled
@@ -73,9 +87,23 @@ export default function index({
           </>
           :
           ""
-        }
+        } */}
+        <>
+          <Section2FormStyled
+            handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+            section2={termsWaiver?.section2}
+            pDate={pDate}
+            register={register}
+            errors={errors}
+            name={application?.section2_name}
+            text={application?.section2_text}
+            isReadonly={isVendorView ? true : isReadonly}
+          />
+          <br />
+          <br />
+        </>
 
-        {
+        {/* {
           (application.section3_name && application.section3_text) ?
           <>
             <Section3FormStyled
@@ -93,7 +121,21 @@ export default function index({
           </>
           :
           ""
-        }
+        } */}
+        <>
+          <Section3FormStyled
+            handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
+            section3={termsWaiver?.section3}
+            pDate={pDate}
+            register={register}
+            errors={errors}
+            name={application?.section3_name}
+            text={application?.section3_text}
+            isReadonly={isVendorView ? true : isReadonly}
+          />
+          <br />
+          <br />
+        </>
       </div>
     </TermsWaiverFormViewStyled>
   )
