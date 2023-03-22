@@ -260,8 +260,6 @@ export default ({ child_id }) => {
     });
   } else {
 
-    console.log('selectedAppGroup', selectedAppGroup);
-
     exportTestData.push({
       'Student Name': '',
       'Student ID': '',
@@ -320,8 +318,8 @@ export default ({ child_id }) => {
 
       if (fields.length == 15) {
         const st = {
-          name: fields[1].trim() + ' ' + fields[0].trim(),
-          child_id: fields[2],
+          name: fields[0].trim(), // + ' ' + fields[0].trim(),
+          child_id: fields[1],
           app_group_id: fields[3],
           student_test_id: fields[4],
           test_name: fields[5],
@@ -410,12 +408,10 @@ export default ({ child_id }) => {
       const vendorId = parseInt(vendor);
       const currentVendor = vendors.find(item => item.id2 === vendorId);
       if (type && type === 'all' && !is_parent) {
-
-        console.log('currentVendorzzz', currentVendor)
         dispatch(requestGetStudentCumulativeGradeByVendor(currentVendor.id));
         dispatch(requestGetApplications(currentVendor.id));
       }
-      console.log('VENDORRRRRRRRRRR', vendors)
+
 
       dispatch(requestVendorAppGroups(currentVendor.id))
     }
@@ -504,8 +500,9 @@ export default ({ child_id }) => {
 
       if (fields.length >= 17) {
         const cg = {
-          name: fields[1].trim() + ' ' + fields[0].trim(),
-          child_id: fields[2],
+         
+          name:  fields[0].trim(),  // fields[1].trim() + ' ' +
+          child_id: fields[1],
           app_group_id: fields[3],
           student_grade_cumulative_id: fields[4],
           year_level: fields[5],
