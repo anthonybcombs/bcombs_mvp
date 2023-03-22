@@ -22,8 +22,9 @@ export default function index({
   //     setAppGroupText(appGroups[0].app_grp_id);
   // }, [appGroups])
 
-  console.log('updatedGroups',updatedGroups.find(item => item.app_grp_id === '5e64e7af-b493-11ec-93fb-8e5e4cc226cc'))
+  // console.log('updatedGroups',updatedGroups.find(item => item.app_grp_id === '5e64e7af-b493-11ec-93fb-8e5e4cc226cc'))
   console.log('dataa', data)
+  console.log('appGroupText',appGroupText)
   return ReactDOM.createPortal(
     <ExportTestGradeDialogStyled
       data-testid='app-big-calendar-create-modal'
@@ -31,7 +32,7 @@ export default function index({
     >
       <div className='modal-content export'>
         <div className='modal-header'>
-          <h2>Export Student {inputType == 'test' ? 'Standard Test' : inputType == 'grades' ? 'Grades' : '' } Data</h2>
+          <h2>Export Student {inputType == 'test' ? 'Standard Test' : inputType == 'grades' ? 'Grades' : '' } Da2ta</h2>
           <span className="close" onClick={onClose}>
             &times;
           </span>
@@ -47,10 +48,11 @@ export default function index({
                 className="form-control"
                 value={appGroupText}
                 onChange={e => {
+             
                   console.log(e.target.value);
-                  setAppGroupText('5e64e7af-b493-11ec-93fb-8e5e4cc226cc');
+                  setAppGroupText(e.target.value);
                   if(e.target.value)
-                    onGetGroupGradeTest('5e64e7af-b493-11ec-93fb-8e5e4cc226cc');
+                    onGetGroupGradeTest(e.target.value);
                 }}>
                 <option value="" disabled>Select Application Group</option>
                 {updatedGroups.map((opt, i) => (

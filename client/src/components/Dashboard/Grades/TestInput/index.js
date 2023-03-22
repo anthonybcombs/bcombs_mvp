@@ -122,6 +122,7 @@ export default ({ child_id }) => {
 
 
   if (gradeList.length > 0) {
+    console.log('GradeListttttttttt', gradeList)
     gradeList.map((gr) => {
 
       const stardarizedTestList = gr.standardized_test;
@@ -312,14 +313,14 @@ export default ({ child_id }) => {
 
   const handleImportedTestData = (data = []) => {
     let formattedSt = [];
-
     for (let i = 1; i < data.length; i++) {
       let fields = data[i].split('"').join('').split(',');
-
-      if (fields.length == 15) {
+      
+  
+      if (fields.length == 15 || fields.length == 16) {
         const st = {
-          name: fields[0].trim(), // + ' ' + fields[0].trim(),
-          child_id: fields[1],
+          name: fields[0].trim()  + ' ' + fields[0].trim(),
+          child_id: fields[2],
           app_group_id: fields[3],
           student_test_id: fields[4],
           test_name: fields[5],
@@ -501,8 +502,8 @@ export default ({ child_id }) => {
       if (fields.length >= 17) {
         const cg = {
          
-          name:  fields[0].trim(),  // fields[1].trim() + ' ' +
-          child_id: fields[1],
+          name:  fields[0].trim() + ' ' + fields[1].trim(),
+          child_id: fields[2],
           app_group_id: fields[3],
           student_grade_cumulative_id: fields[4],
           year_level: fields[5],
