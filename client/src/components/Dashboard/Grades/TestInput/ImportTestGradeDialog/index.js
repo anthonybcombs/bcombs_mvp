@@ -29,7 +29,7 @@ export default function index({
       const rows = e.target.result.split("\n");
       setImportData(rows);
 
-      console.log('e.target.result', rows);
+      // console.log('e.target.result', rows);
     }
     reader.readAsText(file);
   }
