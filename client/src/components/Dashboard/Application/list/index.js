@@ -845,8 +845,6 @@ export default function index({
     setShowExportFilter(false);
   };
 
-  console.log('exportDatazzzzzzzzz', exportData)
-  console.log('exportDatazzzzzzzzz applications', applications)
   return (
     <ApplicationListStyled>
       <div id="applicationList">
@@ -859,7 +857,7 @@ export default function index({
               </button>
               <button type="button" id="exportButton" onClick={handleExportCSV}>
                 <FontAwesomeIcon icon={faDownload} />
-                <span>Export 22</span>
+                <span>Export</span>
               </button>
               {/* <CSVLink 
                 id="exportButton" 
