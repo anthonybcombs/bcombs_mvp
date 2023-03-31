@@ -187,6 +187,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   }
 
   const handleEnableEditConfirm = () => {
+  
     setRows(update(rows, {
       [rows.findIndex(e => e.id === selectedRowForEdit)]: { $merge: { enableEdit: true } }
     }))
@@ -654,9 +655,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
         if (type === 'all') {
           const currentVendor = Array.isArray(vendors) && vendors.find(item => item.id === vendorId);
-          console.log('currentVendor222',currentVendor)
-          console.log('currentVendor222 vendorId',vendorId)
-          console.log('currentVendor222 newGradeList',newGradeList)
+          
           if (currentVendor && currentVendor.app_groups) {
             const grpIds = currentVendor.app_groups.map(item => item.app_group_id);
             newGradeList = newGradeList.filter(item => grpIds.includes(item.app_group_id));
@@ -734,17 +733,15 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   }
   let selectStudentRows = (gradeInput.gradeList || []).filter(e => e.app_group_id)
 
-  
+
   if (groupType === 'bcombs') {
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents);
-
-
     if (type === 'all') {
       const currentVendor = Array.isArray(vendors) && vendors.find(item => item.id === vendorId);
       if (currentVendor  && currentVendor.app_groups) {
 
         const grpIds = currentVendor.app_groups.map(item => item.app_grp_id);
-
+        
         selectStudentRows = applications.filter(application => {
           const classTeachers = application.class_teacher && application.class_teacher.split(',');
           return classTeachers && classTeachers.some(grpId => grpIds.includes(grpId))
@@ -763,7 +760,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
           return {
             app_group_id: classTeachers && classTeachers[0],
-            child_id: application.child.ch_id,
+            child_id: application?.child?.ch_id || application?.app_id ,
             standardized_test: [],
             cumulative_grades: [],
             form_contents: null,
@@ -776,13 +773,14 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
     }
   } else if(groupType === 'forms') {
-    selectStudentRows = selectStudentRows.filter(e => {
+    selectStudentRows = applications.filter(e => {
       if (type === 'all') {
-        const ids = e.app_group_id.split(',');
-        return e.form_contents && ids.some(id => appGroupIds.includes(id))
+        const ids = e.app_group_id  && e.app_group_id.split(',');
+        return e.form_contents // && ids && ids.some(id => appGroupIds.includes(id))
       }
       return e.form_contents
     });
+
 
     // if (selectedChild) {
     //   selectStudentRows = selectStudentRows.filter(e => e.child_id === selectedChild)

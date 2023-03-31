@@ -194,10 +194,9 @@ const ExportFilter = ({
   const [locationSites, setLocationSites] = useState([]);
   const [appPrograms, setAppPrograms] = useState([]);
   const [reportType, setReportType] = useState('all');
-  console.log('Applications', applications)
+
   const appGroupIds = appGroups.map(item => item.app_grp_id);
-  console.log('App Groups', appGroups)
-  console.log('Locations', locationSites)
+
   const locationSiteForms = isCustomForm ? locationSites.map(item => {
     const currentAppGroups = appGroups.find(item2 => item2.name === item.name)
 
@@ -251,6 +250,9 @@ const ExportFilter = ({
     if(item?.child?.location_site) {
       console.log('Found a child with Location Site', item)
     }
+
+
+
     if (appPrograms.length > 0) {
       program_match = false;
       for (const program of appPrograms) {
@@ -428,14 +430,14 @@ const ExportFilter = ({
   // }
 
   let exportFilename;
-  console.log('isCustomForm',isCustomForm)
+
 
   if (isCustomForm) {
     console.log("this is my custom form");
 
     for (const application of filterApplications) {
       let formattedApplication = {};
-      console.log('filterApplications', filterApplications)
+     
       for (const key1 of Object.keys(application)) {
         if (key1 === "form_contents") {
           if (typeof application[key1] === 'object' && application[key1] !== null && typeof application[key1] !== 'undefined') {
@@ -713,8 +715,6 @@ const ExportFilter = ({
             // child 
             let level1 = application[key1];
 
-            console.log("export application", application);
-            console.log("export application level1", level1);
             delete level1.ch_id;
             if (!!application.is_daycare) {
               console.log("application is daycare");
@@ -823,7 +823,7 @@ const ExportFilter = ({
               delete level1.accomplishments;
               delete level1.mentee_gain_program;
               delete level1.class_rank;
-              delete level1.location_site;
+            //  delete level1.location_site;
             }
 
             else {
@@ -858,7 +858,7 @@ const ExportFilter = ({
               delete level1.accomplishments;
               delete level1.mentee_gain_program;
               delete level1.class_rank;
-              delete level1.location_site;
+          //     delete level1.location_site;
               delete level1.business_address
               delete level1.business_description
               delete level1.business_email
@@ -900,7 +900,7 @@ const ExportFilter = ({
               delete level1.child_lives_with;
               delete level1.city;
 
-              delete level1.programs;
+              // delete level1.programs;
               delete level1.new_childId;
 
               delete level1.child_currently_doctors_care;
@@ -1070,6 +1070,7 @@ const ExportFilter = ({
 
 
 
+  console.log('filterApplicationsssss',filterApplications)
   const PROGRAMS_OPTIONS =
     app_programs.length > 0
       ? app_programs
@@ -1172,7 +1173,6 @@ const ExportFilter = ({
                 placeholder="Choose Programs"
                 selectedValues={appPrograms}
                 onSelect={selectedList => {
-
                   setAppPrograms([...selectedList]);
                 }}
                 onRemove={selectedList => {
@@ -1206,11 +1206,11 @@ const ExportFilter = ({
                 placeholder="Choose Location Sites"
                 selectedValues={locationSites}
                 onSelect={selectedList => {
-                  console.log("selectedList location add", selectedList);
+  
                   setLocationSites([...selectedList]);
                 }}
                 onRemove={selectedList => {
-                  console.log("selectedList location Remove", selectedList);
+ 
                   setLocationSites([...selectedList]);
                 }}
               />
@@ -1290,7 +1290,7 @@ const ExportFilter = ({
                 marginTop: "25px"
               }}
               onClick={() => {
-                console.log('exportApplications12312332', exportApplications)
+                console.log('ExportApplications', exportApplications)
               }}
               data={exportApplications}
               filename={getVendorFilename()}>

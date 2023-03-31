@@ -732,9 +732,11 @@ export default function index() {
 			let currentAppGroupName = '';
 			if (groups && groups.application_groups) {
 				const applicationGroups = groups.application_groups;
-	
-				const filteredGroup = applicationGroups.filter(item => (searchParams && searchParams.appGroupId && (item.app_grp_id === searchParams.appGroupId)) || (searchParams && searchParams.type === 'all' && searchParams && searchParams.formId === item.form)).map(item => item.app_grp_id)
 
+				const filteredGroup = applicationGroups.filter(item => (searchParams && searchParams.appGroupId &&
+					(item.app_grp_id === searchParams.appGroupId)) ||
+					(searchParams && searchParams.type === 'all' && searchParams && searchParams.formId === item.form)).map(item => item.app_group_id)
+				console.log('filteredGrosssup', filteredGroup)
 
 				for (const group of applicationGroups) {
 					if (group.app_grp_id === searchParams.appGroupId) {
@@ -822,11 +824,23 @@ export default function index() {
 
 			setApplicationList(filterApplications);
 		} else if (applications && applications.customActiveApplications.length > 0 && name === 'custom') {
-			let filterApplications = applications.customActiveApplications.filter(item => item.class_teacher && item.form === searchParams.formId);
+			let filterApplications = applications.customActiveApplications.filter(item => {
+
+
+				if ((searchParams?.type === 'all' && item.form === searchParams.formId) ||
+					item.class_teacher && item.form === searchParams.formId
+				) {
+					return true;
+				}
+
+				return false;
+			});
+
+			console.log('filterApplicationszzzzzzzzz', filterApplications)
 			//console.log('2222applications.activeapplications1111', applications.customActiveApplications.filter(item => item.class_teacher))
-		
+
 			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
-	
+
 			// let appGroupIdStrings = appGroupIds ? appGroupIds.join(',')
 			filterApplications = filterApplications.filter(item => {
 
@@ -834,11 +848,14 @@ export default function index() {
 				if (item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '' && searchParams && searchParams.type !== 'all') {
 					return item.class_teacher?.includes(appGroupId)
 				}
-				else if (item.class_teacher && appGroupIds && searchParams && searchParams.type === 'all' && item.form === searchParams.formId) {
-					//	let classTeacherArr = item.class_teacher.split(',');
-					let resp = appGroupIds.some(appId => item.class_teacher?.includes(appId))
 
-					return resp;
+				//item.class_teacher && appGroupIds &&
+				else if (searchParams && searchParams.type === 'all' && item.form === searchParams.formId) {
+					//	let classTeacherArr = item.class_teacher.split(',');
+					// let resp = appGroupIds.some(appId => item.class_teacher?.includes(appId))
+
+					// return resp;
+					return item;
 					//return classTeacherArr.some(appGrpId => appGroupIds?.includes(appGrpId))
 				}
 
@@ -872,7 +889,7 @@ export default function index() {
 
 	useEffect(() => {
 
-		console.log('attendance.list',attendance.list)
+		console.log('attendance.list', attendance.list)
 		if (attendance.list) {
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(
@@ -884,7 +901,7 @@ export default function index() {
 					is_following: currentAttendance?.is_following,
 				};
 			});
-			console.log('updatedApplicationList',updatedApplicationList)
+			console.log('updatedApplicationList', updatedApplicationList)
 
 			setApplicationList(updatedApplicationList);
 			setDefaultApplicationList(updatedApplicationList);
@@ -918,7 +935,7 @@ export default function index() {
 			updatedApplication[currentIndex].attendance_status === attendanceType &&
 			!updatedApplication[currentIndex].excused
 		) {
-		
+
 			//  handleExcused(payload,attendanceType.toLowerCase());
 
 			if (attendanceType !== 'Present') {
@@ -1025,13 +1042,13 @@ export default function index() {
 		setIsConfirmationVisible(true);
 	};
 	console.log('applicationListzz2222222zzzzz', applications.activeapplications)
-	console.log('applicationListzz2222222zzzzz applicationList',  applicationList)
+	console.log('applicationListzz2222222zzzzz applicationList', applicationList)
 	const handleAttendanceSave = () => {
 		//reset();
 
 		const attendanceList = applicationList.map(app => {
 
-			if(name === 'custom' ) {
+			if (name === 'custom') {
 
 			}
 			// applications.activeapplications.find(activeApp => activeApp.child.ch_id)
@@ -1126,7 +1143,7 @@ export default function index() {
 			}
 		}
 
-	
+
 		setAttendanceDetails({
 			...payload,
 		});

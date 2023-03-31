@@ -16,7 +16,8 @@ import {
   faPrint,
   faHistory,
   faLink,
-  faCopy
+  faCopy,
+  faAngleLeft
 } from "@fortawesome/free-solid-svg-icons";
 import DefaultVendorSummaryStyled from "./default_vendor_summary";
 import ApplicationSummaryStyled from "./summary";
@@ -2373,15 +2374,16 @@ export default function index() {
           )}
           {(selectNonMenuOption && view == "application" || view === 'builderForm') && (
             <div>
-              <span style={{
+              <span className="back-btn" style={{
                 cursor: 'pointer',
                 margin: 12,
-                float: 'right',
-                fontWeight: '600'
+                float: 'left',
+                color: '#3e89fe'
               }} onClick={() => {
                 handleSelectedLabel({ value: "Application Status", opt: 'applicationstatus' });
               }}>
-                Back to Application Summary
+                <FontAwesomeIcon className="back-icon" icon={faAngleLeft} />{``}
+                Back
               </span>
               <EditApplicationStyled
                 application={selectedApplication}
@@ -2431,16 +2433,21 @@ export default function index() {
       {
         (showApplication && (["application", "builderForm"].includes(view))) && (
           <div>
-            <span style={{
-              cursor: 'pointer',
-              margin: 12,
-              float: 'right',
-              fontWeight: '600'
-            }} onClick={() => {
-              handleSelectedLabel({ value: "Application Status", opt: 'applicationstatus' });
+            <div style={{
+              marginTop: 12
             }}>
-              Back to Application Summary
-            </span>
+              <span className="back-btn" style={{
+                cursor: 'pointer',
+                // margin: 12,
+                // float: 'left',
+                color: '#3e89fe'
+              }} onClick={() => {
+                handleSelectedLabel({ value: "Application Status", opt: 'applicationstatus' });
+              }}>
+                <FontAwesomeIcon className="back-icon" icon={faAngleLeft} />{``}
+                Back
+              </span>
+            </div>
             <Collapsible trigger={<h3>Application History</h3>} open lazyRender>
               <div id="dataTableContainer">
                 {

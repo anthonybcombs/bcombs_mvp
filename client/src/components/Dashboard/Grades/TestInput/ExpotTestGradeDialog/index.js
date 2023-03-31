@@ -32,7 +32,7 @@ export default function index({
     >
       <div className='modal-content export'>
         <div className='modal-header'>
-          <h2>Export Student {inputType == 'test' ? 'Standard Test' : inputType == 'grades' ? 'Grades' : '' } Da2ta</h2>
+          <h2>Export Student {inputType == 'test' ? 'Standard Test' : inputType == 'grades' ? 'Grades' : '' } Data</h2>
           <span className="close" onClick={onClose}>
             &times;
           </span>

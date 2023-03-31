@@ -252,7 +252,6 @@ export default function index(props) {
 		if(queryParams.vendor && Array.isArray(vendors)) {
 			const vendorId =  parseInt(queryParams.vendor);
 			const currentVendor = vendors.find(item => item.id2 === vendorId);
-		
 	
 			if(currentVendor) {
 		
@@ -319,7 +318,7 @@ export default function index(props) {
 
 		return size.length;
 	};
-	let testArray = [];
+	///let testArray = [];
 	const getFormClassCount = group => {
 		
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
@@ -344,7 +343,7 @@ export default function index(props) {
 		return size ? size.length : 0
 	};
 
-
+	console.log('applicationsssssssssssss',applications)
 
 
 
@@ -576,6 +575,7 @@ export default function index(props) {
 	const getTotalClassCountByForm = id => {
 
 		const formGroups = form && form.formAppGroups && form.formAppGroups.filter(appGroup => appGroup.form === id);
+	
 		//let totalClassCount = 0;
 		// if(id === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
 
@@ -584,11 +584,12 @@ export default function index(props) {
 
 			
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
-			if (app.class_teacher && app.class_teacher !== '' && id === app.form) {
+			if ((app.class_teacher && app.class_teacher !== ''  )) {
 				const classTeacher = app.class_teacher.split(',');
-		
+				// console.log('formGroupppppppppp classTeacherrrrrr',classTeacher)
 				return classTeacher.some(id => appGrpIds.includes(id) ) //classTeacher.includes(group.app_grp_id)
-			}
+			} 
+			return id === app.form;
 		});
 
 		return size ? size.length : 0

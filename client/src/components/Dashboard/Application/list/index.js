@@ -290,8 +290,8 @@ const STUDENT_CLASS_OPTIONS = [
   { name: "Waiting List", value: "waiting_list" },
   { name: "No longer a Student", value: "no_longer_student" },
   { name: "Missed opportunity", value: "missed_opportunity" },
-  { name: "Pending Resubmission", value: "pending_resubmission"},
-  { name: "Resubmitted", value: "resubmitted"}
+  { name: "Pending Resubmission", value: "pending_resubmission" },
+  { name: "Resubmitted", value: "resubmitted" }
 ];
 
 const COLOR_OPTIONS = ["Blue", "Red", "Green"];
@@ -384,7 +384,7 @@ export default function index({
 }) {
 
   console.log("appGroups select", appGroups);
-  console.log('applicationsssssss',applications)
+  console.log('applicationsssssss', applications)
   const getApplicationStatusVal = (student_status, verification, row) => {
     let studentStatusVal = "";
     let verificationVal = "";
@@ -405,14 +405,14 @@ export default function index({
       studentStatusVal = "Missed oppurtunity";
     } else if (student_status == "pending_resubmission") {
       studentStatusVal = "Pending Resubmission";
-    } 
+    }
     else if (student_status == "resubmitted") {
       studentStatusVal = "Resubmitted";
     }
     else {
       studentStatusVal = "In process";
     }
-    
+
     if (verification == "verified") {
       verificationVal = faCheck;
     } else if (verification == "rejected") {
@@ -443,24 +443,24 @@ export default function index({
   const getParentFromFormData = formData => {
     const parentData = formData.find(item => {
       const label = item.label.toLowerCase();
-      return    label.includes('parent') && label.includes('name');
+      return label.includes('parent') && label.includes('name');
     });
 
     const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
-    console.log('parentFields',parentFields)
-    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"',"")} ${parentFields[1].value.replaceAll('"',"")}` : ''
+    console.log('parentFields', parentFields)
+    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"', "")} ${parentFields[1].value.replaceAll('"', "")}` : ''
   }
 
-  
+
   const getChildFromFormData = formData => {
     const parentData = formData.find(item => {
       const label = item.label.toLowerCase();
-      return   (label.includes('mentee') && label.includes('name')) ||  (label.includes('child') && label.includes('name'));
+      return (label.includes('mentee') && label.includes('name')) || (label.includes('child') && label.includes('name'));
     });
 
     const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
-    console.log('parentFields',parentFields)
-    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"',"")} ${parentFields[1].value.replaceAll('"',"")}` : ''
+    console.log('parentFields', parentFields)
+    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"', "")} ${parentFields[1].value.replaceAll('"', "")}` : ''
   }
   const getPrimaryParentName = (parents, id, data) => {
     if (parents && parents.length > 0) {
@@ -471,10 +471,10 @@ export default function index({
         <span>{parents[0]?.firstname + " " + parents[0]?.lastname}</span>
       );
     } else {
-      if(isCustomForm) {
+      if (isCustomForm) {
 
 
-        const parentName =  getParentFromFormData(data?.form_contents?.formData || []);
+        const parentName = getParentFromFormData(data?.form_contents?.formData || []);
 
         return parentName;
       }
@@ -498,13 +498,13 @@ export default function index({
 
   const getStudentName = row => {
 
-    const parentName =  getParentFromFormData(row?.form_contents?.formData || []);
+    const parentName = getParentFromFormData(row?.form_contents?.formData || []);
 
 
-    if(row?.child?.firstname && row?.child?.lastname) {
+    if (row?.child?.firstname && row?.child?.lastname) {
 
 
-      if(parentName && (parentName === `${row?.child?.firstname} ${row?.child?.lastname}`)) {
+      if (parentName && (parentName === `${row?.child?.firstname} ${row?.child?.lastname}`)) {
         const childName = getChildFromFormData(row?.form_contents?.formData || []);
 
         return childName;
@@ -551,8 +551,8 @@ export default function index({
 
           let displayGroups = '';
           appGroups.map((e) => {
-            if(row.class_teacher.includes(e.app_grp_id))
-            displayGroups += e.name + ','
+            if (row.class_teacher.includes(e.app_grp_id))
+              displayGroups += e.name + ','
           })
           // return (
           //   (appGroups.find(e => row.class_teacher.includes(e.app_grp_id)) || {})
@@ -562,7 +562,7 @@ export default function index({
           const arrGroups = displayGroups.split(',');
           console.log('arrGroups', arrGroups);
 
-          if(arrGroups.length > 1) {
+          if (arrGroups.length > 1) {
             return displayGroups = arrGroups[0] + ',...'
           } else {
             return displayGroups = arrGroups[0];
@@ -698,10 +698,10 @@ export default function index({
 
   let data = applications.length > 0 ? applications : [];
 
-  let getApplications = applications.length > 0 ? applications : [];
+  let getApplications = applications.length > 0 ? [...(applications || [])] : [];
 
-  const exportData = applications.length > 0 ? applications : [];
-
+  const exportData = applications.length > 0 ? [...(applications || [])] : [];
+  console.log('exportttttttttttt', exportData)
   data = getApplications.filter(item => {
     let name_match = true;
     let class_match = true;
@@ -715,7 +715,7 @@ export default function index({
       const childLastname = !!item.child?.lastname ? item.child.lastname.trim() : "";
       const childFullname = childFirstname + " " + childLastname;
 
-      const parentFirstname = !!item.parents[0]?.firstname ? item.parents[0]?.firstname.trim() : ""; 
+      const parentFirstname = !!item.parents[0]?.firstname ? item.parents[0]?.firstname.trim() : "";
       const parentLastname = !!item.parents[0]?.lastname ? item.parents[0]?.lastname.trim() : "";
       const parentFullname = parentFirstname + " " + parentLastname;
 
@@ -761,7 +761,7 @@ export default function index({
     }
 
     if (groupText) {
-      group_match = 
+      group_match =
         item.class_teacher == groupText;
     }
 
@@ -837,14 +837,13 @@ export default function index({
   };
 
   const handleExportCSV = e => {
+
     setShowExportFilter(true);
   };
 
   const handleExit = () => {
     setShowExportFilter(false);
   };
-
-  console.log('DATAAAAAAAAAA',data)
 
   return (
     <ApplicationListStyled>
@@ -856,7 +855,7 @@ export default function index({
               <button id="archivedButton" onClick={handleArchivedApplication}>
                 <FontAwesomeIcon icon={faArchive} />
               </button>
-              <button id="exportButton" onClick={handleExportCSV}>
+              <button type="button" id="exportButton" onClick={handleExportCSV}>
                 <FontAwesomeIcon icon={faDownload} />
                 <span>Export</span>
               </button>
@@ -932,7 +931,7 @@ export default function index({
       )}
       {showExportFilter && (
         <ExportFilter
-          applications={exportData}
+          applications={[...(applications || [])]}
           handleExit={handleExit}
           vendor={vendor}
           appGroups={appGroups}
