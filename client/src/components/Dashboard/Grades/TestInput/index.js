@@ -119,26 +119,27 @@ export default ({ child_id }) => {
     return grades;
   }
 
+  let studentList = type === 'all' ? group_type === 'bcombs' ? (applications?.activeapplications || []) : applications?.customActiveApplications
+  || [] : gradeList;
 
+  if (studentList.length > 0) {
+  
+    studentList.map((gr) => {
 
-  if (gradeList.length > 0) {
-    console.log('GradeListttttttttt', gradeList)
-    gradeList.map((gr) => {
-
-      const stardarizedTestList = gr.standardized_test;
+      const stardarizedTestList = gr.standardized_test || [];
       let formVal = null;
       let studentName = '';
       if (gr?.form_contents) {
         formVal = JSON.parse(gr?.form_contents);
+        console.log('formVal',formVal)
         formVal = formVal?.formData || [];
         studentName = getChildFromFormData(formVal);
-        
       }
       else {
-        studentName = (gr.lastname ?  `${gr.lastname},` : '') + ' ' + (gr.firstname || '')
+        studentName = (gr?.child?.lastname ?  `${gr?.child?.lastname},` : '') + ' ' + (gr?.child?.firstname || '')
       }
 
-      if (stardarizedTestList.length > 0) {
+      if (stardarizedTestList && stardarizedTestList.length > 0) {
         stardarizedTestList.map((st) => {
 
 
@@ -158,9 +159,9 @@ export default ({ child_id }) => {
             // 'ST % State': st.state_percentage,
             // 'ST % Nationality': st.nationality_percentage
 
-            'Student Name': studentName, 
-            'Student ID': gr.child_id,
-            'App Group ID': gr.app_group_id,
+            'Student Name': studentName,
+            'Student ID': gr?.child?.ch_id || gr?.app_id,
+            'App Group ID': gr?.child?.class_teacher,
             'ST ID': '',
             'ST Test Name': '',
             'ST Attempt': '',
@@ -183,8 +184,8 @@ export default ({ child_id }) => {
       } else {
         const row = {
           'Student Name': studentName,
-          'Student ID': gr.child_id,
-          'App Group ID': gr.app_group_id,
+          'Student ID': gr?.child?.ch_id || gr?.app_id,
+          'App Group ID': gr?.child?.class_teacher,
           'ST ID': '',
           'ST Test Name': '',
           'ST Attempt': '',
@@ -201,7 +202,7 @@ export default ({ child_id }) => {
         exportTestData.push(row);
       }
 
-      const cumulativeGradesList = gr.cumulative_grades;
+      const cumulativeGradesList = gr.cumulative_grades || [];
 
       if (cumulativeGradesList.length > 0) {
         cumulativeGradesList.map((cg) => {
@@ -210,8 +211,8 @@ export default ({ child_id }) => {
 
           const row = {
             'Student Name': studentName,
-            'Student ID': gr.child_id,
-            'App Group ID': gr.app_group_id,
+            'Student ID': gr?.child?.ch_id || gr?.app_id,
+            'App Group ID': gr?.child?.class_teacher,
             'Cumulative Grade ID': '',
             'Student Level': '',
             'Student Designations': '',
@@ -237,8 +238,8 @@ export default ({ child_id }) => {
 
         const row = {
           'Student Name': studentName,
-          'Student ID': gr.child_id,
-          'App Group ID': gr.app_group_id,
+          'Student ID': gr?.child?.ch_id || gr?.app_id,
+          'App Group ID': gr?.child?.class_teacher,
           'Cumulative Grade ID': '',
           'Student Level': '',
           'Student Designations': '',
@@ -315,13 +316,15 @@ export default ({ child_id }) => {
     let formattedSt = [];
     for (let i = 1; i < data.length; i++) {
       let fields = data[i].split('"').join('').split(',');
-      
-  
+
       if (fields.length == 15 || fields.length == 16) {
+        const childIdIndex = group_type === 'bcombs' ? 2 : 1;
+        const appGroupIdIndex = group_type === 'bcombs' ? 3 : 2;
         const st = {
           name: fields[0].trim()  + ' ' + fields[0].trim(),
-          child_id: fields[2],
-          app_group_id: fields[3],
+          child_id: fields[childIdIndex],
+          app_group_id: fields[appGroupIdIndex],
+          id: fields[childIdIndex],
           student_test_id: fields[4],
           test_name: fields[5],
           attempt: fields[6],
@@ -355,7 +358,6 @@ export default ({ child_id }) => {
           }
 
         }
-
 
         else {
           dispatch(requestGetStudentCumulativeGradeByVendor(group_id))
@@ -498,13 +500,16 @@ export default ({ child_id }) => {
 
     for (let i = 1; i < data.length; i++) {
       let fields = data[i].split('"').join('').split(',');
-
+  
       if (fields.length >= 17) {
+        const childIdIndex = group_type === 'bcombs' ? 2 : 1;
+        const appGroupIdIndex = group_type === 'bcombs' ? 3 : 2;
+
         const cg = {
-         
-          name:  fields[0].trim() + ' ' + fields[1].trim(),
-          child_id: fields[2],
-          app_group_id: fields[3],
+          name:  fields[0].trim() + ' ' +  ( group_type === 'bcombs' ? fields[1].trim() : '') ,
+          child_id: fields[childIdIndex],
+          app_group_id: fields[appGroupIdIndex],
+          id: fields[childIdIndex],
           student_grade_cumulative_id: fields[4],
           year_level: fields[5],
           school_designation: fields[6],
@@ -557,7 +562,7 @@ export default ({ child_id }) => {
     }
 
   }
-  console.log('exportTestData', exportTestData)
+
 
   return (
     <GradeInputStyled>
@@ -616,7 +621,7 @@ export default ({ child_id }) => {
           </a>
           <StandardTest
             appGroupIds={appGroupIdList}
-            applications={is_parent ? applications.userAllApplications : applications.activeapplications}
+            applications={is_parent ? applications.userAllApplications :  group_type === 'forms' ? applications.customActiveApplications : applications.activeapplications}
             importData={formattedSt}
             childId={child_id}
             groupId={group_id}
@@ -667,7 +672,7 @@ export default ({ child_id }) => {
           </div>
           <GradeInput
             appGroupIds={appGroupIdList}
-            applications={is_parent ? applications.userAllApplications : applications.activeapplications}
+            applications={is_parent ? applications.userAllApplications : group_type === 'forms' ? applications.customActiveApplications : applications.activeapplications}
             importData={formattedGrades}
             childId={child_id}
             loading={gradeLoading}

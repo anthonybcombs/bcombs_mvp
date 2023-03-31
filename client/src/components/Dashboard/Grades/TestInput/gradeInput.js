@@ -747,7 +747,7 @@ export default ({ applications, importData = [], childId, requestList, groupType
   }, [gradeInput])
 
   useEffect(() => {
-    console.log('applicationzzzs', applications)
+
     if (gradeInput.gradeList) {
 
       // let newGradeList = (gradeInput.gradeList || []).filter(e => {
@@ -819,13 +819,18 @@ export default ({ applications, importData = [], childId, requestList, groupType
     latest_grade: { label: 'Latest Year Level Inputted', type: 'string', isFunc: true },
   }
 
+
   let selectStudentRows = (gradeInput.gradeList || []).filter(e => {
 
-    if (appGroupIds && appGroupIds.length > 0) {
+    if (appGroupIds && appGroupIds.length > 0 ) {
       const ids = e.app_group_id && e.app_group_id.split(',');
       return ids && ids.some(id => appGroupIds.includes(id))
     }
-    return e.app_group_id;
+
+    // else if( type === 'all') {
+    //   return e;
+    // }
+    return e;
   })
 
   if (groupType === 'bcombs') {
@@ -833,9 +838,6 @@ export default ({ applications, importData = [], childId, requestList, groupType
     if (selectedChild) {
       selectStudentRows = selectStudentRows.filter(e => e.child_id === selectedChild)
     }
-
-    console.log('selectStudentRows', selectStudentRows)
-
     if (type === 'all') {
       const currentVendor = Array.isArray(vendors) && vendors.find(item => item.id === groupId);
       if (currentVendor &&  currentVendor && currentVendor.app_groups) {
@@ -878,12 +880,14 @@ export default ({ applications, importData = [], childId, requestList, groupType
 
     selectStudentRows = selectStudentRows.filter(e => {
       if (type === 'all') {
-        const ids = e.app_group_id.split(',');
-        return e.form_contents && ids.some(id => appGroupIds.includes(id))
+        ////  const ids = e.app_group_id.split(',');
+        return e.form_contents // && ids.some(id => appGroupIds.includes(id))
       }
       return e.form_contents
     });
 
+    console.log('groupTypeeeeeeeeee', groupType)
+    console.log('groupTypeeeeeeeeee selectStudentRows', selectStudentRows)
   }
   else {
     selectStudentRows = selectStudentRows.filter(e => appGroupIds.includes(e.app_group_id))

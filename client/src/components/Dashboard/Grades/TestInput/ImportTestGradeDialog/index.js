@@ -14,7 +14,6 @@ export default function index({
   onImport
 }) {
 
-  console.log('exporTestData', data);
 
   const [importData, setImportData] = useState([]);
 
