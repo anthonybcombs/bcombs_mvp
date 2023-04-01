@@ -845,6 +845,8 @@ export default function index({
     setShowExportFilter(false);
   };
 
+  console.log('applicccccccccccccccc', applications)
+
   return (
     <ApplicationListStyled>
       <div id="applicationList">

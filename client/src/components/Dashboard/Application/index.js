@@ -2382,7 +2382,7 @@ export default function index() {
               }} onClick={() => {
                 handleSelectedLabel({ value: "Application Status", opt: 'applicationstatus' });
               }}>
-                <FontAwesomeIcon className="back-icon" icon={faAngleLeft} />{``}
+                <FontAwesomeIcon className="back-icon" icon={faAngleLeft} />{`  `}
                 Back
               </span>
               <EditApplicationStyled
@@ -2444,7 +2444,7 @@ export default function index() {
               }} onClick={() => {
                 handleSelectedLabel({ value: "Application Status", opt: 'applicationstatus' });
               }}>
-                <FontAwesomeIcon className="back-icon" icon={faAngleLeft} />{``}
+                <FontAwesomeIcon className="back-icon" icon={faAngleLeft} />{`  `}
                 Back
               </span>
             </div>
