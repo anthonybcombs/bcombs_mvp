@@ -1084,7 +1084,8 @@ const ExportFilter = ({
       ? location_sites
       : [
         { name: "Raleigh", value: "Raleigh" },
-        { name: "Durham", value: "Durham" }
+        { name: "Durham", value: "Durham" },
+        { name: "Atlanta", value: "Atlanta" }
       ];
 
   // const csvHeaders = [
