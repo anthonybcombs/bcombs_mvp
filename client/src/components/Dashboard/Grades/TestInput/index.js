@@ -66,7 +66,68 @@ export default ({ child_id }) => {
     //if(!classes) classes = [];
 
     let grades = {}
+    console.log('classesss',classes)
 
+    if(classes.length > 0) {
+      classes.forEach((item, index) => {
+        const absentTotal = item.attendance_quarter_1_absent +  item.attendance_quarter_2_absent + 
+        item.attendance_quarter_3_absent +  item.attendance_quarter_4_absent;
+        const tardyTotal = item.attendance_quarter_1_tardy +  item.attendance_quarter_2_tardy + 
+        item.attendance_quarter_3_tardy +  item.attendance_quarter_4_tardy;
+
+        const presentTotal = item.attendance_quarter_1_present +  item.attendance_quarter_2_present + 
+        item.attendance_quarter_3_present+  item.attendance_quarter_4_present;
+
+        grades = {
+          ...grades,
+          [`Class Type ${index + 1}`]: item.class,
+          [`Class Name ${index + 1}`]: item.subject,
+          [`Class Designation ${index + 1}`]: '',
+          [`Class Teacher Name ${index + 1}`]: item.teacher_name,
+          [`Class Grade Q1 ${index + 1}`]: item.grade_quarter_1,
+          [`Class Grade Q2 ${index + 1}`]: item.grade_quarter_2,
+          [`Class Grade Q3 ${index + 1}`]: item.grade_quarter_3,
+          [`Class Grade Q4 ${index + 1}`]: item.grade_quarter_4,
+          [`Class Letter Q1 ${index + 1}`]: item.letter_grade_quarter_1,
+          [`Class Letter Q2 ${index + 1}`]: item.letter_grade_quarter_2,
+          [`Class Letter Q3 ${index + 1}`]: item.letter_grade_quarter_3,
+          [`Class Letter Q4 ${index + 1}`]: item.letter_grade_quarter_4,
+          [`Class Grade Mid Letter ${index + 1}`]: '',
+          [`Class Grade Mid Number ${index + 1}`]: '',
+          [`Class Grade Final Letter ${index + 1}`]: '',
+          [`Class Grade Final Number ${index + 1}`]: '',
+          [`Class Grade Year Final Letter ${index + 1}`]: item.letter_year_final_grade,
+          [`Class Grade Year Final Number ${index + 1}`]: item.final_grade,
+          [`Class Help Needed Q1 ${index + 1}`]: item.help_q1,
+          [`Class Help Needed Q2 ${index + 1}`]: item.help_q2,
+          [`Class Help Needed Q3 ${index + 1}`]: item.help_q3,
+          [`Class Help Needed Q4 ${index + 1}`]: item.help_q4,
+          [`Class Help Needed Overall ${index + 1}`]: '',
+          [`Class Attendance Absent Q1 ${index + 1}`]:  item.attendance_quarter_1_absent,
+          [`Class Attendance Absent Q2 ${index + 1}`]: item.attendance_quarter_2_absent,
+          [`Class Attendance Absent Q3 ${index + 1}`]: item.attendance_quarter_3_absent,
+          [`Class Attendance Absent Q4 ${index + 1}`]: item.attendance_quarter_4_absent,
+          [`Class Attendance Tardy Q1 ${index + 1}`]: item.attendance_quarter_1_tardy,
+          [`Class Attendance Tardy Q2 ${index + 1}`]: item.attendance_quarter_2_tardy,
+          [`Class Attendance Tardy Q3 ${index + 1}`]: item.attendance_quarter_3_tardy,
+          [`Class Attendance Tardy Q4 ${index + 1}`]: item.attendance_quarter_4_tardy,
+          [`Class Attendance Present Q1 ${index + 1}`]: item.attendance_quarter_1_present,
+          [`Class Attendance Present Q2 ${index + 1}`]: item.attendance_quarter_2_present,
+          [`Class Attendance Present Q3 ${index + 1}`]: item.attendance_quarter_3_present,
+          [`Class Attendance Present Q4 ${index + 1}`]: item.attendance_quarter_4_present,
+          [`Class Attendance Total Q1 ${index + 1}`]: item.attendance_quarter_1_total,
+          [`Class Attendance Total Q2 ${index + 1}`]: item.attendance_quarter_2_total,
+          [`Class Attendance Total Q3 ${index + 1}`]: item.attendance_quarter_3_total,
+          [`Class Attendance Total Q4 ${index + 1}`]:  item.attendance_quarter_4_total,
+          [`Class Attendance Overall Absent ${index + 1}`]: absentTotal,
+          [`Class Attendance Overall Tardy ${index + 1}`]: tardyTotal,
+          [`Class Attendance Overall Present ${index + 1}`]: presentTotal,
+          [`Class Attendance Overall Total ${index + 1}`]: ''
+        }
+      });
+
+      return grades;
+    }
     let index = 0;
 
     const row = {
@@ -120,10 +181,11 @@ export default ({ child_id }) => {
   }
 
   let studentList = type === 'all' ? group_type === 'bcombs' ? (applications?.activeapplications || []) : applications?.customActiveApplications
-  || [] : gradeList;
+    || [] : gradeList;
+
 
   if (studentList.length > 0) {
-  
+
     studentList.map((gr) => {
 
       const stardarizedTestList = gr.standardized_test || [];
@@ -131,12 +193,12 @@ export default ({ child_id }) => {
       let studentName = '';
       if (gr?.form_contents) {
         formVal = JSON.parse(gr?.form_contents);
-        console.log('formVal',formVal)
+ 
         formVal = formVal?.formData || [];
         studentName = getChildFromFormData(formVal);
       }
       else {
-        studentName = (gr?.child?.lastname ?  `${gr?.child?.lastname},` : '') + ' ' + (gr?.child?.firstname || '')
+        studentName = (gr?.child?.lastname ? `${gr?.child?.lastname},` : '') + ' ' + (gr?.child?.firstname || '')
       }
 
       if (stardarizedTestList && stardarizedTestList.length > 0) {
@@ -234,30 +296,79 @@ export default ({ child_id }) => {
         });
       } else {
         const cg = {} //Temporary fix for cg not defined
-        const pClass = populateClass(cg.grades || {});
+        
+        ///// gr?.child?.ch_id 
 
-        const row = {
-          'Student Name': studentName,
-          'Student ID': gr?.child?.ch_id || gr?.app_id,
-          'App Group ID': gr?.child?.class_teacher,
-          'Cumulative Grade ID': '',
-          'Student Level': '',
-          'Student Designations': '',
-          'School Name': '',
-          'School Designation': '',
-          'School Year Start': '',
-          'School Year End': '',
-          'School Year Time Frame': '',
-          'GPA Scale': '',
-          'Semester 1 (GPA)': '',
-          'Semester 2 (GPA)': '',
-          'GPA Final': '',
-          'Class Rank (Sem 1)': '',
-          'Class Rank (Sem 2)': '',
-          ...pClass
+        const currentGrade = gradeList.find(grade => grade.child_id === (gr?.child?.ch_id || gr?.app_id))
+        let currentGradeCumulative = [];
+        if (currentGrade?.cumulative_grades) {
+          currentGradeCumulative = currentGrade?.cumulative_grades.filter(item => {
+            if( gr?.child?.class_teacher) {
+             return item.app_group_id === gr?.child?.class_teacher
+            }
+            return item.child_id === (gr?.child?.ch_id || gr?.app_id)
+          });
         }
 
-        exportGradesData.push(row);
+        console.log('currentGradeCumulative',currentGradeCumulative)
+
+        if(currentGradeCumulative.length > 0) {
+          currentGradeCumulative.forEach(cumGrd =>  {
+            const pClass = populateClass(cumGrd.grades || {});
+            console.log('pClassssss',pClass)
+             let row = {
+              'Student Name': studentName,
+              'Student ID': gr?.child?.ch_id || gr?.app_id,
+              'App Group ID': gr?.child?.class_teacher,
+              'Cumulative Grade ID': cumGrd.student_grade_cumulative_id,
+              'Student Level': '',
+              'Student Designations': cumGrd.student_designation,
+              'School Name': cumGrd.school_name,
+              'School Designation': cumGrd.school_designation,
+              'School Year Start': cumGrd.school_year_start,
+              'School Year End':   cumGrd.school_year_end,
+              'School Year Time Frame': '',
+              'GPA Scale': '',
+              'Semester 1 (GPA)': cumGrd.gpa_sem_1,
+              'Semester 2 (GPA)': cumGrd.gpa_sem_2,
+              'GPA Final': cumGrd.gpa_final,
+              'Class Rank (Sem 1)': '',
+              'Class Rank (Sem 2)': '',
+              ...pClass
+            }
+
+            exportGradesData.push(row);
+          })
+
+         
+        }
+        else {
+          const pClass = populateClass(cumGrd.grades || {});
+          const row = {
+            'Student Name': studentName,
+            'Student ID': gr?.child?.ch_id || gr?.app_id,
+            'App Group ID': gr?.child?.class_teacher,
+            'Cumulative Grade ID': '',
+            'Student Level': '',
+            'Student Designations': '',
+            'School Name': '',
+            'School Designation': '',
+            'School Year Start': '',
+            'School Year End': '',
+            'School Year Time Frame': '',
+            'GPA Scale': '',
+            'Semester 1 (GPA)': '',
+            'Semester 2 (GPA)': '',
+            'GPA Final': '',
+            'Class Rank (Sem 1)': '',
+            'Class Rank (Sem 2)': '',
+            ...pClass
+          }
+  
+          exportGradesData.push(row);
+        }
+
+
       }
     });
   } else {
@@ -314,6 +425,7 @@ export default ({ child_id }) => {
 
   const handleImportedTestData = (data = []) => {
     let formattedSt = [];
+
     for (let i = 1; i < data.length; i++) {
       let fields = data[i].split('"').join('').split(',');
 
@@ -321,7 +433,7 @@ export default ({ child_id }) => {
         const childIdIndex = group_type === 'bcombs' ? 2 : 1;
         const appGroupIdIndex = group_type === 'bcombs' ? 3 : 2;
         const st = {
-          name: fields[0].trim()  + ' ' + fields[0].trim(),
+          name: fields[0].trim() + ' ' + fields[0].trim(),
           child_id: fields[childIdIndex],
           app_group_id: fields[appGroupIdIndex],
           id: fields[childIdIndex],
@@ -490,9 +602,9 @@ export default ({ child_id }) => {
 
   const handleImportGradesData = (data = []) => {
     let formattedGrades = [];
-
+    console.log('handleImportGradesData data', data)
     const colHeaders = data[0].split('"').join('').split(',');
-
+    console.log('handleImportGradesData colHeaders', colHeaders)
     const importedGrades = colHeaders.filter((i) => {
       return i.includes('Class Type')
     });
@@ -500,13 +612,13 @@ export default ({ child_id }) => {
 
     for (let i = 1; i < data.length; i++) {
       let fields = data[i].split('"').join('').split(',');
-  
+
       if (fields.length >= 17) {
         const childIdIndex = group_type === 'bcombs' ? 2 : 1;
-        const appGroupIdIndex = group_type === 'bcombs' ? 3 : 2;
-
+        const appGroupIdIndex = group_type === 'bcombs' ? 1 : 2;
+        console.log('fields 4444444444', fields[4])
         const cg = {
-          name:  fields[0].trim() + ' ' +  ( group_type === 'bcombs' ? fields[1].trim() : '') ,
+          name: fields[0].trim() + ' ' + (group_type === 'bcombs' ? fields[1].trim() : ''),
           child_id: fields[childIdIndex],
           app_group_id: fields[appGroupIdIndex],
           id: fields[childIdIndex],
@@ -621,7 +733,7 @@ export default ({ child_id }) => {
           </a>
           <StandardTest
             appGroupIds={appGroupIdList}
-            applications={is_parent ? applications.userAllApplications :  group_type === 'forms' ? applications.customActiveApplications : applications.activeapplications}
+            applications={is_parent ? applications.userAllApplications : group_type === 'forms' ? applications.customActiveApplications : applications.activeapplications}
             importData={formattedSt}
             childId={child_id}
             groupId={group_id}

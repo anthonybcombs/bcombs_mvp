@@ -893,6 +893,7 @@ export default ({ applications, importData = [], childId, requestList, groupType
     selectStudentRows = selectStudentRows.filter(e => appGroupIds.includes(e.app_group_id))
   }
 
+  console.log('selectStudentRows',selectStudentRows)
   return (
     <div
       className='gradesTable'
