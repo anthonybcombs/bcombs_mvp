@@ -310,11 +310,9 @@ export default ({ child_id }) => {
           });
         }
 
-        console.log('currentGradeCumulative',currentGradeCumulative)
-
         if(currentGradeCumulative.length > 0) {
           currentGradeCumulative.forEach(cumGrd =>  {
-            const pClass = populateClass(cumGrd.grades || {});
+            const pClass = populateClass(cumGrd?.grades || {});
             console.log('pClassssss',pClass)
              let row = {
               'Student Name': studentName,
@@ -338,12 +336,13 @@ export default ({ child_id }) => {
             }
 
             exportGradesData.push(row);
-          })
+          });
+
 
          
         }
         else {
-          const pClass = populateClass(cumGrd.grades || {});
+          const pClass = populateClass(cumGrd?.grades || {});
           const row = {
             'Student Name': studentName,
             'Student ID': gr?.child?.ch_id || gr?.app_id,
