@@ -47,6 +47,10 @@ export default ({ child_id }) => {
   console.log('applications gradeList', gradeList)
   console.log('applications', applications)
 
+  console.log('application_groups',application_groups)
+
+  const currentApplicationGroups = type === 'all' ? application_groups : application_groups.filter(item => item.app_grp_id === group_id)
+
   let exportTestData = [];
   let exportGradesData = [];
   const appGroupIdList = appGroupIds && (type === 'all' || is_parent) ? appGroupIds.split(',') : []
@@ -185,7 +189,7 @@ export default ({ child_id }) => {
 
 
   if (studentList.length > 0) {
-
+    console.log('studentListtttttt',studentList)
     studentList.map((gr) => {
 
       const stardarizedTestList = gr.standardized_test || [];
@@ -197,8 +201,14 @@ export default ({ child_id }) => {
         formVal = formVal?.formData || [];
         studentName = getChildFromFormData(formVal);
       }
-      else {
-        studentName = (gr?.child?.lastname ? `${gr?.child?.lastname},` : '') + ' ' + (gr?.child?.firstname || '')
+      else { 
+        if(gr?.child) {
+          studentName = (gr?.child?.lastname ? `${gr?.child?.lastname},` : '') + ' ' + (gr?.child?.firstname || '')
+        }
+        else {
+          studentName = (gr?.lastname ? `${gr?.lastname},` : '') + ' ' + (gr?.firstname || '')
+        }
+        
       }
 
       if (stardarizedTestList && stardarizedTestList.length > 0) {
@@ -313,23 +323,23 @@ export default ({ child_id }) => {
         if(currentGradeCumulative.length > 0) {
           currentGradeCumulative.forEach(cumGrd =>  {
             const pClass = populateClass(cumGrd?.grades || {});
-            console.log('pClassssss',pClass)
+       
              let row = {
               'Student Name': studentName,
               'Student ID': gr?.child?.ch_id || gr?.app_id,
               'App Group ID': gr?.child?.class_teacher,
-              'Cumulative Grade ID': cumGrd.student_grade_cumulative_id,
+              'Cumulative Grade ID': cumGrd?.student_grade_cumulative_id,
               'Student Level': '',
-              'Student Designations': cumGrd.student_designation,
-              'School Name': cumGrd.school_name,
-              'School Designation': cumGrd.school_designation,
-              'School Year Start': cumGrd.school_year_start,
-              'School Year End':   cumGrd.school_year_end,
+              'Student Designations': cumGrd?.student_designation,
+              'School Name': cumGrd?.school_name,
+              'School Designation': cumGrd?.school_designation,
+              'School Year Start': cumGrd?.school_year_start,
+              'School Year End':   cumGrd?.school_year_end,
               'School Year Time Frame': '',
               'GPA Scale': '',
-              'Semester 1 (GPA)': cumGrd.gpa_sem_1,
-              'Semester 2 (GPA)': cumGrd.gpa_sem_2,
-              'GPA Final': cumGrd.gpa_final,
+              'Semester 1 (GPA)': cumGrd?.gpa_sem_1,
+              'Semester 2 (GPA)': cumGrd?.gpa_sem_2,
+              'GPA Final': cumGrd?.gpa_final,
               'Class Rank (Sem 1)': '',
               'Class Rank (Sem 2)': '',
               ...pClass
@@ -342,7 +352,7 @@ export default ({ child_id }) => {
          
         }
         else {
-          const pClass = populateClass(cumGrd?.grades || {});
+          const pClass = populateClass(gr?.grades || {});
           const row = {
             'Student Name': studentName,
             'Student ID': gr?.child?.ch_id || gr?.app_id,
@@ -518,7 +528,6 @@ export default ({ child_id }) => {
     if (vendors && vendors.length > 0) {
       //dispatch(requestGetApplications(vendors[0].id));
 
-      console.log('vendors', vendors);
       const vendorId = parseInt(vendor);
       const currentVendor = vendors.find(item => item.id2 === vendorId);
       if (type && type === 'all' && !is_parent) {
@@ -601,9 +610,8 @@ export default ({ child_id }) => {
 
   const handleImportGradesData = (data = []) => {
     let formattedGrades = [];
-    console.log('handleImportGradesData data', data)
+
     const colHeaders = data[0].split('"').join('').split(',');
-    console.log('handleImportGradesData colHeaders', colHeaders)
     const importedGrades = colHeaders.filter((i) => {
       return i.includes('Class Type')
     });
@@ -615,7 +623,7 @@ export default ({ child_id }) => {
       if (fields.length >= 17) {
         const childIdIndex = group_type === 'bcombs' ? 2 : 1;
         const appGroupIdIndex = group_type === 'bcombs' ? 1 : 2;
-        console.log('fields 4444444444', fields[4])
+ 
         const cg = {
           name: fields[0].trim() + ' ' + (group_type === 'bcombs' ? fields[1].trim() : ''),
           child_id: fields[childIdIndex],
@@ -651,7 +659,7 @@ export default ({ child_id }) => {
     if (appGroupId) {
       setSelectedAppGroup(appGroupId);
       //selectedAppGroup = appGroupId;
-      console.log('appGroupIddddddd', appGroupId)
+
       dispatch(requestGetStudentCumulativeGradeByAppGroup({
         app_group_id: appGroupId,
         app_group_type: 'bcombs'
@@ -830,7 +838,7 @@ export default ({ child_id }) => {
           <ExportTestGradeDialogStyled
             inputType='test'
             onClose={() => { setSelecteExportType() }}
-            appGroups={application_groups}
+            appGroups={currentApplicationGroups}
             formAppGroups={form.formAppGroups}
             onGetGroupGradeTest={handleGetGroupGradeTest}
             data={exportTestData}
@@ -844,7 +852,7 @@ export default ({ child_id }) => {
           <ExportTestGradeDialogStyled
             inputType='grades'
             onClose={() => { setSelecteExportType() }}
-            appGroups={application_groups}
+            appGroups={currentApplicationGroups}
             onGetGroupGradeTest={handleGetGroupGradeTest}
             data={exportGradesData}
             loading={gradeLoading}
