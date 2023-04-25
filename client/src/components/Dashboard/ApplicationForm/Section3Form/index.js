@@ -73,7 +73,7 @@ export default function index({
                 onChange={() => {
                   handleWaiverFormDetailsChange("section3", "checked", !section3.checked)
                 }} 
-                ref={register({required: true})}
+                ref={register({required: !isReadonly  ? true : false })}
                 disabled={isReadonly}
               />
             <span 
@@ -93,7 +93,7 @@ export default function index({
                   onChange={({ target }) => {
                     handleWaiverFormDetailsChange("section3", "signature", target.value)
                   }}
-                  ref={register({required: true})}
+                  ref={register({required: !isReadonly  ? true : false })}
                   readOnly={isReadonly}
                   value={section3?.signature}
                 />
