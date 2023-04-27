@@ -53,7 +53,7 @@ export default function index({
   emptyFields = {}
 }) {
 
- 
+
   return (
     <Section3FormStyled>
       <h3 className="heading">{name}</h3>
@@ -68,17 +68,17 @@ export default function index({
             <label className="cus-checkbox-container">
               <input
                 type="checkbox"
-                name="section3_checkbox" 
+                name="section3_checkbox"
                 checked={section3.checked}
                 onChange={() => {
                   handleWaiverFormDetailsChange("section3", "checked", !section3.checked)
-                }} 
-                ref={register({required: !isReadonly  ? true : false })}
-                disabled={isReadonly}
+                }}
+                ref={register({ required: !isReadonly ? true : false })}
+                // disabled={isReadonly}
               />
-            <span 
-                style={{"borderColor": (errors.section3_checkbox || emptyFields?.section_3_checked) ? "red": "" }} 
-                className="checkmark">  
+              <span
+                style={{ "borderColor": (errors.section3_checkbox || emptyFields?.section_3_checked) ? "red" : "" }}
+                className="checkmark">
               </span>
             </label>
           </div>
@@ -93,8 +93,8 @@ export default function index({
                   onChange={({ target }) => {
                     handleWaiverFormDetailsChange("section3", "signature", target.value)
                   }}
-                  ref={register({required: !isReadonly  ? true : false })}
-                  readOnly={isReadonly}
+                  ref={register({ required: !isReadonly ? true : false })}
+                 // disabled={isReadonly}
                   value={section3?.signature}
                 />
                 <label className="field-label" htmlFor="section3_signature"><span className="required">*</span> Electronic Signature</label>
