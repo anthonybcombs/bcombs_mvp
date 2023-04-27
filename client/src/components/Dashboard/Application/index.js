@@ -588,28 +588,28 @@ export default function index() {
 
   console.log('groups', groups)
   if (updateSubmittedForm.message === 'successfully update your application form') {
-    // window.location.reload()
+    window.location.reload()
   }
 
   if (
     applications.updateapplication &&
     applications.updateapplication.message == "application updated"
   ) {
-    // window.location.reload()
+    window.location.reload()
   }
 
   if (
     applications.archivedapplication &&
     applications.archivedapplication.message == "application archived"
   ) {
-    // window.location.reload()
+    window.location.reload()
   }
 
   if (
     applications.updateapplication &&
     applications.updateapplication.message == "application successfully updated"
   ) {
-    // window.location.reload()
+    window.location.reload()
   }
 
   const [appGroups, setAppGroups] = useState([]);
