@@ -588,28 +588,28 @@ export default function index() {
 
   console.log('groups', groups)
   if (updateSubmittedForm.message === 'successfully update your application form') {
-    window.location.reload()
+    // window.location.reload()
   }
 
   if (
     applications.updateapplication &&
     applications.updateapplication.message == "application updated"
   ) {
-    window.location.reload()
+    // window.location.reload()
   }
 
   if (
     applications.archivedapplication &&
     applications.archivedapplication.message == "application archived"
   ) {
-    window.location.reload()
+    // window.location.reload()
   }
 
   if (
     applications.updateapplication &&
     applications.updateapplication.message == "application successfully updated"
   ) {
-    window.location.reload()
+    // window.location.reload()
   }
 
   const [appGroups, setAppGroups] = useState([]);
@@ -805,6 +805,24 @@ export default function index() {
   useEffect(() => {
     setAppGroups(formAppGroups);
   }, [formAppGroups])
+
+  
+  const handleWaiverFormDetailsChange = (section, id, value) => {
+
+    let subTermsWaiver = termsWaiver;
+
+    if(section === "section1") {
+      subTermsWaiver.section1[id] = value;
+    } else if (section === "section2") {
+      subTermsWaiver.section2[id] = value;
+    } else if (section === "section3") {
+      subTermsWaiver.section3[id] = value;
+    } else {
+      console.log("Invalid Section");
+    }
+
+    setTermsWaiver({...subTermsWaiver});
+  }
 
 
 
@@ -1432,11 +1450,11 @@ export default function index() {
       },
       parents: setupParentsList(),
       emergency_contacts: JSON.stringify(emergencyContacts),
-      section1_signature: selectedApplication.section1_signature,
+      section1_signature: termsWaiver?.section1?.signature,
       section1_date_signed: selectedApplication.section1_date_signed,
-      section2_signature: selectedApplication.section2_signature,
+      section2_signature:  termsWaiver?.section2?.signature,
       section2_date_signed: selectedApplication.section2_date_signed,
-      section3_signature: selectedApplication.section3_signature,
+      section3_signature:  termsWaiver?.section3?.signature,
       section3_date_signed: selectedApplication.section3_date_signed,
       section1_text: selectedApplication.section1_text,
       section2_text: selectedApplication.section2_text,
@@ -1446,6 +1464,24 @@ export default function index() {
       section3_name: selectedApplication.section3_name,
       updated_by: auth.name
     };
+    
+
+    // const termsWaiver = {
+    //   date: new Date().toString(),
+    //   section1: {
+    //     checked: !!application.section1_signature,
+    //     signature: application.section1_signature
+    //   },
+    //   section2: {
+    //     checked: !!application.section2_signature,
+    //     signature: application.section2_signature
+    //   },
+    //   section3: {
+    //     checked: !!application.section3_signature,
+    //     signature: application.section3_signature
+    //   }
+    // }
+
 
     payload = {
       ...payload,
@@ -1453,7 +1489,7 @@ export default function index() {
     };
     console.log("Submit update application", payload);
 
-    dispatch(requestSaveApplication(payload));
+     dispatch(requestSaveApplication(payload));
   };
 
   const [childInformation, setChildInformation] = useState({});
@@ -1466,17 +1502,19 @@ export default function index() {
     date: new Date().toString(),
     section1: {
       checked: false,
-      signature: ""
+      signature: selectedApplication?.section1_signature
     },
     section2: {
       checked: false,
-      signature: ""
+      signature: selectedApplication?.section2_signature
     },
     section3: {
       checked: false,
-      signature: ""
+      signature: selectedApplication?.section3_signature
     }
   };
+
+  console.log('selectedApplicationssssssssssss',selectedApplication)
 
   const [termsWaiver, setTermsWaiver] = useState({ ...termsWaiverObj });
 
@@ -2641,6 +2679,7 @@ export default function index() {
                 isReadonly={true}
                 register={register}
                 errors={errors}
+                handleWaiverFormDetailsChange={handleWaiverFormDetailsChange}
                 termsWaiver={termsWaiver}
                 isVendorView={true}
                 isUpdate={true}

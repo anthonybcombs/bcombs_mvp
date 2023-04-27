@@ -53,6 +53,7 @@ export default function index({
   emptyFields = {}
 }) {
 
+  console.log('section1 2222222',section1)
   return (
     <Section1FormStyled>
       <h3 className="heading">{name}</h3>
@@ -68,17 +69,17 @@ export default function index({
               <input
                 className={`${emptyFields?.section_1_checked && 'highlights'} `}
                 name="section1_checkbox"
-                type="checkbox" 
+                type="checkbox"
                 checked={section1.checked}
                 onChange={({ target }) => {
                   handleWaiverFormDetailsChange("section1", "checked", !section1.checked)
                 }}
-                ref={register({required: !isReadonly  ? true : false })}
-                disabled={isReadonly}
+                ref={register({ required: !isReadonly ? true : false })}
+               // disabled={isReadonly}
               />
-              <span 
-                style={{"borderColor": (errors.section1_checkbox || emptyFields?.section_2_checked) ? "red": "" }} 
-                className="checkmark">  
+              <span
+                style={{ "borderColor": (errors.section1_checkbox || emptyFields?.section_2_checked) ? "red" : "" }}
+                className="checkmark">
               </span>
             </label>
           </div>
@@ -93,9 +94,9 @@ export default function index({
                   onChange={({ target }) => {
                     handleWaiverFormDetailsChange("section1", "signature", target.value)
                   }}
-                  ref={register({required: !isReadonly  ? true : false })}
+                  ref={register({ required: !isReadonly ? true : false })}
                   value={section1?.signature}
-                  readOnly={isReadonly}
+                  // disabled={isReadonly}
                 />
                 <label className="field-label" htmlFor="section1_signature"><span className="required">*</span> Electronic Signature</label>
               </div>
@@ -114,7 +115,7 @@ export default function index({
                   className="field-input"
                   placeholder="Date"
                   readOnly
-                  onChange={() => {}}
+                  onChange={() => { }}
                   value={pDate}
                 />
                 <label className="field-label">Date</label>

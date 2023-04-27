@@ -18,7 +18,7 @@ const TermsWaiverFormViewStyled = styled.div`
 
 export default function index({
   application,
-  handleWaiverFormDetailsChange = {},
+  handleWaiverFormDetailsChange ,
   register,
   errors,
   isReadonly,
@@ -64,7 +64,8 @@ export default function index({
             errors={errors}
             name={application?.section1_name}
             text={application?.section1_text}
-            isReadonly={isVendorView ? true : isReadonly}
+            // isReadonly={isVendorView ? true : isReadonly}
+            isReadonly={isReadonly}
           />
           <br />
           <br />
@@ -97,7 +98,7 @@ export default function index({
             errors={errors}
             name={application?.section2_name}
             text={application?.section2_text}
-            isReadonly={isVendorView ? true : isReadonly}
+            isReadonly={isReadonly}
           />
           <br />
           <br />
@@ -131,7 +132,7 @@ export default function index({
             errors={errors}
             name={application?.section3_name}
             text={application?.section3_text}
-            isReadonly={isVendorView ? true : isReadonly}
+            isReadonly={isReadonly}
           />
           <br />
           <br />
