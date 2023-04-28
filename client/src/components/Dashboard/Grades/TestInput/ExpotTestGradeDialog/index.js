@@ -16,7 +16,7 @@ export default function index({
   loading
 }) {
   const [appGroupText, setAppGroupText] = useState("");
-  const updatedGroups =  unionBy(appGroups, formAppGroups, "app_grp_id");// [...(appGroups || []),...(formAppGroups || [])]
+  const updatedGroups =  unionBy(appGroups, formAppGroups, "name");// [...(appGroups || []),...(formAppGroups || [])]
   // useEffect(() => {
   //   if(appGroups.length > 0)
   //     setAppGroupText(appGroups[0].app_grp_id);
@@ -25,6 +25,7 @@ export default function index({
   // console.log('updatedGroups',updatedGroups.find(item => item.app_grp_id === '5e64e7af-b493-11ec-93fb-8e5e4cc226cc'))
   console.log('dataa', data)
   console.log('appGroupText',appGroupText)
+  console.log('appGroupszzzzzzzzzz', appGroups)
   return ReactDOM.createPortal(
     <ExportTestGradeDialogStyled
       data-testid='app-big-calendar-create-modal'
