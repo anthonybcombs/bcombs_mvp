@@ -8,7 +8,7 @@ import {
 import { customConnection, makeDb } from "../helpers/database";
 import fetch from "node-fetch";
 import { v4 as uuidv4 } from "uuid";
-import { sendMigratedAccount } from "../helpers/email";
+import { sendMigratedAccount, bookDemoSchedule } from "../helpers/email";
 const multer = require("multer");
 const router = express.Router();
 
@@ -733,9 +733,8 @@ router.post("/user/photo", async (req, res) => {
       let updatedUser = await getUserFromDatabase(email);
 
       updatedUser.profile_img = updatedUser.profile_img
-        ? `${s3BucketRootPath}${
-            updatedUser.profile_img
-          }?${new Date().getTime()}`
+        ? `${s3BucketRootPath}${updatedUser.profile_img
+        }?${new Date().getTime()}`
         : "";
 
       res.status(200).json({ error: true, data: updatedUser });
@@ -963,6 +962,40 @@ router.get("/invitation/calendar/:id/:status", async (req, res) => {
     await db.close();
   }
 });
+
+router.post("/demo_schedule/request", async (req, res) => {
+  try {
+    const {
+      organizationName = '',
+      organizationType = '',
+      organizationSize = '',
+      websiteUrl = '',
+      fullName = '',
+      clientEmail = '',
+      contactNo = ''
+    } = req.body
+
+    await bookDemoSchedule({
+      organizationName,
+      organizationType,
+      organizationSize,
+      websiteUrl,
+      fullName,
+      clientEmail,
+      contactNo
+    })
+    return res.json({
+      message: 'message sent'
+    })
+  } catch (error) {
+    return res.json({
+      message: 'Something went wrong'
+    })
+  }
+});
+
+
+
 
 // SCRIPT FOR MIGRATION
 

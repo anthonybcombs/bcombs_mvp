@@ -31,17 +31,17 @@ const LandingPage = props => {
             window.removeEventListener('resize', handleWindowSizeChange);
         }
     }, []);
-    let LandingPageComponent = null;
+    let LandingPageComponent = React.lazy(() => import('./Pages/desktop/home/index.js'))
 
     if (width <= 768) {
         LandingPageComponent = React.lazy(() => import('./Pages/mobile/home/index.js'))
     }
-    else if (width > 768 && width <= 1007) {
-        LandingPageComponent = React.lazy(() => import('./Pages/tablet/home/index.js'))
-    }
-    else {
-        LandingPageComponent = React.lazy(() => import('./Pages/desktop/home/index.js'))
-    }
+    // else if (width > 768 && width <= 1007) {
+    //     LandingPageComponent = React.lazy(() => import('./Pages/tablet/home/index.js'))
+    // }
+    // else {
+    //     LandingPageComponent = React.lazy(() => import('./Pages/desktop/home/index.js'))
+    // }
     return <React.Suspense fallback={<></>}>
         <LandingPageComponent />
     </React.Suspense>

@@ -181,6 +181,44 @@ export const getReScheduledTemplate = (
     </div>
   `;
 };
+
+export const bookDemoSchedule = ({
+  organizationName,
+  organizationType,
+  organizationSize,
+  websiteUrl,
+  fullName,
+  clientEmail,
+  contactNo
+}) => {
+  return sendEmail({
+    ...defaultMailConfig,
+    subject: `Bcombs: Demo Request`,
+    to: 'nate@bcombs.com',
+    html: `
+      <div>
+        
+        <p>
+          Organization Name: ${organizationName}
+          <br/>
+          Organization Type: ${organizationType}
+          <br/>
+          Organization Size: ${organizationSize}
+          <br/>
+          Website URL: ${websiteUrl}
+          <br/>
+          Full Name: ${fullName}
+          <br/>
+          Email: ${clientEmail}
+          <br/>
+          Contact No: ${contactNo}
+        </p>
+      
+      </div>
+    ` // html body
+  });
+};
+
 const sendEmail = config => {
   transporter.sendMail(config, function(error, info) {
     if (error) {
