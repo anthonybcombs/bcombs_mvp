@@ -130,11 +130,11 @@ const DesktopPage = props => {
                                                                     <div style={{ textAlign: 'right' }} className="u_1044536395 dmRespCol small-12 large-7 medium-7" id={1044536395}>
 
 
-                                                                        <div onClick={() => demoScheduleRef.current.scrollIntoView()} className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" style={{ backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 12, paddingBottom: 12 }} >
-                                                                            <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
+                                                                        <a href="/login" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" style={{ backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 5, paddingBottom: 5, width: 200 }} >
+                                                                            <span className="iconBg" aria-hidden="true" style={{ backgroundColor: 'black' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                             </span>
-                                                                            <span className="text" style={{ fontSize: 20 }} id={1255045965}>REQUEST A DEMO</span>
-                                                                        </div>
+                                                                            <span className="text" style={{ fontSize: 16 }} id={1255045965}>USER LOGIN</span>
+                                                                        </a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -195,10 +195,32 @@ const DesktopPage = props => {
                                                                                                 <span style={{ textAlign: 'right', fontWeight: 'bolder' }}>presentation.</span>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <a onClick={() => demoScheduleRef.current.scrollIntoView()} dataDisplayType="block" className="u_1265853154 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" dataElementType="dButtonLinkId" id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
+                                                                                        {/* <a onClick={() => demoScheduleRef.current.scrollIntoView()} dataDisplayType="block" className="u_1265853154 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" dataElementType="dButtonLinkId" id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                                         </span>
                                                                                             <span className="text" id={1255045965}>REQUEST A DEMO</span>
-                                                                                        </a>
+                                                                                        </a> */}
+
+                                                                                        <div style={{ textAlign: 'right', width: '100%' }}>
+                                                                                            <a onClick={(e) => {
+                                                                                                e.preventDefault()
+                                                                                                demoScheduleRef.current.scrollIntoView()
+                                                                                            }}
+                                                                                                dataDisplayType="block"
+                                                                                                className=" align-right dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
+                                                                                                style={{
+                                                                                                    width: 210,
+                                                                                                    paddingTop: 10,
+                                                                                                    paddingBottom: 10
+                                                                                                }}
+                                                                                                file="false" href="./#Contact" dataElementType="dButtonLinkId" id={1632178657} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1592183381}> <span className="icon hasFontIcon icon-star" id={1337130365} />
+                                                                                                </span>
+                                                                                                <span style={{
+                                                                                                    fontSize: 17
+                                                                                                }} className="text" id={1050213959}>REQUEST A DEMO</span>
+                                                                                            </a>
+                                                                                        </div>
+
+
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -258,9 +280,13 @@ const DesktopPage = props => {
                                                                             <a onClick={(e) => {
                                                                                 e.preventDefault()
                                                                                 demoScheduleRef.current.scrollIntoView()
-                                                                            }} dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" style={{ backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 12, paddingBottom: 12 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
+                                                                            }}
+
+                                                                                dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" style={{ backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 10, paddingBottom: 10, width: 210 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                                 </span>
-                                                                                <span className="text" id={1255045965}>REQUEST A DEMO</span>
+                                                                                <span style={{
+                                                                                    fontSize: 17
+                                                                                }} className="text" id={1255045965}>REQUEST A DEMO</span>
                                                                             </a>
                                                                         </div>
                                                                     </div>
@@ -376,13 +402,20 @@ const DesktopPage = props => {
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <a onClick={(e) => {
-                                                                                e.preventDefault()
-                                                                                demoScheduleRef.current.scrollIntoView()
-                                                                            }} dataDisplayType="block" className="u_1632178657 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" id={1632178657} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1592183381}> <span className="icon hasFontIcon icon-star" id={1337130365} />
-                                                                                </span>
-                                                                                <span className="text" id={1050213959}>REQUEST A DEMO</span>
-                                                                            </a>
+                                                                            <div style={{ textAlign: 'center' }}>
+                                                                                <a onClick={(e) => {
+                                                                                    e.preventDefault()
+                                                                                    demoScheduleRef.current.scrollIntoView()
+                                                                                }}
+
+                                                                                    dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" style={{ backgroundColor: 'black', textAlign: 'center', margin: 0, paddingTop: 10, paddingBottom: 10, width: 210 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
+                                                                                    </span>
+                                                                                    <span style={{
+                                                                                        fontSize: 17
+                                                                                    }} className="text" id={1255045965}>REQUEST A DEMO</span>
+                                                                                </a>
+                                                                            </div>
+                                                                            <br />
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -450,7 +483,7 @@ const DesktopPage = props => {
                                                                                                                 <br />
                                                                                                                 <div style={{ textAlign: 'left' }}>
 
-                                                                                                                    <ul style={{ textAlign: 'left', color: 'white' }}>
+                                                                                                                    <ul className="custom-list" style={{ textAlign: 'left', color: 'white' }}>
                                                                                                                         <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Standardize forms and documents</li>
                                                                                                                         <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Implement best practices across groups and locations</li>
                                                                                                                         <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }} >Share program information</li>
@@ -486,7 +519,7 @@ const DesktopPage = props => {
                                                                                                                 <br />
                                                                                                                 <div style={{ textAlign: 'left' }}>
 
-                                                                                                                    <ul style={{ textAlign: 'left', color: 'white' }}>
+                                                                                                                    <ul className="custom-list" style={{ textAlign: 'left', color: 'white' }}>
                                                                                                                         <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Streamline Communication within your organization and community</li>
                                                                                                                         <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Manage youth and family engagement</li>
                                                                                                                         <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Share events and activities</li>
@@ -522,7 +555,7 @@ const DesktopPage = props => {
                                                                                                                 <br />
                                                                                                                 <div style={{ textAlign: 'left' }}>
 
-                                                                                                                    <ul style={{ textAlign: 'left', color: 'white' }}>
+                                                                                                                    <ul className="custom-list" style={{ textAlign: 'left', color: 'white' }}>
                                                                                                                         <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Evaluate metrics of programs</li>
                                                                                                                         <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Centralize and visualize critical data</li>
                                                                                                                         <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Obtain real-time and actionable data</li>
@@ -544,13 +577,19 @@ const DesktopPage = props => {
                                                                                             </div>
 
                                                                                         </div>
-                                                                                        <a onClick={(e) => {
-                                                                                            e.preventDefault()
-                                                                                            demoScheduleRef.current.scrollIntoView()
-                                                                                        }} dataDisplayType="block" className="u_1305716070 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" id={1305716070} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1198204442}> <span className="icon hasFontIcon icon-star" id={1431684934} />
-                                                                                            </span>
-                                                                                            <span className="text" id={1904614128}>REQUEST A DEMO</span>
-                                                                                        </a>
+                                                                                        <div style={{ textAlign: 'center' }}>
+                                                                                            <a onClick={(e) => {
+                                                                                                e.preventDefault()
+                                                                                                demoScheduleRef.current.scrollIntoView()
+                                                                                            }}
+
+                                                                                                dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" style={{ backgroundColor: 'black', textAlign: 'center', margin: 0, paddingTop: 10, paddingBottom: 10, width: 210 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
+                                                                                                </span>
+                                                                                                <span style={{
+                                                                                                    fontSize: 17
+                                                                                                }} className="text" id={1255045965}>REQUEST A DEMO</span>
+                                                                                            </a>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -570,13 +609,7 @@ const DesktopPage = props => {
                                                                 <div ref={demoScheduleRef} className=" dmRespRow fullBleedChanged fullBleedMode" id="schedule-demo" dataAnchor="schedule-demo">
                                                                     <div className="dmRespColsWrapper" id={1853815227}>
                                                                         <div className="dmRespCol small-12 medium-12 large-12  " id={1626947179}>
-                                                                            {/* <div className=" dmRespRow fullBleedChanged fullBleedMode" id={1555869260}>
-                                                                                <div className="dmRespColsWrapper" id={1521935292}>
-                                                                                    <div className="dmRespCol large-12 medium-12 small-12" id={1342380590}>
-                                                                                        <div dataElementType="spacer" className="dmSpacer u_1829268807" id={1829268807} />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div> */}
+                                                                 
                                                                             <div className="dmRespRow u_1980259185 mobile-columns-reversed" >
                                                                                 <div className="dmRespColsWrapper" id={1305498215}>
                                                                                     <div className="u_1459125012 dmRespCol small-12 medium-12 large-12" id={1459125012}>
@@ -613,7 +646,7 @@ const DesktopPage = props => {
                                                                                                     confidential.</span>
                                                                                             </p>
                                                                                         </div>
-                                                                                        <div className="dmRespRow u_1490776218" id={1490776218}>
+                                                                                        {/* <div className="dmRespRow u_1490776218" id={1490776218}>
                                                                                             <div className="dmRespColsWrapper" id={1359750392}>
                                                                                                 <div className="dmRespCol large-12 medium-12 small-12" id={1483143547}>
                                                                                                     <div className="u_1949762416 dmDividerWrapper clearfix" dataElementType="dDividerId" dataLayout="divider-style-1" dataWidgetVersion={2} id={1949762416}>
@@ -624,7 +657,7 @@ const DesktopPage = props => {
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
-                                                                                        </div>
+                                                                                        </div> */}
                                                                                         <div className=" dmform default native-inputs" dataElementType="dContactUsRespId" captcha="true" data-require-captcha="true" dataCaptchaPosition="bottomleft" id={1768185723}>
                                                                                             <h3 className="dmform-title dmwidget-title" id={1039053347} hide="true">
                                                                                                 Website Lead</h3>
@@ -670,7 +703,7 @@ const DesktopPage = props => {
                                                                                                         <input onClick={handleSendDemoRequest} className name="submit" type="button" disabled={isSending} defaultValue={isSending ? 'PLEASE WAIT...' : 'SUBMIT'} id={1615523180} />
                                                                                                     </div>
                                                                                                     <input name="dmformsendto" type="hidden" defaultValue="O0wrseIfFLs4uosQ/6FDZrW0yEZdvRMuKcdcaddm0B3jZ7FqDnEw1jdymC3Zzixv" id={1444302410} className dataDec="true" /><input className="dmActionInput" type="hidden" name="action" defaultValue="/_dm/s/rt/widgets/dmform.submit.jsp" id={1954291531} /><input name="dmformsubject" type="hidden" defaultValue="New Website Lead for B Combs Website" id={1999833387} className dataEmailSubject="New Website Lead for B Combs Website" /><input name="dmformfrom" type="hidden" defaultValue="Fearless IT" id={1010666772} className />
-                                                                                                    
+
                                                                                                     <br /><br />
                                                                                                     <div className="dmform-success" style={{ display: isSendSuccess ? 'block' : 'none', color: 'green', textAlign: 'center' }} id={1223061944}>Thank you
                                                                                                         for contacting us.<br id={1354183160} />We

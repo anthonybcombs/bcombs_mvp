@@ -72,3 +72,8 @@ img[width][height] {height: auto;}
   .dmDesktopBody:not(.editGrid) .dmNewParagraph[data-anim-desktop]:not([data-anim-desktop='none']), .dmDesktopBody:not(.editGrid) .dmNewParagraph[data-anim-extended] {
     visibility: hidden !important;
   }
+
+
+  .custom-list li:before {
+    content: '✓' !important ;
+  }

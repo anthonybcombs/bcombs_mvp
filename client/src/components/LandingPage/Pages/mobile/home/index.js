@@ -49,7 +49,7 @@ const MobilePage = props => {
 
     const handleSendDemoRequest = async () => {
         try {
-         
+
             setIsSending(true);
             setIsSendSuccess(false);
 
@@ -98,7 +98,7 @@ const MobilePage = props => {
             })
         }
     }
-    
+
 
     return <div id="dm" className="dmwr">
 
@@ -175,12 +175,10 @@ const MobilePage = props => {
                                                             id={1576678267}
                                                         >
                                                             <div style={{ textAlign: 'right' }} className=" dmRespCol small-12 large-7 medium-7" id={1044536395}>
-                                                                <a onClick={(e) => {
-                                                                    e.preventDefault()
-                                                                    demoScheduleRef.current.scrollIntoView()
-                                                                }} dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="auth/create" dataElementType="dButtonLinkId" style={{ backgroundColor: '#fa7507', textAlign: 'center', marginTop: 5, width: 120 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
+                                                                <a href="/login" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" style={{ backgroundColor: 'black', color: 'white', textAlign: 'center', margin: 0, width: 120 }} >
+                                                                    <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                     </span>
-                                                                    <span className="text" style={{ fontSize: 9 }} id={1255045965}>REQUEST A DEMO</span>
+                                                                    <span className="text" style={{ fontSize: 12 }} id={1255045965}>USER LOGIN</span>
                                                                 </a>
                                                             </div>
                                                         </div>
@@ -336,9 +334,28 @@ const MobilePage = props => {
                                                                                         </span>
                                                                                     </h1>
                                                                                 </div>
-                                                                                <a
+
+                                                                                <div style={{ textAlign: 'center' }}>
+                                                                                    <a onClick={(e) => {
+                                                                                        e.preventDefault()
+                                                                                        demoScheduleRef.current.scrollIntoView()
+                                                                                    }}
+                                                                                        dataDisplayType="block"
+                                                                                        className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
+                                                                                        style={{
+                                                                                            width: 180
+                                                                                        }}
+                                                                                        file="false" href="./#Contact" dataElementType="dButtonLinkId" id={1632178657} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1592183381}> <span className="icon hasFontIcon icon-star" id={1337130365} />
+                                                                                        </span>
+                                                                                        <span style={{
+                                                                                            fontSize: 14
+                                                                                        }} className="text" id={1050213959}>REQUEST A DEMO</span>
+                                                                                    </a>
+                                                                                </div>
+
+                                                                                {/* <a
                                                                                     data-display-type="block"
-                                                                                    className="u_1265853154 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
+                                                                                    className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
                                                                                     file="false"
                                                                                     href="#schedule-demo"
                                                                                     data-element-type="dButtonLinkId"
@@ -346,6 +363,9 @@ const MobilePage = props => {
                                                                                     onClick={(e) => {
                                                                                         e.preventDefault()
                                                                                         demoScheduleRef.current.scrollIntoView()
+                                                                                    }}
+                                                                                    style={{
+                                                                                        width: 180
                                                                                     }}
                                                                                 >
                                                                                     {" "}
@@ -363,10 +383,14 @@ const MobilePage = props => {
                                                                                     <span
                                                                                         className="text"
                                                                                         id={1255045965}
+                                                                                        style={{
+
+                                                                                            fontSize: 14
+                                                                                        }}
                                                                                     >
                                                                                         REQUEST A DEMO
                                                                                     </span>
-                                                                                </a>
+                                                                                </a> */}
                                                                             </div>
                                                                             <div
                                                                                 className="u_1058420149 dmRespCol small-12 large-5 medium-5"
@@ -454,9 +478,11 @@ const MobilePage = props => {
                                                                         demoScheduleRef.current.scrollIntoView()
                                                                     }} dataDisplayType="block"
                                                                         className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
-                                                                        file="false" dataElementType="dButtonLinkId" style={{ width: '70%', backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 12, paddingBottom: 12 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
+                                                                        file="false" dataElementType="dButtonLinkId" style={{ width: 180, backgroundColor: '#fa7507', textAlign: 'center', margin: 0 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                         </span>
-                                                                        <span className="text" id={1255045965}>REQUEST A DEMO</span>
+                                                                        <span style={{
+                                                                            fontSize: 14
+                                                                        }} className="text" id={1255045965}>REQUEST A DEMO</span>
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -545,13 +571,23 @@ const MobilePage = props => {
 
                                                                         </div>
                                                                     </div>
-                                                                    <a onClick={(e) => {
-                                                                        e.preventDefault()
-                                                                        demoScheduleRef.current.scrollIntoView()
-                                                                    }} dataDisplayType="block" className="u_1632178657 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="./#Contact" dataElementType="dButtonLinkId" id={1632178657} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1592183381}> <span className="icon hasFontIcon icon-star" id={1337130365} />
-                                                                        </span>
-                                                                        <span className="text" id={1050213959}>REQUEST A DEMO</span>
-                                                                    </a>
+                                                                    <div style={{ textAlign: 'center' }}>
+                                                                        <a onClick={(e) => {
+                                                                            e.preventDefault()
+                                                                            demoScheduleRef.current.scrollIntoView()
+                                                                        }}
+                                                                            dataDisplayType="block"
+                                                                            className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
+                                                                            style={{
+                                                                                width: 180
+                                                                            }}
+                                                                            file="false" href="./#Contact" dataElementType="dButtonLinkId" id={1632178657} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1592183381}> <span className="icon hasFontIcon icon-star" id={1337130365} />
+                                                                            </span>
+                                                                            <span style={{
+                                                                                fontSize: 14
+                                                                            }} className="text" id={1050213959}>REQUEST A DEMO</span>
+                                                                        </a>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -620,7 +656,7 @@ const MobilePage = props => {
                                                                                                         <br />
                                                                                                         <div style={{ textAlign: 'left' }}>
 
-                                                                                                            <ul style={{ textAlign: 'left', color: 'white' }}>
+                                                                                                            <ul className="custom-list" style={{ textAlign: 'left', color: 'white' }}>
                                                                                                                 <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Standardize forms and documents</li>
                                                                                                                 <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Implement best practices across groups and locations</li>
                                                                                                                 <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }} >Share program information</li>
@@ -656,7 +692,7 @@ const MobilePage = props => {
                                                                                                         <br />
                                                                                                         <div style={{ textAlign: 'left' }}>
 
-                                                                                                            <ul style={{ textAlign: 'left', color: 'white' }}>
+                                                                                                            <ul className="custom-list" style={{ textAlign: 'left', color: 'white' }}>
                                                                                                                 <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Streamline Communication within your organization and community</li>
                                                                                                                 <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Manage youth and family engagement</li>
                                                                                                                 <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Share events and activities</li>
@@ -692,7 +728,7 @@ const MobilePage = props => {
                                                                                                         <br />
                                                                                                         <div style={{ textAlign: 'left' }}>
 
-                                                                                                            <ul style={{ textAlign: 'left', color: 'white' }}>
+                                                                                                            <ul className="custom-list" style={{ textAlign: 'left', color: 'white' }}>
                                                                                                                 <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Evaluate metrics of programs</li>
                                                                                                                 <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Centralize and visualize critical data</li>
                                                                                                                 <li style={{ marginTop: 12, marginBottom: 12, fontSize: 20 }}>Obtain real-time and actionable data</li>
@@ -714,13 +750,23 @@ const MobilePage = props => {
                                                                                     </div>
 
                                                                                 </div>
-                                                                                <a onClick={(e) => {
-                                                                                    e.preventDefault()
-                                                                                    demoScheduleRef.current.scrollIntoView()
-                                                                                }} dataDisplayType="block" className="u_1305716070 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="auth/create" dataElementType="dButtonLinkId" id={1305716070} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1198204442}> <span className="icon hasFontIcon icon-star" id={1431684934} />
-                                                                                    </span>
-                                                                                    <span className="text" id={1904614128}>REQUEST A DEMO</span>
-                                                                                </a>
+                                                                                <div style={{ textAlign: 'center' }}>
+                                                                                    <a onClick={(e) => {
+                                                                                        e.preventDefault()
+                                                                                        demoScheduleRef.current.scrollIntoView()
+                                                                                    }}
+                                                                                        dataDisplayType="block"
+                                                                                        className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
+                                                                                        style={{
+                                                                                            width: 180
+                                                                                        }}
+                                                                                        file="false" href="./#Contact" dataElementType="dButtonLinkId" id={1632178657} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1592183381}> <span className="icon hasFontIcon icon-star" id={1337130365} />
+                                                                                        </span>
+                                                                                        <span style={{
+                                                                                            fontSize: 14
+                                                                                        }} className="text" id={1050213959}>REQUEST A DEMO</span>
+                                                                                    </a>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
