@@ -515,9 +515,7 @@ const MobilePage = props => {
                                                                     <div className="dmRespRow u_1826450282" id={1826450282}>
                                                                         <div className="dmRespColsWrapper" id={1844629233}>
                                                                             <div className="dmRespCol large-12 medium-12 small-12" id={1404997756}>
-                                                                                <div className="u_1819854624 dmDividerWrapper clearfix" dataElementType="dDividerId" dataLayout="divider-style-1" dataWidgetVersion={2} id={1819854624}>
-                                                                                    <hr className="dmDivider" style={{ borderWidth: '2px', borderTopStyle: 'solid', color: 'grey' }} id={1486013173} />
-                                                                                </div>
+                                                                                <div style={{ borderTop: '2px solid #FFC100', width: 77, margin: '0 auto' }}></div>
                                                                                 {/* <div className="u_1379829330 dmDividerWrapper clearfix" dataElementType="dDividerId" dataLayout="divider-style-1" dataWidgetVersion={2} id={1379829330}>
                                                                                     <hr className="dmDivider" style={{ borderWidth: '2px', borderTopStyle: 'solid', color: 'grey' }} id={1983256713} />
                                                                                 </div> */}
@@ -545,19 +543,19 @@ const MobilePage = props => {
                                                                             />
 
                                                                             </div>
-                                                                            <div  style={{ textAlign: 'left', color: 'white' }}>
-                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20 }}><div style={{ display: 'inline'}} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline'}} >Track needed Metrics</div></div>
+                                                                            <div style={{ textAlign: 'left', color: 'white' }}>
+                                                                                <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }} >Track needed Metrics</div></div>
 
-                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20, marginTop: 5 }}><div style={{ display: 'inline'}} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline'}}> User friendly design and experience</div></div>
+                                                                                <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20, marginTop: 5 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }}> User friendly design and experience</div></div>
 
-                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20, marginTop: 5  }}><div style={{ display: 'inline'}} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline'}}>  Aggregate data</div></div>
+                                                                                <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20, marginTop: 5 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }}>  Aggregate data</div></div>
 
-                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20, marginTop: 5  }}><div style={{ display: 'inline'}} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline'}}>  Streamline communication</div></div>
+                                                                                <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20, marginTop: 5 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }}>  Streamline communication</div></div>
 
-                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20, marginTop: 5  }}><div style={{ display: 'inline'}} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline'}}>  Automate process and Standardize data collection, across organization</div></div>
+                                                                                <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20, marginTop: 5 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }}>  Automate process and Standardize data collection, across organization</div></div>
 
-                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20, marginTop: 5  }}><div style={{ display: 'inline'}} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline'}} >  Reduce effort and time needed to collect, analyze and store data</div></div>
-                                                                                                    </div>
+                                                                                <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20, marginTop: 5 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }} >  Reduce effort and time needed to collect, analyze and store data</div></div>
+                                                                            </div>
                                                                             {/* <div id={1047738323}>
                                                                                 <div id={1440166053}>
                                                                                     <div className="dmRespColsWrapper" id={1701177513}>
@@ -620,7 +618,9 @@ const MobilePage = props => {
                                                                                             We help youth mentoring nonprofits work more efficiently so they can focus on their mission, including these areas:
                                                                                         </span>
                                                                                     </div>
+                                                                                   
                                                                                 </div>
+                                                                                <div style={{ borderTop: '2px solid #FFC100', width: 77, margin: '0 auto' }}></div>
                                                                                 <div className="dmRespRow u_1322998342" id={1322998342}>
                                                                                     <div className="dmRespColsWrapper" id={1315874093}>
                                                                                         <div className="dmRespCol large-12 medium-12 small-12" id={1425982292}>
@@ -837,46 +837,46 @@ const MobilePage = props => {
                                                                                         Website Lead</h3>
                                                                                     <div className="dmform-wrapper" style={{ margin: '0 auto' }} id={1899412683} captcha-lang="en">
                                                                                         <div className="dmRespDesignRow" locale="ENGLISH" id={1975886697} action>
-                                                                                        <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1855700792}>
-                                                                                                        <label htmlFor="dmform-0" id={1990129566} className >Organization
-                                                                                                            Name * </label>
-                                                                                                        <input onChange={handleClientDetailChange} value={clientDetails?.organizationName} name="organizationName" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1723102561} placeholder="Organization" /><input type="hidden" name="label-dmform-0" defaultValue="Organization" id={1771422038} className />
-                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.organizationName) && `Organization Name is required`}</div>
-                                                                                                    </div>
-                                                                                                    <div className="dmforminput small-12 medium-12 large-12 dmRespDesignCol" id={1319492863}>
-                                                                                                        <label htmlFor="dmform-4" id={1742203460}  >Organization
-                                                                                                            Type * </label>
-                                                                                                        <input onChange={handleClientDetailChange} value={clientDetails?.organizationType} name="organizationType" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1088939462} className placeholder="Organization Type" /><input type="hidden" name="label-dmform-4" defaultValue="Organization Type" id={1832609870} className />
-                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.organizationType) && `Organization Type is required`}</div>
-                                                                                                    </div>
-                                                                                                    <div className="dmforminput small-12 medium-12 large-12 dmRespDesignCol" id={1481882184}>
-                                                                                                        <label htmlFor="dmform-5" id={1274719846}  >Organization
-                                                                                                            Size * </label>
-                                                                                                        <input onChange={handleClientDetailChange} value={clientDetails?.organizationSize} name="organizationSize" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1537238133} className placeholder="Organization Size" /><input type="hidden" name="label-dmform-5" defaultValue="Organization Size" id={1861703514} className />
-                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.organizationSize) && `Organization Size is required`}</div>
-                                                                                                    </div>
-                                                                                                    <div className="dmforminput small-12 medium-12 large-12 dmRespDesignCol" id={1942857695}>
-                                                                                                        <label htmlFor="dmform-6" id={1691779908} >Website
-                                                                                                            URL * </label>
-                                                                                                        <input onChange={handleClientDetailChange} value={clientDetails?.websiteUrl} name="websiteUrl" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1509955001} className placeholder="Website URL" /><input type="hidden" name="label-dmform-6" defaultValue="Website URL" id={1504264415} className />
-                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.websiteUrl) && `Website URL is required`}</div>
-                                                                                                    </div>
-                                                                                                    <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1724528442}>
-                                                                                                        <label htmlFor="dmform-1" id={1919837551}  >Full Name * </label>
-                                                                                                        <input onChange={handleClientDetailChange} value={clientDetails?.fullName} name="fullName" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1717114357} placeholder="Full Name" /><input type="hidden" name="label-dmform-1" defaultValue="Full Name" id={1641355491} className />
-                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}> {(isSubmitError && !clientDetails?.fullName) && `Full Name is required`}</div>
-                                                                                                    </div>
+                                                                                            <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1855700792}>
+                                                                                                <label htmlFor="dmform-0" id={1990129566} className >Organization
+                                                                                                    Name * </label>
+                                                                                                <input onChange={handleClientDetailChange} value={clientDetails?.organizationName} name="organizationName" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1723102561} placeholder="Organization" /><input type="hidden" name="label-dmform-0" defaultValue="Organization" id={1771422038} className />
+                                                                                                <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.organizationName) && `Organization Name is required`}</div>
+                                                                                            </div>
+                                                                                            <div className="dmforminput small-12 medium-12 large-12 dmRespDesignCol" id={1319492863}>
+                                                                                                <label htmlFor="dmform-4" id={1742203460}  >Organization
+                                                                                                    Type * </label>
+                                                                                                <input onChange={handleClientDetailChange} value={clientDetails?.organizationType} name="organizationType" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1088939462} className placeholder="Organization Type" /><input type="hidden" name="label-dmform-4" defaultValue="Organization Type" id={1832609870} className />
+                                                                                                <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.organizationType) && `Organization Type is required`}</div>
+                                                                                            </div>
+                                                                                            <div className="dmforminput small-12 medium-12 large-12 dmRespDesignCol" id={1481882184}>
+                                                                                                <label htmlFor="dmform-5" id={1274719846}  >Organization
+                                                                                                    Size * </label>
+                                                                                                <input onChange={handleClientDetailChange} value={clientDetails?.organizationSize} name="organizationSize" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1537238133} className placeholder="Organization Size" /><input type="hidden" name="label-dmform-5" defaultValue="Organization Size" id={1861703514} className />
+                                                                                                <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.organizationSize) && `Organization Size is required`}</div>
+                                                                                            </div>
+                                                                                            <div className="dmforminput small-12 medium-12 large-12 dmRespDesignCol" id={1942857695}>
+                                                                                                <label htmlFor="dmform-6" id={1691779908} >Website
+                                                                                                    URL * </label>
+                                                                                                <input onChange={handleClientDetailChange} value={clientDetails?.websiteUrl} name="websiteUrl" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1509955001} className placeholder="Website URL" /><input type="hidden" name="label-dmform-6" defaultValue="Website URL" id={1504264415} className />
+                                                                                                <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.websiteUrl) && `Website URL is required`}</div>
+                                                                                            </div>
+                                                                                            <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1724528442}>
+                                                                                                <label htmlFor="dmform-1" id={1919837551}  >Full Name * </label>
+                                                                                                <input onChange={handleClientDetailChange} value={clientDetails?.fullName} name="fullName" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1717114357} placeholder="Full Name" /><input type="hidden" name="label-dmform-1" defaultValue="Full Name" id={1641355491} className />
+                                                                                                <div style={{ color: '#cb3837', fontSize: 14 }}> {(isSubmitError && !clientDetails?.fullName) && `Full Name is required`}</div>
+                                                                                            </div>
 
-                                                                                                    <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1724528442}>
-                                                                                                        <label htmlFor="dmform-1" id={1919837551} >Email * </label>
-                                                                                                        <input onChange={handleClientDetailChange} value={clientDetails?.clientEmail} name="clientEmail" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1717114357} placeholder="Email" /><input type="hidden" name="label-dmform-1" defaultValue="Email" id={1641355491} className />
-                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.clientEmail) && `Email is required`}</div>
-                                                                                                    </div>
-                                                                                                    <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1861108675}>
-                                                                                                        <label htmlFor="dmform-2" id={1937776670}  >Phone * </label>
-                                                                                                        <input onChange={handleClientDetailChange} value={clientDetails?.contactNo} name="contactNo" style={{ backgroundColor: '#f3f8fb' }} type="tel" id={1950306096} placeholder="Phone" /><input type="hidden" name="label-dmform-2" defaultValue="Phone" id={1071607214} className />
-                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>  {(isSubmitError && !clientDetails?.contactNo) && `Phone is required`}</div>
-                                                                                                    </div>
+                                                                                            <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1724528442}>
+                                                                                                <label htmlFor="dmform-1" id={1919837551} >Email * </label>
+                                                                                                <input onChange={handleClientDetailChange} value={clientDetails?.clientEmail} name="clientEmail" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1717114357} placeholder="Email" /><input type="hidden" name="label-dmform-1" defaultValue="Email" id={1641355491} className />
+                                                                                                <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.clientEmail) && `Email is required`}</div>
+                                                                                            </div>
+                                                                                            <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1861108675}>
+                                                                                                <label htmlFor="dmform-2" id={1937776670}  >Phone * </label>
+                                                                                                <input onChange={handleClientDetailChange} value={clientDetails?.contactNo} name="contactNo" style={{ backgroundColor: '#f3f8fb' }} type="tel" id={1950306096} placeholder="Phone" /><input type="hidden" name="label-dmform-2" defaultValue="Phone" id={1071607214} className />
+                                                                                                <div style={{ color: '#cb3837', fontSize: 14 }}>  {(isSubmitError && !clientDetails?.contactNo) && `Phone is required`}</div>
+                                                                                            </div>
 
                                                                                             <span id={1383362560} className="dmWidgetClear" />
                                                                                             <br />

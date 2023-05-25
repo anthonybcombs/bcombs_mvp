@@ -243,7 +243,9 @@ const DesktopPage = props => {
                                                                         <h2 className="text-align-center" style={{ textAlign: 'center', color: 'black' }}>
                                                                             <span style={{ display: 'unset', color: 'black' }}>Get More Done With Less Effort</span>
                                                                         </h2>
-                                                                        <div style={{ borderTop: '2px solid #FFC100', width: 77, margin: '0 auto' }}></div>
+                                                                        <div style={{ borderTop: '3px solid #FFC100', width: 90, margin: '0 auto' }}></div>
+
+
                                                                         <div style={{ marginLeft: 20, marginRight: 20 }} className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1953423639}>
                                                                             <p className="text-align-center"> <span style={{ display: 'unset', fontSize: 19 }}>As a youth mentoring organization, you must keep up with the ever-growing demand for your services while trying to manage limited resources. You and your team may also feel stretched thin trying to keep up with the data you need to renew grants.</span>
                                                                             </p>
@@ -275,7 +277,7 @@ const DesktopPage = props => {
                                                                             }}>
                                                                                 <div className="dmRespColsWrapper" id={1596779468}>
                                                                                     <div className="u_1058420149 dmRespCol small-12 large-6 medium-6" id={1058420149}>
-                                                                                        <div dataElementType="image" dataWidgetType="image" id={1915808864} data-anim-desktop="none"><img  src={DesktopMetrics} alt="" dataDmImagePath="/Resources/images/desktop_bcombs_landing_img1.webp" width="650" height="auto" onerror="handleImageLoadError(this)" />
+                                                                                        <div dataElementType="image" dataWidgetType="image" id={1915808864} data-anim-desktop="none"><img src={DesktopMetrics} alt="" dataDmImagePath="/Resources/images/desktop_bcombs_landing_img1.webp" width="650" height="auto" onerror="handleImageLoadError(this)" />
                                                                                         </div>
                                                                                     </div>
                                                                                     <div className="u_1453347549 dmRespCol small-12 large-4 medium-4" style={{ textAlign: 'justify', fontSize: 19, paddingTop: 14 }} id={1453347549}>
@@ -284,10 +286,10 @@ const DesktopPage = props => {
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <br/>
-                                                                        <br/>
+                                                                        <br />
+                                                                        <br />
                                                                         <div style={{ textAlign: 'center', marginTop: 100 }} className="dmRespCol small-12 medium-12 large-12 u_1414238043" id={1414238043}>
-                                                                         
+
                                                                             <a onClick={(e) => {
                                                                                 e.preventDefault()
                                                                                 demoScheduleRef.current.scrollIntoView()
@@ -299,10 +301,10 @@ const DesktopPage = props => {
                                                                                     fontSize: 20
                                                                                 }} className="text" id={1255045965}>REQUEST A DEMO</span>
                                                                             </a>
-                                                                            <br/>
-                                                                            <br/>
+                                                                            <br />
+                                                                            <br />
                                                                         </div>
-                                                                      
+
                                                                     </div>
                                                                     {/* <div className="dmRespColsWrapper" id={1198015247}>
                                                                         <div className="dmRespCol large-12 medium-12 small-12" id={1673096564}>
@@ -358,12 +360,8 @@ const DesktopPage = props => {
                                                                             <div className="dmRespRow u_1826450282" id={1826450282}>
                                                                                 <div className="dmRespColsWrapper" id={1844629233}>
                                                                                     <div className="dmRespCol large-12 medium-12 small-12" id={1404997756}>
-                                                                                        <div className="u_1819854624 dmDividerWrapper clearfix" dataElementType="dDividerId" dataLayout="divider-style-1" dataWidgetVersion={2} id={1819854624}>
-                                                                                            <hr className="dmDivider" style={{ borderWidth: '2px', borderTopStyle: 'solid', color: 'grey' }} id={1486013173} />
-                                                                                        </div>
-                                                                                        <div className="u_1379829330 dmDividerWrapper clearfix" dataElementType="dDividerId" dataLayout="divider-style-1" dataWidgetVersion={2} id={1379829330}>
-                                                                                            <hr className="dmDivider" style={{ borderWidth: '2px', borderTopStyle: 'solid', color: 'grey' }} id={1983256713} />
-                                                                                        </div>
+                                                                                        <div style={{ borderTop: '3px solid #FFC100', width: 90, margin: '0 auto' }}></div>
+
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -459,13 +457,13 @@ const DesktopPage = props => {
                                                                                                     How b.combs Can Help Your Organization
                                                                                                 </span>
                                                                                             </h2>
-                                                                                        
+
                                                                                             <div className="text-align-center" style={{ textAlign: 'center' }}>
                                                                                                 <span style={{ color: 'rgb(255, 255, 255)', display: 'unset', textAlign: 'center', color: 'black', fontSize: 24 }}>
                                                                                                     We help youth mentoring nonprofits work more efficiently so they can focus on their mission, including these areas:
                                                                                                 </span>
                                                                                             </div>
-                                                                                            <br/>
+                                                                                            <br />
                                                                                             <div style={{ borderTop: '3px solid #FFC100', width: 90, margin: '0 auto' }}></div>
                                                                                         </div>
                                                                                         <div className="dmRespRow u_1322998342" id={1322998342}>
@@ -655,7 +653,8 @@ const DesktopPage = props => {
                                                                                                     </span>
                                                                                                 </div>
                                                                                                 <br />
-                                                                                                <div style={{ borderTop: '2px solid #FFC100', width: 77, margin: '0 auto' }}></div>
+                                                                                                <div style={{ borderTop: '3px solid #FFC100', width: 90, margin: '0 auto' }}></div>
+
                                                                                             </div>
                                                                                         </div>
                                                                                         {/* <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1574330505} style={{ transition: 'opacity 1s ease-in-out 0s' }}>
