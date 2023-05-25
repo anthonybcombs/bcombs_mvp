@@ -74,6 +74,26 @@ img[width][height] {height: auto;}
   }
 
 
+  
+  .custom-checked-circle {
+    /* content: '✓' !important ; */
+    /* width:  40px !important;
+    height: 35px !important; */
+    font-size: 15px !important;
+    padding-right: 3px !important;
+    background-color: white !important;
+    color: #fa7507 !important;
+    padding: 4px !important; 
+    border-radius: 100% !important;
+    box-sizing: border-box;
+
+  }
+
   .custom-list li:before {
     content: '✓' !important ;
   }
+
+
+  input::-webkit-input-placeholder {
+    font-size: 14px !important
+}

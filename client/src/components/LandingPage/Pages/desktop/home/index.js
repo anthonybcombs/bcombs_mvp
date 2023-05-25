@@ -34,6 +34,7 @@ const DesktopPage = props => {
     });
     const [isSending, setIsSending] = useState(false);
     const [isSendSuccess, setIsSendSuccess] = useState(false);
+    const [isSubmitError, setIsSubmitError] = useState(false);
 
     const handleClientDetailChange = e => {
         const { name, value } = e.target;
@@ -48,6 +49,7 @@ const DesktopPage = props => {
             console.log(';`${process.env.API_HOST}/api/demo_schedule/request`', `${process.env.API_HOST}/api/demo_schedule/request`)
             setIsSending(true);
             setIsSendSuccess(false);
+            setIsSubmitError(false);
 
             if (clientDetails.organizationName &&
                 clientDetails.organizationType &&
@@ -76,6 +78,9 @@ const DesktopPage = props => {
                 response.json();
                 setIsSendSuccess(true);
 
+            }
+            else {
+                setIsSubmitError(true)
             }
 
         } catch (e) {
@@ -130,10 +135,10 @@ const DesktopPage = props => {
                                                                     <div style={{ textAlign: 'right' }} className="u_1044536395 dmRespCol small-12 large-7 medium-7" id={1044536395}>
 
 
-                                                                        <a href="/login" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" style={{ backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 5, paddingBottom: 5, width: 200 }} >
+                                                                        <a href="/login" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" style={{ backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 5, paddingBottom: 5, width: 251, height: 59 }} >
                                                                             <span className="iconBg" aria-hidden="true" style={{ backgroundColor: 'black' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                             </span>
-                                                                            <span className="text" style={{ fontSize: 16 }} id={1255045965}>USER LOGIN</span>
+                                                                            <span className="text" style={{ fontSize: 20 }} id={1255045965}>USER LOGIN</span>
                                                                         </a>
                                                                     </div>
                                                                 </div>
@@ -208,14 +213,15 @@ const DesktopPage = props => {
                                                                                                 dataDisplayType="block"
                                                                                                 className=" align-right dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
                                                                                                 style={{
-                                                                                                    width: 210,
+                                                                                                    width: 251,
+                                                                                                    height: 59,
                                                                                                     paddingTop: 10,
                                                                                                     paddingBottom: 10
                                                                                                 }}
                                                                                                 file="false" href="./#Contact" dataElementType="dButtonLinkId" id={1632178657} raw_url="/home/"> <span className="iconBg" aria-hidden="true" id={1592183381}> <span className="icon hasFontIcon icon-star" id={1337130365} />
                                                                                                 </span>
                                                                                                 <span style={{
-                                                                                                    fontSize: 17
+                                                                                                    fontSize: 20
                                                                                                 }} className="text" id={1050213959}>REQUEST A DEMO</span>
                                                                                             </a>
                                                                                         </div>
@@ -239,14 +245,17 @@ const DesktopPage = props => {
                                                                         </h2>
                                                                         <div style={{ borderTop: '2px solid #FFC100', width: 77, margin: '0 auto' }}></div>
                                                                         <div style={{ marginLeft: 20, marginRight: 20 }} className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1953423639}>
-                                                                            <p className="text-align-center"> <span style={{ display: 'unset', fontSize: 20 }}>As a youth mentoring organization, you must keep up with the ever-growing demand for your services while trying to manage limited resources. You and your team may also feel stretched thin trying to keep up with the data you need to renew grants.</span>
+                                                                            <p className="text-align-center"> <span style={{ display: 'unset', fontSize: 19 }}>As a youth mentoring organization, you must keep up with the ever-growing demand for your services while trying to manage limited resources. You and your team may also feel stretched thin trying to keep up with the data you need to renew grants.</span>
                                                                             </p>
 
-                                                                            <p className="text-align-center"> <span style={{ display: 'unset', fontSize: 20 }}>Tracking and analyzing your organizational impact across different metrics can be challenging, especially if you're inputting information into multiple applications.</span>
+                                                                            <p className="text-align-center"> <span style={{ display: 'unset', fontSize: 19 }}>Tracking and analyzing your organizational impact across different metrics can be challenging, especially if you're inputting information into multiple applications.</span>
                                                                             </p>
 
                                                                         </div>
-
+                                                                        <br />
+                                                                        <br />
+                                                                        <br />
+                                                                        <br />
                                                                         <div className=" dmNewParagraph" dataElementType="paragraph" style={{ marginTop: 12, marginLeft: 35, marginRight: 35 }}>
 
                                                                             <p className="text-align-center"> <div style={{ display: 'unset', fontSize: 24, color: 'black', fontWeight: 'bold' }}>
@@ -265,30 +274,35 @@ const DesktopPage = props => {
                                                                                 paddingRight: 0
                                                                             }}>
                                                                                 <div className="dmRespColsWrapper" id={1596779468}>
-                                                                                    <div className="u_1058420149 dmRespCol small-12 large-7 medium-7" id={1058420149}>
-                                                                                        <div dataElementType="image" dataWidgetType="image" id={1915808864} data-anim-desktop="none"><img src={DesktopMetrics} alt="" dataDmImagePath="/Resources/images/desktop_bcombs_landing_img1.webp" width="650" height="auto" onerror="handleImageLoadError(this)" />
+                                                                                    <div className="u_1058420149 dmRespCol small-12 large-6 medium-6" id={1058420149}>
+                                                                                        <div dataElementType="image" dataWidgetType="image" id={1915808864} data-anim-desktop="none"><img  src={DesktopMetrics} alt="" dataDmImagePath="/Resources/images/desktop_bcombs_landing_img1.webp" width="650" height="auto" onerror="handleImageLoadError(this)" />
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div className="u_1453347549 dmRespCol small-12 large-5 medium-5" style={{ textAlign: 'justify', fontSize: 20 }} id={1453347549}>
+                                                                                    <div className="u_1453347549 dmRespCol small-12 large-4 medium-4" style={{ textAlign: 'justify', fontSize: 19, paddingTop: 14 }} id={1453347549}>
                                                                                         Our streamlined alternative helps you simplify your operation’s informational input and analyze your organizational impact across metrics, giving you more time and energy to devote to the youth you serve.
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+                                                                        <br/>
+                                                                        <br/>
                                                                         <div style={{ textAlign: 'center', marginTop: 100 }} className="dmRespCol small-12 medium-12 large-12 u_1414238043" id={1414238043}>
-
+                                                                         
                                                                             <a onClick={(e) => {
                                                                                 e.preventDefault()
                                                                                 demoScheduleRef.current.scrollIntoView()
                                                                             }}
 
-                                                                                dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" style={{ backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 10, paddingBottom: 10, width: 210 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
+                                                                                dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" style={{ backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 10, paddingBottom: 10, width: 251, height: 59 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                                 </span>
                                                                                 <span style={{
-                                                                                    fontSize: 17
+                                                                                    fontSize: 20
                                                                                 }} className="text" id={1255045965}>REQUEST A DEMO</span>
                                                                             </a>
+                                                                            <br/>
+                                                                            <br/>
                                                                         </div>
+                                                                      
                                                                     </div>
                                                                     {/* <div className="dmRespColsWrapper" id={1198015247}>
                                                                         <div className="dmRespCol large-12 medium-12 small-12" id={1673096564}>
@@ -358,45 +372,52 @@ const DesktopPage = props => {
                                                                                     <div id={1047738323}>
                                                                                         <div className="dmRespRow " id={1440166053}>
                                                                                             <div className="dmRespColsWrapper" id={1701177513}>
-                                                                                                <div className="u_1564374366 dmRespCol small-12 large-2 medium-2" id={1564374366}>
+                                                                                                {/* <div className="u_1564374366 dmRespCol small-12 large-2 medium-2" id={1564374366}>
                                                                                                     <div className="graphicWidget u_1711906424" dataElementType="graphic" dataWidgetType="graphic" id={1711906424}>
 
                                                                                                     </div>
-                                                                                                </div>
-                                                                                                <div className="u_1093381198 dmRespCol small-12 large-10 medium-10" id={1093381198}>
-                                                                                                    <ul>
-                                                                                                        <li style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20 }}>Track needed Metrics</li>
+                                                                                                </div> */}
+                                                                                                <div className="u_1093381198 dmRespCol small-12 large-10 medium-10" id={1093381198} style={{ width: '100%' }}>
+                                                                                                    <div style={{ textAlign: 'left', color: 'white' }}>
+                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 21 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }} >Track needed Metrics</div></div>
+                                                                                                        <br />
+                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 21, marginTop: 5 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }}> User friendly design and experience</div></div>
+                                                                                                        <br />
+                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 21, marginTop: 5 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }}>  Aggregate data</div></div>
+                                                                                                        <br />
+                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 21, marginTop: 5 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }}>  Streamline communication</div></div>
+                                                                                                        <br />
+                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 21, marginTop: 5 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }}>  Automate process and Standardize data collection, across organization</div></div>
+                                                                                                        <br />
+                                                                                                        <div style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 21, marginTop: 5 }}><div style={{ display: 'inline' }} className="custom-checked-circle">✓</div>  <div style={{ display: 'inline' }} >  Reduce effort and time needed to collect, analyze and store data</div></div>
+                                                                                                        <br />
+                                                                                                    </div>
 
-                                                                                                        <li style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20 }}>User friendly design and experience</li>
 
-                                                                                                        <li style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20 }}>Aggregate data</li>
-
-                                                                                                        <li style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20 }}>Streamline communication</li>
-
-                                                                                                        <li style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20 }}>Automate process and Standardize data collection, across organization</li>
-
-                                                                                                        <li style={{ color: 'white', marginTop: 4, marginBottom: 4, fontSize: 20 }}>Reduce effort and time needed to collect, analyze and store data</li>
-                                                                                                    </ul>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div id={1047738323}>
                                                                                         <div className="dmRespRow " id={1440166053}>
-                                                                                            <div className="dmRespColsWrapper" id={1701177513}>
-                                                                                                <div className="u_1564374366 dmRespCol small-12 large-2 medium-2" id={1564374366}>
-                                                                                                    <div className="graphicWidget u_1711906424" dataElementType="graphic" dataWidgetType="graphic" id={1711906424}>
-
+                                                                                            {/* <div className="dmRespColsWrapper" id={1701177513}>
+                    
+                                                                                                <div className="u_1093381198 dmRespCol small-12 large-12 medium-12" id={1093381198}>
+                                                                                                    <div style={{ margin: '0 auto' }} className="u_1292964449 imageWidget align-center" dataElementType="image" dataWidgetType="image" id={1292964449}>
+                                                                                                    <img src={DesktopBcombsApp} style={{
+                                                                                                        width: '100%',
+                                                                                                        height: 'auto',
+                                                                                                    }} />
                                                                                                     </div>
                                                                                                 </div>
-                                                                                                <div className="u_1093381198 dmRespCol small-12 large-12 medium-12" id={1093381198}>
-                                                                                                    {/* <div style={{ margin: '0 auto' }} className="u_1292964449 imageWidget align-center" dataElementType="image" dataWidgetType="image" id={1292964449}> */}
-                                                                                                    <img src={DesktopBcombsApp} style={{
-                                                                                                        width: 'auto',
-                                                                                                        height: 'auto'
-                                                                                                    }} />
-                                                                                                    {/* </div> */}
-                                                                                                </div>
+                                                                                            </div> */}
+                                                                                            <div className="u_1093381198 dmRespCol small-12 large-12 medium-12" id={1093381198}>
+                                                                                                {/* <div style={{ margin: '0 auto' }} className="u_1292964449 imageWidget align-center" dataElementType="image" dataWidgetType="image" id={1292964449}> */}
+                                                                                                <img src={DesktopBcombsApp} style={{
+                                                                                                    width: '100%',
+                                                                                                    height: 'auto',
+                                                                                                }} />
+                                                                                                {/* </div> */}
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -408,10 +429,10 @@ const DesktopPage = props => {
                                                                                     demoScheduleRef.current.scrollIntoView()
                                                                                 }}
 
-                                                                                    dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" style={{ backgroundColor: 'black', textAlign: 'center', margin: 0, paddingTop: 10, paddingBottom: 10, width: 210 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
+                                                                                    dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" style={{ backgroundColor: 'black', textAlign: 'center', margin: 0, paddingTop: 10, paddingBottom: 10, width: 251, height: 59 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                                     </span>
                                                                                     <span style={{
-                                                                                        fontSize: 17
+                                                                                        fontSize: 20
                                                                                     }} className="text" id={1255045965}>REQUEST A DEMO</span>
                                                                                 </a>
                                                                             </div>
@@ -433,17 +454,19 @@ const DesktopPage = props => {
                                                                                 <div className="dmRespColsWrapper" id={1619431296}>
                                                                                     <div className="u_1056072134 dmRespCol small-12 medium-12 large-12" id={1056072134}>
                                                                                         <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1134221766}>
-                                                                                            <h2 className="text-align-center" style={{ textAlign: 'center' }}>
+                                                                                            <h2 className="text-align-center" style={{ textAlign: 'center', marginTop: 0 }}>
                                                                                                 <span style={{ color: 'rgb(255, 255, 255)', display: 'unset', textAlign: 'center', color: 'black' }}>
                                                                                                     How b.combs Can Help Your Organization
                                                                                                 </span>
                                                                                             </h2>
-
+                                                                                        
                                                                                             <div className="text-align-center" style={{ textAlign: 'center' }}>
                                                                                                 <span style={{ color: 'rgb(255, 255, 255)', display: 'unset', textAlign: 'center', color: 'black', fontSize: 24 }}>
                                                                                                     We help youth mentoring nonprofits work more efficiently so they can focus on their mission, including these areas:
                                                                                                 </span>
                                                                                             </div>
+                                                                                            <br/>
+                                                                                            <div style={{ borderTop: '3px solid #FFC100', width: 90, margin: '0 auto' }}></div>
                                                                                         </div>
                                                                                         <div className="dmRespRow u_1322998342" id={1322998342}>
                                                                                             <div className="dmRespColsWrapper" id={1315874093}>
@@ -583,10 +606,10 @@ const DesktopPage = props => {
                                                                                                 demoScheduleRef.current.scrollIntoView()
                                                                                             }}
 
-                                                                                                dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" style={{ backgroundColor: 'black', textAlign: 'center', margin: 0, paddingTop: 10, paddingBottom: 10, width: 210 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
+                                                                                                dataDisplayType="block" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" href="#" dataElementType="dButtonLinkId" style={{ backgroundColor: 'black', textAlign: 'center', margin: 0, paddingTop: 10, paddingBottom: 10, width: 251, height: 59 }} id={1265853154} raw_url="/home/"> <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                                                 </span>
                                                                                                 <span style={{
-                                                                                                    fontSize: 17
+                                                                                                    fontSize: 20
                                                                                                 }} className="text" id={1255045965}>REQUEST A DEMO</span>
                                                                                             </a>
                                                                                         </div>
@@ -609,13 +632,13 @@ const DesktopPage = props => {
                                                                 <div ref={demoScheduleRef} className=" dmRespRow fullBleedChanged fullBleedMode" id="schedule-demo" dataAnchor="schedule-demo">
                                                                     <div className="dmRespColsWrapper" id={1853815227}>
                                                                         <div className="dmRespCol small-12 medium-12 large-12  " id={1626947179}>
-                                                                 
+
                                                                             <div className="dmRespRow u_1980259185 mobile-columns-reversed" >
                                                                                 <div className="dmRespColsWrapper" id={1305498215}>
                                                                                     <div className="u_1459125012 dmRespCol small-12 medium-12 large-12" id={1459125012}>
                                                                                         <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1410395482}>
                                                                                             <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1134221766}>
-                                                                                                <h2 className="text-align-center" style={{ textAlign: 'center' }}>
+                                                                                                <h2 className="text-align-center" style={{ textAlign: 'center', marginTop: 0 }}>
                                                                                                     <span style={{ color: 'rgb(255, 255, 255)', display: 'unset', textAlign: 'center', color: 'black' }}>
                                                                                                         Schedule a Demo
                                                                                                     </span>
@@ -635,7 +658,7 @@ const DesktopPage = props => {
                                                                                                 <div style={{ borderTop: '2px solid #FFC100', width: 77, margin: '0 auto' }}></div>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1574330505} style={{ transition: 'opacity 1s ease-in-out 0s' }}>
+                                                                                        {/* <div className="dmNewParagraph" dataElementType="paragraph" dataVersion={5} id={1574330505} style={{ transition: 'opacity 1s ease-in-out 0s' }}>
                                                                                             <p className="text-align-center">
                                                                                                 <span style={{ display: 'unset', color: 'rgb(255, 255, 255)' }}>Please
                                                                                                     provide your information
@@ -645,7 +668,7 @@ const DesktopPage = props => {
                                                                                                     kept
                                                                                                     confidential.</span>
                                                                                             </p>
-                                                                                        </div>
+                                                                                        </div> */}
                                                                                         {/* <div className="dmRespRow u_1490776218" id={1490776218}>
                                                                                             <div className="dmRespColsWrapper" id={1359750392}>
                                                                                                 <div className="dmRespCol large-12 medium-12 small-12" id={1483143547}>
@@ -665,36 +688,43 @@ const DesktopPage = props => {
                                                                                                 <div method="post" className="dmRespDesignRow" locale="ENGLISH" id={1975886697} action>
                                                                                                     <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1855700792}>
                                                                                                         <label htmlFor="dmform-0" id={1990129566} className >Organization
-                                                                                                            Name</label>
+                                                                                                            Name * </label>
                                                                                                         <input onChange={handleClientDetailChange} value={clientDetails?.organizationName} name="organizationName" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1723102561} placeholder="Organization" /><input type="hidden" name="label-dmform-0" defaultValue="Organization" id={1771422038} className />
+                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.organizationName) && `Organization Name is required`}</div>
                                                                                                     </div>
                                                                                                     <div className="dmforminput small-12 medium-12 large-12 dmRespDesignCol" id={1319492863}>
                                                                                                         <label htmlFor="dmform-4" id={1742203460}  >Organization
-                                                                                                            Type</label>
+                                                                                                            Type * </label>
                                                                                                         <input onChange={handleClientDetailChange} value={clientDetails?.organizationType} name="organizationType" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1088939462} className placeholder="Organization Type" /><input type="hidden" name="label-dmform-4" defaultValue="Organization Type" id={1832609870} className />
+                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.organizationType) && `Organization Type is required`}</div>
                                                                                                     </div>
                                                                                                     <div className="dmforminput small-12 medium-12 large-12 dmRespDesignCol" id={1481882184}>
                                                                                                         <label htmlFor="dmform-5" id={1274719846}  >Organization
-                                                                                                            Size</label>
+                                                                                                            Size * </label>
                                                                                                         <input onChange={handleClientDetailChange} value={clientDetails?.organizationSize} name="organizationSize" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1537238133} className placeholder="Organization Size" /><input type="hidden" name="label-dmform-5" defaultValue="Organization Size" id={1861703514} className />
+                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.organizationSize) && `Organization Size is required`}</div>
                                                                                                     </div>
                                                                                                     <div className="dmforminput small-12 medium-12 large-12 dmRespDesignCol" id={1942857695}>
                                                                                                         <label htmlFor="dmform-6" id={1691779908} >Website
-                                                                                                            URL</label>
+                                                                                                            URL * </label>
                                                                                                         <input onChange={handleClientDetailChange} value={clientDetails?.websiteUrl} name="websiteUrl" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1509955001} className placeholder="Website URL" /><input type="hidden" name="label-dmform-6" defaultValue="Website URL" id={1504264415} className />
+                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.websiteUrl) && `Website URL is required`}</div>
                                                                                                     </div>
                                                                                                     <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1724528442}>
-                                                                                                        <label htmlFor="dmform-1" id={1919837551}  >Full Name</label>
+                                                                                                        <label htmlFor="dmform-1" id={1919837551}  >Full Name * </label>
                                                                                                         <input onChange={handleClientDetailChange} value={clientDetails?.fullName} name="fullName" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1717114357} placeholder="Full Name" /><input type="hidden" name="label-dmform-1" defaultValue="Full Name" id={1641355491} className />
+                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}> {(isSubmitError && !clientDetails?.fullName) && `Full Name is required`}</div>
                                                                                                     </div>
 
                                                                                                     <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1724528442}>
-                                                                                                        <label htmlFor="dmform-1" id={1919837551} >Email</label>
+                                                                                                        <label htmlFor="dmform-1" id={1919837551} >Email * </label>
                                                                                                         <input onChange={handleClientDetailChange} value={clientDetails?.clientEmail} name="clientEmail" style={{ backgroundColor: '#f3f8fb' }} type="text" id={1717114357} placeholder="Email" /><input type="hidden" name="label-dmform-1" defaultValue="Email" id={1641355491} className />
+                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>{(isSubmitError && !clientDetails?.clientEmail) && `Email is required`}</div>
                                                                                                     </div>
                                                                                                     <div className="dmforminput required  small-12 medium-12 large-12  dmRespDesignCol" id={1861108675}>
-                                                                                                        <label htmlFor="dmform-2" id={1937776670}  >Phone</label>
-                                                                                                        <input onChange={handleClientDetailChange} value={clientDetails?.clientcontactNoEmail} name="contactNo" style={{ backgroundColor: '#f3f8fb' }} type="tel" id={1950306096} placeholder="Phone" /><input type="hidden" name="label-dmform-2" defaultValue="Phone" id={1071607214} className />
+                                                                                                        <label htmlFor="dmform-2" id={1937776670}  >Phone * </label>
+                                                                                                        <input onChange={handleClientDetailChange} value={clientDetails?.contactNo} name="contactNo" style={{ backgroundColor: '#f3f8fb' }} type="tel" id={1950306096} placeholder="Phone" /><input type="hidden" name="label-dmform-2" defaultValue="Phone" id={1071607214} className />
+                                                                                                        <div style={{ color: '#cb3837', fontSize: 14 }}>  {(isSubmitError && !clientDetails?.contactNo) && `Phone is required`}</div>
                                                                                                     </div>
 
                                                                                                     <span id={1383362560} className="dmWidgetClear" />
@@ -717,13 +747,13 @@ const DesktopPage = props => {
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div className=" dmRespRow fullBleedChanged fullBleedMode" id={1411664374}>
+                                                                            {/* <div className=" dmRespRow fullBleedChanged fullBleedMode" id={1411664374}>
                                                                                 <div className="dmRespColsWrapper" id={1651830202}>
                                                                                     <div className="dmRespCol large-12 medium-12 small-12" id={1915196897}>
                                                                                         <div dataElementType="spacer" className="dmSpacer u_1088118721" id={1088118721} />
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
+                                                                            </div> */}
                                                                         </div>
                                                                     </div>
                                                                 </div>
