@@ -73,7 +73,7 @@ export default function index() {
   useEffect(() => {
     if (status && status.message && status.message.includes(SUCCESS_STATUS)) {
       //console.log('statuzzzzs',status)
-      redirectTo(`/?success=${encodeURIComponent(status.message)}`);
+      redirectTo(`/login?success=${encodeURIComponent(status.message)}`);
     }
   }, [status]);
   const handleInputChange = (id, value) => {
