@@ -267,6 +267,7 @@ export default function ContactForm({
         <div className="form-group">
           <div className="field">
             <input
+              id="contact_last_name"
               name="last_name"
               className="field-input"
               placeholder="Last Name"
@@ -276,7 +277,7 @@ export default function ContactForm({
               ref={register({ required: true, maxLength: 20 })}
               value={contactDetails.last_name}
             />
-            <label className="field-label">
+            <label htmlFor="contact_last_name" className="field-label">
               <span className="required">*</span> Last Name
             </label>
           </div>
@@ -299,6 +300,7 @@ export default function ContactForm({
         <div className="form-group">
           <div className="field">
             <input
+              id="contact_first_name"
               name="first_name"
               className="field-input"
               placeholder="First Name"
@@ -308,7 +310,7 @@ export default function ContactForm({
               }}
               ref={register({ required: true, maxLength: 20 })}
             />
-            <label className="field-label">
+            <label htmlFor="contact_first_name" className="field-label">
               <span className="required">*</span> First Name
             </label>
           </div>
@@ -327,6 +329,7 @@ export default function ContactForm({
         <div className="form-group">
           <div className="field">
             <NumberFormat
+              id="contact_phone_number"
               name="phone_number"
               className="field-input"
               placeholder="Phone Number"
@@ -350,7 +353,7 @@ export default function ContactForm({
               })}
               required
             />
-            <label className="field-label">
+            <label htmlFor="contact_phone_number" className="field-label">
               <span className="required">*</span> Phone Number
             </label>
           </div>
@@ -364,6 +367,7 @@ export default function ContactForm({
         <div className="form-group">
           <div className="field">
             <input
+              id="contact_email"
               type="email"
               name="email"
               className="field-input"
@@ -374,7 +378,7 @@ export default function ContactForm({
               ref={register({ required: true })}
               value={contactDetails.email}
             />
-            <label className="field-label">
+            <label htmlFor="contact_email" className="field-label">
               <span className="required">*</span> Email
             </label>
           </div>
@@ -388,6 +392,7 @@ export default function ContactForm({
         <div className="form-group">
           <div className="field">
             <input
+              id="contact_relation"
               type="text"
               name="relation"
               className="field-input"
@@ -398,7 +403,7 @@ export default function ContactForm({
               ref={register({ required: true })}
               value={contactDetails.relation}
             />
-            <label className="field-label">
+            <label htmlFor="contact_relation" className="field-label">
               <span className="required">*</span> Relation
             </label>
           </div>

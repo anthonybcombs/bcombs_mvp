@@ -375,6 +375,7 @@ export default function GroupForm({
         <div className="form-group">
           <div className="field">
             <input
+              id="groupName"
               name="groupName"
               className="field-input"
               placeholder="Group Name"
@@ -384,7 +385,7 @@ export default function GroupForm({
               ref={register({ required: true })}
               value={groupDetails.name}
             />
-            <label className="field-label">
+            <label htmlFor="groupName" className="field-label">
               <span className="required">*</span> Group Name
             </label>
           </div>

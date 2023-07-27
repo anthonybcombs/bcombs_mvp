@@ -282,10 +282,11 @@ export default function index({
         </div>
         <div className="modal-body">
           <div className="grid">
-            
+
             <div className="form-group">
               <div className="field">
                 <input
+                  id="userFirstname"
                   name="firstname"
                   className="field-input"
                   placeholder="First Name"
@@ -295,7 +296,7 @@ export default function index({
                   ref={register({ required: true, maxLength: 20 })}
                   value={data.firstname}
                 />
-                <label className="field-label">First Name</label>
+                <label htmlFor="userFirstname" className="field-label">First Name</label>
               </div>
               <ErrorMessage
                 field={errors.firstname}
@@ -312,6 +313,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  id="userLastname"
                   name="lastname"
                   className="field-input"
                   placeholder="Last Name"
@@ -321,7 +323,7 @@ export default function index({
                   ref={register({ required: true, maxLength: 30 })}
                   value={data.lastname}
                 />
-                <label className="field-label">Last Name</label>
+                <label htmlFor="userLastname" className="field-label">Last Name</label>
               </div>
               <ErrorMessage
                 field={errors.lastname}
@@ -338,6 +340,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <select
+                  id="userGender"
                   name="gender"
                   className="field-input"
                   onChange={({ target }) => {
@@ -356,7 +359,7 @@ export default function index({
                     </option>
                   ))}
                 </select>
-                <label className="field-label">Gender</label>
+                <label htmlFor="userGender" className="field-label">Gender</label>
               </div>
               <ErrorMessage
                 field={errors.gender}
@@ -370,6 +373,7 @@ export default function index({
                 <div className="form-group">
                   <div className="field">
                     <select
+                      id="userGender"
                       name="customgender"
                       className="field-input"
                       onChange={({ target }) => {
@@ -388,7 +392,7 @@ export default function index({
                         </option>
                       ))}
                     </select>
-                    <label className="field-label">Custom Gender</label>
+                    <label htmlFor="userGender" className="field-label">Custom Gender</label>
                   </div>
                   <ErrorMessage
                     field={errors.customgender}
@@ -509,6 +513,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <select
+                  id="userEthnicity"
                   name="ethnicity"
                   className="field-input"
                   onChange={({ target }) => {
@@ -534,13 +539,14 @@ export default function index({
                     </option>
                   ))}
                 </select>
-                <label className="field-label">Ethnicity</label>
+                <label htmlFor="userEthnicity" className="field-label">Ethnicity</label>
               </div>
             </div>
 
             <div className="form-group">
               <div className="field">
                 <input
+                  id="userAddress"
                   name="address"
                   className="field-input"
                   placeholder="Address"
@@ -550,7 +556,7 @@ export default function index({
                   ref={register({ required: true, maxLength: 100 })}
                   value={data.address}
                 />
-                <label className="field-label">Address</label>
+                <label htmlFor="userAddress" className="field-label">Address</label>
               </div>
               <ErrorMessage
                 field={errors.address}
@@ -567,6 +573,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  id="userZipCode"
                   name="zipcode"
                   className="field-input"
                   placeholder="Zipcode"
@@ -578,7 +585,7 @@ export default function index({
                   maxLength="5"
                   onInput={maxLengthCheck}
                 />
-                <label className="field-label">Zipcode</label>
+                <label htmlFor="userZipCode" className="field-label">Zipcode</label>
               </div>
               <ErrorMessage
                 field={errors.zipcode}
@@ -590,6 +597,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  id="userSchool"
                   name="school"
                   className="field-input"
                   placeholder="School"
@@ -600,7 +608,7 @@ export default function index({
                   value={data.school}
                   ref={register({ maxLength: 50 })}
                 />
-                <label className="field-label">School</label>
+                <label htmlFor="userSchool" className="field-label">School</label>
               </div>
 
               <ErrorMessage
@@ -613,6 +621,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  id="userGrade"
                   type="number"
                   name="grade"
                   className="field-input"
@@ -623,13 +632,14 @@ export default function index({
                   ref={register}
                   value={data.grade}
                 />
-                <label className="field-label">Grade</label>
+                <label htmlFor="userGrade" className="field-label">Grade</label>
               </div>
             </div>
 
             <div className="form-group">
               <div className="field">
                 <input
+                  id="securityquestion1"
                   type="text"
                   name="securityquestion1"
                   className="field-input"
@@ -640,7 +650,7 @@ export default function index({
                   ref={register({ required: true })}
                   value={data.securityquestion1 || ''}
                 />
-                <label className="field-label">
+                <label htmlFor="securityquestion1" className="field-label">
                   <span className="required">*</span> Security Question 1
                 </label>
               </div>
@@ -655,6 +665,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  id="securityquestion1answer"
                   type="text"
                   name="securityquestion1answer"
                   className="field-input"
@@ -665,7 +676,7 @@ export default function index({
                   ref={register({ required: true })}
                   value={data.securityquestion1answer || ''}
                 />
-                <label className="field-label">
+                <label htmlFor="securityquestion1answer" className="field-label">
                   <span className="required">*</span> Security Question 1 Answer
                 </label>
               </div>
@@ -680,6 +691,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  id="securityquestion2"
                   type="text"
                   name="securityquestion2"
                   className="field-input"
@@ -690,7 +702,7 @@ export default function index({
                   ref={register({ required: true })}
                   value={data.securityquestion2 || ''}
                 />
-                <label className="field-label">
+                <label htmlFor="securityquestion2" className="field-label">
                   <span className="required">*</span> Security Question 2
                 </label>
               </div>
@@ -705,6 +717,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  id="securityquestion2answer"
                   type="text"
                   name="securityquestion2answer"
                   className="field-input"
@@ -715,7 +728,7 @@ export default function index({
                   ref={register({ required: true })}
                   value={data.securityquestion2answer || ''}
                 />
-                <label className="field-label">
+                <label htmlFor="securityquestion2answer" className="field-label">
                   <span className="required">*</span> Security Question 2 Answer
                 </label>
               </div>
@@ -730,6 +743,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  id="securityquestion3"
                   type="text"
                   name="securityquestion3"
                   className="field-input"
@@ -740,7 +754,7 @@ export default function index({
                   ref={register({ required: true })}
                   value={data.securityquestion3 || ''}
                 />
-                <label className="field-label">
+                <label htmlFor="securityquestion3" className="field-label">
                   <span className="required">*</span> Security Question 3
                 </label>
               </div>
@@ -755,6 +769,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <input
+                  id="securityquestion3answer"
                   type="text"
                   name="securityquestion3answer"
                   className="field-input"
@@ -765,7 +780,7 @@ export default function index({
                   ref={register({ required: true })}
                   value={data.securityquestion3answer || ''}
                 />
-                <label className="field-label">
+                <label htmlFor="securityquestion3answer" className="field-label">
                   <span className="required">*</span> Security Question 3 Answer
                 </label>
               </div>

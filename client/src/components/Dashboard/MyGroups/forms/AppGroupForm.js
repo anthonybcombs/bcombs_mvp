@@ -230,13 +230,13 @@ export default function AppGroupForm({
     // if(selectedForms.length > 0) {
     //   currentAppGroup = {...currentAppGroup, ["vendors"]: selectedForms};
     // }
-   
+
     handleGroupDetailsChange("vendors", selectedForms);
   }, [formattedVendors, selectedForms])
 
 
   let formDefaultValue = [...(groupDetails?.vendors || [])];
-  console.log('groupDetailszcxzc',groupDetails)
+  console.log('groupDetailszcxzc', groupDetails)
   return (
     <ContactFormStyled
       method="POST"
@@ -246,6 +246,7 @@ export default function AppGroupForm({
         <div className="form-group">
           <div className="field">
             <input
+              id="appGroupName"
               name="appGroupName"
               className="field-input"
               placeholder="Group Name"
@@ -255,7 +256,7 @@ export default function AppGroupForm({
               ref={register({ required: true })}
               value={groupDetails.name}
             />
-            <label className="field-label">
+            <label htmlFor="appGroupName" className="field-label">
               <span className="required">*</span> Group Name
             </label>
           </div>
@@ -269,6 +270,7 @@ export default function AppGroupForm({
         <div className="form-group">
           <div className="field">
             <input
+              id="appGroupSize"
               name="appGroupSize"
               className="field-input"
               placeholder="Total No. of Seats"
@@ -282,7 +284,7 @@ export default function AppGroupForm({
               ref={register({ required: true })}
               value={groupDetails.size}
             />
-            <label className="field-label">
+            <label htmlFor="appGroupSize" className="field-label">
               <span className="required">*</span> Total No. of Seats
             </label>
           </div>

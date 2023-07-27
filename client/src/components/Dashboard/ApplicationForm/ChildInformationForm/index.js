@@ -475,6 +475,7 @@ export default function index({
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">
           <img src={imagePreview || profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
+          <div style={{ padding: 5 }}>Click to Upload</div>
           {!isReadonly && (
             <UploadPhotoForm
               auth={profile ? { profile_img: profile } : ''}
@@ -492,6 +493,7 @@ export default function index({
               }}
             />
           )}
+
         </div>
         <div className="grid">
           <div className="form-group">
