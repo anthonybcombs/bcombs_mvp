@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import '../../../Style/mobile.css';
 import './style.css';
@@ -24,6 +25,13 @@ import DesktopBcombsFooter from '../../../Resources/images/bcombs_footer_latest.
 import DesktopBcombsLatestMainBg from '../../../Resources/images/bcombs_latest_main_bg.webp'
 
 const MobilePage = props => {
+
+
+    const { auth } = useSelector(state => {
+        return {
+            auth: state.auth
+        }
+    });
 
     const demoScheduleRef = useRef(null);
 
@@ -180,10 +188,10 @@ const MobilePage = props => {
                                                             id={1576678267}
                                                         >
                                                             <div style={{ textAlign: 'right' }} className=" dmRespCol small-12 large-7 medium-7" id={1044536395}>
-                                                                <a href="/login" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" style={{ backgroundColor: 'black', color: 'white', textAlign: 'center', margin: 0, width: 120 }} >
+                                                                <a href={auth?.user_id ? '/dashboard' : '/login'} className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" style={{ backgroundColor: 'black', color: 'white', textAlign: 'center', margin: 0, width: 120 }} >
                                                                     <span className="iconBg" aria-hidden="true" style={{ backgroundColor: '#fa7507' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                     </span>
-                                                                    <span className="text" style={{ fontSize: 12 }} id={1255045965}>USER LOGIN</span>
+                                                                    <span className="text" style={{ fontSize: 12 }} id={1255045965}>{auth?.user_id ? 'GO TO DASHBOARD' : 'USER LOGIN'}</span>
                                                                 </a>
                                                             </div>
                                                         </div>
@@ -618,7 +626,7 @@ const MobilePage = props => {
                                                                                             We help youth mentoring nonprofits work more efficiently so they can focus on their mission, including these areas:
                                                                                         </span>
                                                                                     </div>
-                                                                                   
+
                                                                                 </div>
                                                                                 <div style={{ borderTop: '2px solid #FFC100', width: 77, margin: '0 auto' }}></div>
                                                                                 <div className="dmRespRow u_1322998342" id={1322998342}>

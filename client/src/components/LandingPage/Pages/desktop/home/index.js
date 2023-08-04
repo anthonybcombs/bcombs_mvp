@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Link } from '@reach/router';
+// import { Link } from '@reach/router';
+import { useSelector } from 'react-redux';
 
 import '../../../Style/desktop.css';
 import './style.css';
@@ -22,6 +23,13 @@ import DesktopFocusOnWhatMattersBg from '../../../Resources/images/focus_on_what
 const DesktopPage = props => {
 
     const demoScheduleRef = useRef(null);
+
+    const { auth } = useSelector(state => {
+        return {
+            auth: state.auth
+        }
+    });
+
 
     const [clientDetails, setClientDetails] = useState({
         organizationName: '',
@@ -135,10 +143,10 @@ const DesktopPage = props => {
                                                                     <div style={{ textAlign: 'right' }} className="u_1044536395 dmRespCol small-12 large-7 medium-7" id={1044536395}>
 
 
-                                                                        <a href="/login" className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" style={{ backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 5, paddingBottom: 5, width: 251, height: 59 }} >
+                                                                        <a href={auth?.user_id ? '/dashboard' : '/login'} className=" align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" file="false" style={{ backgroundColor: '#fa7507', textAlign: 'center', margin: 0, paddingTop: 5, paddingBottom: 5, width: 251, height: 59 }} >
                                                                             <span className="iconBg" aria-hidden="true" style={{ backgroundColor: 'black' }} id={1210537932}> <span className="icon hasFontIcon icon-star" id={1549847048} />
                                                                             </span>
-                                                                            <span className="text" style={{ fontSize: 20 }} id={1255045965}>USER LOGIN</span>
+                                                                            <span className="text" style={{ fontSize: 20 }} id={1255045965}>{auth?.user_id ? 'GO TO DASHBOARD' : 'USER LOGIN'}</span>
                                                                         </a>
                                                                     </div>
                                                                 </div>
