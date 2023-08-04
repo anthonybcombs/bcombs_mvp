@@ -200,7 +200,7 @@ export default function index({
             isLot={isLot}
           />
           <br />
-          {isLot && <AllergyInformation
+          {isLot ? <AllergyInformation
             printPageClassname="printpage-break general-information"
             handleChildFormDetailsChange={handleChildFormDetailsChange}
             childGeneralInformation={childInformation?.general_information}
@@ -211,7 +211,7 @@ export default function index({
             isReadonly={isReadonly}
             pastChildInformation={pastChildInformation}
             isVendorView={isVendorView}
-          />}
+          /> : <span/>}
 
           <br />
           {/* <MedicalCareInfoStyled

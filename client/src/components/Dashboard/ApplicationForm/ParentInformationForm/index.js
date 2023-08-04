@@ -1960,7 +1960,7 @@ export default function index({
             <div className="field select-field-wrapper">
               {!isReadonly ? (
                 <select
-                  required={selectedStep === 2}
+                  required={false}
                   defaultValue={parentProfile?.level_education}
                   name="parent_educationlevel"
                   className={

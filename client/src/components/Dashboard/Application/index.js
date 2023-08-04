@@ -1451,11 +1451,13 @@ export default function index() {
       parents: setupParentsList(),
       emergency_contacts: JSON.stringify(emergencyContacts),
       section1_signature: termsWaiver?.section1?.signature,
-      section1_date_signed: selectedApplication.section1_date_signed,
+      section1_date_signed:format(new Date(selectedApplication.section1_date_signed), "yyyy-MM-dd hh:mm:ss"),
       section2_signature:  termsWaiver?.section2?.signature,
-      section2_date_signed: selectedApplication.section2_date_signed,
+      section2_date_signed: format(new Date(selectedApplication.section2_date_signed), "yyyy-MM-dd hh:mm:ss"),
       section3_signature:  termsWaiver?.section3?.signature,
-      section3_date_signed: selectedApplication.section3_date_signed,
+      section3_date_signed: format(new Date(selectedApplication.section3_date_signed), "yyyy-MM-dd hh:mm:ss"),
+
+      
       section1_text: selectedApplication.section1_text,
       section2_text: selectedApplication.section2_text,
       section3_text: selectedApplication.section3_text,
@@ -1489,7 +1491,7 @@ export default function index() {
     };
     console.log("Submit update application", payload);
 
-     dispatch(requestSaveApplication(payload));
+    dispatch(requestSaveApplication(payload));
   };
 
   const [childInformation, setChildInformation] = useState({});
@@ -2611,9 +2613,9 @@ export default function index() {
               />
             ) : ""}
 
-            {selectNonMenuOption && view == "application" && (
+            {selectNonMenuOption && view == "application" ? (
               <hr className="style-eight"></hr>
-            )}
+            ) : <span/>}
 
             {selectNonMenuOption &&
               view == "application" &&
