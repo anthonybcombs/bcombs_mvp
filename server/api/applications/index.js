@@ -605,7 +605,7 @@ export const updateApplicationTC = async ({
       ]
     );
   } catch (err) {
-    console.log("update terms and conditions", error);
+    console.log("update terms and conditions", err);
   } finally {
     await db.close();
     console.log("update tc result", result);
