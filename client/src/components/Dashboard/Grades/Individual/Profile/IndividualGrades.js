@@ -204,7 +204,7 @@ export default ({ appGroupId, rows: propRows, testOptions, refreshGrades }) => {
       case 'year':
         return `${moment(row.school_year_start).format('YY')}/${moment(row.school_year_end).format('YY')}`
       case 'beg_cum':
-        const prevYL = row.year_level && row.year_level - 1
+        const prevYL = row?.year_level && row.year_level - 1
         return (rows.find(e => e.year_level === prevYL) || {}).gpa_final || '--'
       case 'attendance':
         return (row?.grades || [])[0]?.final_quarter_attendance || '--'
