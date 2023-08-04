@@ -434,6 +434,7 @@ export default function index({
       <div className="parent-info-wrapper">
         <div className="img-profile-wrapper">
           <img src={imagePreview || profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
+          <div style={{ padding: 5, width: 90, textAlign: 'center' }}>Upload</div>
           {!isReadonly && (
             <UploadPhotoForm
               auth={profile ? { profile_img: profile } : ''}
