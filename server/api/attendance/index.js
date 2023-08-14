@@ -1,14 +1,16 @@
 
 import { makeDb } from "../../helpers/database";
 
+import { getChildByChildId, getGroupByChildId } from '../child';
+
 
 export const getChildEventAttendance = async applicationGroupId => {
   const db = makeDb();
   let result = [];
 
-  try{
-  console.log('getChildEventAttendance',applicationGroupId)
-  result = await db.query(`
+  try {
+    console.log('getChildEventAttendance', applicationGroupId)
+    result = await db.query(`
     SELECT BIN_TO_UUID(ucg.group_id) app_group_id,
       BIN_TO_UUID(ucg.calendar_id) calendar_id ,
       BIN_TO_UUID(evnt.id) event_id ,
@@ -29,26 +31,26 @@ export const getChildEventAttendance = async applicationGroupId => {
     ${applicationGroupId === 'all' ? 'WHERE ucg.group_id=UUID_TO_BIN(?)' : ''};
     `,
 
-    
-  [applicationGroupId]);
-  }catch (error) {
+
+      [applicationGroupId]);
+  } catch (error) {
     console.log("Get child attendance error", error);
     return null;
   } finally {
     await db.close();
     return result;
   }
-  
+
 }
 
-export const getChildAttendance = async (applicationGroupId,attendanceType = 'bcombs') => {
-  const db = makeDb();  
+export const getChildAttendance = async (applicationGroupId, attendanceType = 'bcombs') => {
+  const db = makeDb();
   let result = [];
-  try{
+  try {
     const field = applicationGroupId === 'all' ? 'app.vendor' : 'att.app_group_id'
-    console.log('Get Child Attendance applicationGroupId',applicationGroupId)
-    const currentQuery = attendanceType === 'bcombs' ? 
-    ` SELECT BIN_TO_UUID(att.app_group_id) as app_group_id,
+    console.log('Get Child Attendance applicationGroupId', applicationGroupId)
+    const currentQuery = attendanceType === 'bcombs' ?
+      ` SELECT BIN_TO_UUID(att.app_group_id) as app_group_id,
         BIN_TO_UUID(att.child_id) as child_id,
         BIN_TO_UUID(usr.id) as user_id,
         att.attendance_type,
@@ -62,6 +64,7 @@ export const getChildAttendance = async (applicationGroupId,attendanceType = 'bc
         att.location,
         att.description,
         att.is_excused,
+        BIN_TO_UUID(att.event_id) as event_id,
         ch.firstname,
         ch.lastname,
         ch.gender,
@@ -106,7 +109,7 @@ export const getChildAttendance = async (applicationGroupId,attendanceType = 'bc
       WHERE ${applicationGroupId === 'all' ? `` : `${field}=UUID_TO_BIN(?) AND`}
       att.attendance_type = 'forms'`;
 
-    result = await db.query(currentQuery,[applicationGroupId]);
+    result = await db.query(currentQuery, [applicationGroupId]);
     console.log('ATTENDANCE RESULT', result)
     /*
     SELECT BIN_TO_UUID(attendance.app_group_id) as app_group_id,
@@ -146,8 +149,8 @@ export const getChildAttendance = async (applicationGroupId,attendanceType = 'bc
         user_calendars_groups.group_type= 'applications';
            */
 
-    console.log('Get Child Attendance result',result)
-  }catch (error) {
+    console.log('Get Child Attendance result', result)
+  } catch (error) {
     console.log("Get child attendance error", error);
     return null;
   } finally {
@@ -161,20 +164,43 @@ export const updateChildAttendance = async (attendance) => {
   let result = [];
   try {
     console.log('Update Child Attendance', attendance)
-    if(attendance) {
-      for(const att of attendance.attendance_list) {
+    if (attendance) {
+      for (const att of attendance.attendance_list) {
         let groupId = att.app_group_id || attendance.app_group_id;
-        groupId = groupId.split(',');
+        groupId = groupId && groupId.split(',');
         groupId = groupId[0];
         const response = await db.query(`SELECT attendance_id 
         FROM attendance WHERE app_group_id=UUID_TO_BIN(?) 
         AND child_id=UUID_TO_BIN(?) 
-        AND attendance_date=?`,[
+        AND attendance_date=?`, [
           att.app_group_id || attendance.app_group_id,
           att.child_id,
           attendance.attendance_date,
         ]);
-        if(response.length === 0) {
+        if (response.length === 0) {
+
+          let queryValues = [
+            groupId,
+            att.child_id,
+            att.attendance_status,
+            attendance.attendance_type,
+            att.is_excused || 0,
+            attendance.attendance_date,
+            attendance.attendance_start_time,
+            attendance.attendance_end_time,
+            att.volunteer_hours || 0,
+            att.mentoring_hours || 0,
+            attendance.event_name,
+            attendance.location,
+            attendance.description,
+          ]
+          if (att.event_id) {
+            queryValues = [
+              ...queryValues,
+              att.event_id
+            ]
+          }
+
           await db.query(
             `
               INSERT INTO attendance(
@@ -191,6 +217,7 @@ export const updateChildAttendance = async (attendance) => {
                 event_name,
                 location,
                 description
+                ${att.event_id ? `,event_id` : ''}
               ) VALUES (
                 UUID_TO_BIN(?),
                 UUID_TO_BIN(?),
@@ -205,43 +232,16 @@ export const updateChildAttendance = async (attendance) => {
                 ?,
                 ?,
                 ?
+                ${att.event_id ? `,UUID_TO_BIN(?)` : ''}
               )
             `,
-            [
-              groupId,
-              att.child_id,
-              att.attendance_status,
-              attendance.attendance_type,
-              att.is_excused || 0,
-              attendance.attendance_date,
-              attendance.attendance_start_time,
-              attendance.attendance_end_time,
-              att.volunteer_hours || 0,
-              att.mentoring_hours || 0,
-              attendance.event_name,
-              attendance.location,
-              attendance.description
-            ]
+            queryValues
           );
         }
 
-        else{
-          await db.query(
-            `
-            UPDATE attendance SET attendance_status=?,
-              attendance_start_time=?,
-              attendance_end_time=?,
-              event_name=?,
-              location=?,
-              description=?,
-              volunteer_hours=?,
-              mentoring_hours=?,
-              is_excused=?
-            WHERE app_group_id=UUID_TO_BIN(?) 
-              AND child_id=UUID_TO_BIN(?) 
-              AND attendance_date=?
-          `,
-            [ 
+        else {
+
+          let queryValues = [
             att.attendance_status,
             attendance.attendance_start_time,
             attendance.attendance_end_time,
@@ -254,15 +254,40 @@ export const updateChildAttendance = async (attendance) => {
             groupId,
             att.child_id,
             attendance.attendance_date,
+          ]
+          if (att.event_id) {
+            queryValues = [
+              ...queryValues,
+              att.event_id
             ]
+          }
+          await db.query(
+            `
+            UPDATE attendance SET attendance_status=?,
+              attendance_start_time=?,
+              attendance_end_time=?,
+              event_name=?,
+              location=?,
+              description=?,
+              volunteer_hours=?,
+              mentoring_hours=?,
+              is_excused=?
+              ${att.event_id ? `,event_id` : ''}
+            WHERE app_group_id=UUID_TO_BIN(?) 
+              AND child_id=UUID_TO_BIN(?) 
+              AND attendance_date=?
+              ${att.event_id ? ` AND event_id=UUID_TO_BIN(?)` : ''}
+              
+          `,
+            queryValues
           );
-      
+
 
         }
 
       }
 
-    } 
+    }
 
   } catch (error) {
     console.log("add application user error", error);
@@ -272,3 +297,146 @@ export const updateChildAttendance = async (attendance) => {
     return [];
   }
 };
+
+
+export const updateAttendanceByChild = async (user) => {
+  let results = {};
+  try {
+    let currentGroupId = null;
+    const child = await getChildByChildId(user.child_id);
+
+    if (child) {
+      console.log('updateAttendanceByChild child', child.id)
+      const groups = [1, 2]// await getGroupByChildId(child.id);
+      console.log('updateAttendanceByChild groups', groups)
+      if (groups.length > 0) {
+        currentGroupId = '805ddb0d-eec9-11ea-8212-dafd2d0ae3ff'  // groups[0].app_grp_id;
+
+        await updateChildAttendance({
+          attendance_list: [
+            {
+              app_group_id: currentGroupId,
+              child_id: child.id,
+              attendance_status: 'Present',
+              is_excused: 0,
+              volunteer_hours: 0,
+              mentoring_hours: 0,
+              event_name: '',
+              event_id: user.event_id,
+              location: '',
+              description: ''
+            }
+          ],
+          attendance_type: 'bcombs',
+          attendance_date: user.attendance_date,
+          attendance_start_time: user.attendance_start_time,
+          attendance_end_time: user.attendance_end_time,
+        })
+
+        results = {
+          status: 'Success',
+        }
+      }
+    }
+
+
+  } catch (err) {
+    results = {
+      status: 'Error',
+      message: err
+    }
+  }
+
+  finally {
+    await db.close();
+    return results;
+  }
+}
+
+export const getAttendanceByEventId = async (eventId, applicationGroupId = null, attendanceType = null) => {
+  const db = makeDb();
+  let results = {};
+  try {
+
+    const field = applicationGroupId === 'all' ? 'app.vendor' : 'att.app_group_id'
+
+
+    const currentQuery = attendanceType === 'forms' ?
+
+      `SELECT BIN_TO_UUID(att.app_group_id) as app_group_id,
+        BIN_TO_UUID(att.child_id) as child_id,
+        BIN_TO_UUID(att.app_group_id) as app_group_id,
+        ch.firstname,
+        ch.lastname,
+        ch.gender,
+        ch.image
+        att.attendance_date,
+        att.attendance_start_time,
+        att.attendance_end_time,
+        att.attendance_status,
+        att.attendance_type,
+        att.mentoring_hours,
+        att.volunteer_hours,
+        att.event_name,
+        att.location,
+        att.description,
+        att.is_excused,
+        bce.title as event_title
+      FROM  attendance att
+      INNER JOIN custom_application ch 
+      ON ch.app_id=att.child_id
+      INNER JOIN bc_calendar_event bce 
+      ON bce.id=BIN_TO_UUID(att.event_id)
+      WHERE  att.attendance_type = 'forms' AND att.event_id=UUID_TO_BIN(?)
+    ${applicationGroupId ? ` AND ${field}=UUID_TO_BIN(?) ` : ''}
+    ` : ` SELECT 
+        BIN_TO_UUID(att.event_id) as event_id,
+        BIN_TO_UUID(att.child_id) as child_id,
+        att.attendance_type,
+        att.attendance_date,
+        att.attendance_start_time,
+        att.attendance_end_time,
+        att.attendance_status,
+        att.mentoring_hours,
+        att.volunteer_hours,
+        att.event_name,
+        att.location,
+        att.description,
+        att.is_excused,
+        bce.title as event_title
+      FROM  attendance att
+      INNER JOIN child ch 
+      ON ch.ch_id=att.child_id
+
+      INNER JOIN bc_calendar_event bce 
+      ON bce.id=BIN_TO_UUID(att.event_id)
+
+      WHERE  att.attendance_type='bcombs'
+      AND att.event_id=UUID_TO_BIN(?)
+      ${applicationGroupId ? ` AND ${field}=UUID_TO_BIN(?)` : ''}
+  `;
+
+
+    let values = [eventId];
+
+    if (applicationGroupId) {
+      values.push(applicationGroupId)
+    }
+
+    console.log('currentQuery', currentQuery)
+    console.log('valuessssssss', values)
+
+
+    let response = await db.query(currentQuery, values);
+    console.log('responseeeeeeeee', response)
+    results = response
+  }
+  catch (err) {
+    console.log('error', err)
+    results = [];
+  }
+  finally {
+    await db.close();
+    return results;
+  }
+}

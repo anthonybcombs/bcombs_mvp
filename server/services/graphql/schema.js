@@ -390,6 +390,7 @@ const inputs = `
         section2_name: String
         section3_name: String
         is_daycare: Int
+        is_parent_allow_shared: Int
     }
 
     input DaycareMainInput {
@@ -421,6 +422,7 @@ const inputs = `
         section3_name: String
         is_daycare: Int
         is_lot: Int
+        is_parent_allow_shared: Int
     }
 
     input UpdateApplicationInput {
@@ -868,10 +870,33 @@ const inputs = `
         logo: String
         vendor_id: String!
     }
+
+    input UserAttendanceInput {
+        child_id: String!
+        event_id: String!
+        attendance_date: String!
+        attendance_start_time: String!
+        attendance_end_time: String!
+
+    }
+
+    input ParentShareByVendorInput {
+        parent_id: String
+        is_vendor_allow_shared: Int
+    }
+
+    input ParentVendorShareInput{
+        parents: [ParentShareByVendorInput]
+        vendor_id: String
+
+    }
 `;
 const queryTypes = `
     scalar Date
 
+    type UserAttendance {
+        status: String
+    }
     type Event {
         id: String
         name: String
@@ -1236,6 +1261,8 @@ const queryTypes = `
         birthdate: Date
         gender: String
         ethnicities: String
+        is_parent_allow_shared: Int
+        is_vendor_allow_shared: Int
     }
 
     type Application {
@@ -1593,7 +1620,7 @@ const queryTypes = `
         description: String
         firstname: String
         lastname: String
-        attendance_status: String   
+        attendance_status: String
         child_id: String   
         image: String
         mentoring_hours: Float
@@ -1601,6 +1628,8 @@ const queryTypes = `
         is_excused: Int
         is_following: Int
         app_group_name: String
+        event_id: String
+        event_title: String
     }
 
     type EventAttendanceList {
@@ -1835,8 +1864,11 @@ const mutations = `
         removeGroupFromArchive(archivedGroupIds: [Int], vendorId: String): [ArchivedGroup]
         createGroupReminder(groupReminder: SetReminderInput): [ApplicationReminder]
         updateVendorLogo(vendorLogo: VendorLogoInput): Vendor
+        createUpdateChildAttendance(user: UserAttendanceInput): UserAttendance
+        updateParentVendorShare(parents: [ParentShareByVendorInput], vendor_id: String): [Parent]
     }
 `;
+
 
 const queries = `
     type RootQuery{
@@ -1877,6 +1909,7 @@ const queries = `
         getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
         getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
         getAttendance(application_group_id: String, attendance_type: String): [AttendanceList]
+        getAttendanceByEvent(event_id: String!, application_group_id: String, attendance_type: String): [AttendanceList]
         getEventAttendance(application_group_id: String): [EventAttendanceList]
         getUserVendorForms(user: String!): [VendorForms]
         getFormAppGroup(form: String!): [VendorAppGroup]
@@ -1892,6 +1925,7 @@ const queries = `
         getArchivedGroup(vendor_id: String): [ArchivedGroup]
         getVendorApplicationReminder(vendor_id: String): [ApplicationReminder]
         triggerCronSetReminder: String
+        getParentByVendor(vendor_id: String, app_group_id: String, form_type: String): [Parent]
       }
 `;
 

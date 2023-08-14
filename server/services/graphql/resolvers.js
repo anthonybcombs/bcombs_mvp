@@ -130,9 +130,13 @@ import {
   addDaycareParent,
   addParentChildRelationship,
   updateParentChildRelationship,
-  getParentChildRelationship } from "../../api/parents";
+  getParentChildRelationship,
+  getParentByVendorId,
+  updateParentSharingByVendor
+
+} from "../../api/parents";
   
-import { getChildAttendance ,getChildEventAttendance,updateChildAttendance} from '../../api/attendance';
+import { getChildAttendance ,getChildEventAttendance,updateChildAttendance, updateAttendanceByChild, getAttendanceByEventId } from '../../api/attendance';
 
 import { getUserFromDatabase } from "../../api";
 
@@ -520,6 +524,10 @@ const resolvers = {
       return await getChildAttendance(application_group_id, attendance_type);
     },
 
+    async getAttendanceByEvent(root, { event_id, application_group_id, attendance_type }, context) {
+      return await getAttendanceByEventId(event_id, application_group_id, attendance_type);
+    },
+
     async getEventAttendance(root, { application_group_id }, context) {
       console.log('Get Event Attendance App Grp Id', application_group_id)
       return await getChildEventAttendance(application_group_id);
@@ -566,6 +574,14 @@ const resolvers = {
     },
     async getVendorApplicationReminder(root, { vendor_id }, context) {
       return await getVendorApplicationReminder(vendor_id);
+    },
+    async getParentByVendor(root, { vendor_id, app_group_id = null , form_type = 'mentoring' }, context) {
+      const vendors = await getParentByVendorId({
+        vendorId: vendor_id,
+        appGroupId: app_group_id,
+        formType: form_type
+      });
+      return vendors;
     },
     triggerCronSetReminder(root, args, context ) {
       triggerCronSetReminder();
@@ -1166,7 +1182,7 @@ const resolvers = {
       const previousApplication = await getApplicationByAppId(
         application.app_id
       );
-      console.log('Application saveApplication', application)
+      console.log('Application saveApplication 2222', application)
       const tc_signatures = {
         section1_signature: application.section1_signature,
         section1_date_signed: application.section1_date_signed,
@@ -2002,6 +2018,16 @@ const resolvers = {
     async updateVendorLogo(root, { vendorLogo }, context) {
       return await updateLogo({logo: vendorLogo.logo, vendor_id: vendorLogo.vendor_id || ''})
     },
+
+    async createUpdateChildAttendance(root, { user }, context) { 
+
+      return await updateAttendanceByChild(user)
+    },
+
+    
+    async updateParentVendorShare(root, data, context) { 
+      return await updateParentSharingByVendor(data)
+    }
   }
 };
 

@@ -79,7 +79,8 @@ export const getUserProfileFromDatabase = async userId => {
         security_question2,
         security_question2_answer,
         security_question3,
-        security_question3_answer
+        security_question3_answer,
+        is_parent_allow_shared
         from user_profiles where user_id=UUID_TO_BIN(?)`,
       [userId]
     );
@@ -619,7 +620,7 @@ router.put("/user/profile", async (req, res) => {
     const { personalInfo, otherInfo } = req.body;
     console.log("req.bodyyy", otherInfo);
     await db.query(
-      "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=?,address=?,school=?,ethnicity=?,grade=?,security_question1=?,security_question1_answer=?,security_question2=?,security_question2_answer=?,security_question3=?,security_question3_answer=? where id=UUID_TO_BIN(?)",
+      "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=?,address=?,school=?,ethnicity=?,grade=?,security_question1=?,security_question1_answer=?,security_question2=?,security_question2_answer=?,security_question3=?,security_question3_answer=?,is_parent_allow_shared=? where id=UUID_TO_BIN(?)",
       [
         personalInfo.firstname,
         personalInfo.lastname,
@@ -638,6 +639,7 @@ router.put("/user/profile", async (req, res) => {
         personalInfo.securityquestion2answer,
         personalInfo.securityquestion3,
         personalInfo.securityquestion3answer,
+        personalInfo.is_parent_allow_shared,
         personalInfo.id
       ]
     );
@@ -663,14 +665,15 @@ router.put("/user/profile", async (req, res) => {
       const parentIds = otherInfo.parent_ids.map(id => `UUID_TO_BIN('${id}')`);
       console.log("Parent Ids", parentIds);
       await db.query(
-        `UPDATE parent SET firstname=?,lastname=?,address=?,zip_code=? WHERE parent_id IN (${parentIds.join(
+        `UPDATE parent SET firstname=?,lastname=?,address=?,zip_code=?, is_parent_allow_shared=? WHERE parent_id IN (${parentIds.join(
           ","
         )})`,
         [
           personalInfo.firstname,
           personalInfo.lastname,
           personalInfo.address,
-          personalInfo.zipcode
+          personalInfo.zipcode,
+          personalInfo.is_parent_allow_shared
         ]
       );
     }
@@ -693,6 +696,8 @@ router.put("/user/profile", async (req, res) => {
       security_question2_answer: personalInfo.securityquestion2answer,
       security_question3: personalInfo.securityquestion3,
       security_question3_answer: personalInfo.securityquestion3answer,
+      is_info_shared: personalInfo.is_info_shared,
+      is_parent_allow_shared: personalInfo.is_parent_allow_shared,
       id: personalInfo.id
     };
 
@@ -963,6 +968,45 @@ router.get("/invitation/calendar/:id/:status", async (req, res) => {
   }
 });
 
+
+router.get("/parentvendor", async (req, res) => {
+  const db = makeDb();
+  const { email } = req.query;
+
+  try {
+    const vendors = await db.query(
+      `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name from parent p, application a, vendor v 
+      WHERE p.email_address=? AND
+      p.application=a.app_id AND v.id=a.vendor;
+ `,
+      [email]
+    );
+
+    
+    let vendorAppGroups = [];
+    let vendorsIds = vendors.map(item => `UUID_TO_BIN('${item.vendor_id}')`).join(',');
+   
+    if(vendorsIds.length > 0) {
+      vendorAppGroups = await db.query(
+        `SELECT name, BIN_TO_UUID(app_grp_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_app_groups
+         WHERE vendor IN (${vendorsIds});
+      `,
+        [email]
+      );
+    } 
+   
+    return res.json({
+      vendors,
+      vendorAppGroups
+    })
+  } catch (error) {
+    console.log("GET Parent Vendor Error", error);
+  } finally {
+    await db.close();
+  }
+});
+
+
 router.post("/demo_schedule/request", async (req, res) => {
   try {
     const {
@@ -1038,7 +1082,7 @@ router.get("/migrate", async (req, res) => {
     );
     const userResults = await remoteDb.query("select * from users;");
     const schoolResults = await remoteDb.query("select * from schools;");
-    const parentResults = await remoteDb.query("select * from appparent;");
+    const parentResults = await remoteDb.query("select * from parent;");
     // let users = userResults.filter(user => user.user_type === "User");
     let vendors = userResults.filter(
       user => user.user_type === "Vendor" && BACKUP_VENDOR.includes(user.email)

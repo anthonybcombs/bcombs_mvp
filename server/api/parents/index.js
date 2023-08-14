@@ -123,6 +123,7 @@ export  const addDaycareParent = async({
   gender,
   ethnicities,
   image,
+  is_parent_allow_shared  = 0
 }) => {
   const db = makeDb();
   let result = {};
@@ -155,11 +156,12 @@ export  const addDaycareParent = async({
         birthdate,
         gender,
         ethnicities,
-        image
+        image,
+        is_parent_allow_shared
       ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?),
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?)`,
+        ?, ?, ?, ?)`,
       [
         application,
         firstname,
@@ -184,7 +186,8 @@ export  const addDaycareParent = async({
         birthdate,
         gender,
         ethnicities,
-        image
+        image,
+        is_parent_allow_shared
       ]
     )
 
@@ -229,7 +232,8 @@ export const addParent = async ({
   birthdate = null,
   gender,
   ethnicities,
-  image
+  image,
+  is_parent_allow_shared
 }) => {
   const db = makeDb();
   let result = {};
@@ -267,7 +271,8 @@ export const addParent = async ({
         birthdate,
         gender,
         ethnicities,
-        image
+        image,
+        is_parent_allow_shared
       ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?),
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
@@ -301,7 +306,8 @@ export const addParent = async ({
         birthdate === '' ? null : birthdate,
         gender,
         ethnicities,
-        image
+        image,
+        is_parent_allow_shared
       ]
     )
 
@@ -346,7 +352,8 @@ export const updateParent = async ({
   gender,
   ethnicities,
   parent_id,
-  image
+  image,
+  is_parent_allow_shared = 0
 }) => {
 
   const db = makeDb();
@@ -384,7 +391,8 @@ export const updateParent = async ({
         birthdate=?,
         gender=?,
         ethnicities=?,
-        image=?
+        image=?,
+        is_parent_allow_shared=?
         WHERE parent_id=UUID_TO_BIN(?)
       `,
       [
@@ -416,7 +424,9 @@ export const updateParent = async ({
         gender,
         ethnicities,
         image,
-        parent_id
+        is_parent_allow_shared,
+        parent_id,
+ 
       ]
     )
   } catch(error) {
@@ -509,6 +519,159 @@ export const getParentChildRelationship = async({
     )
   } catch(err) {
     console.log("add parent error", err)
+  } finally {
+    await db.close();
+    return result
+  }
+}
+
+
+export const getParentByVendorId = async({
+  vendorId, 
+  appGroupId = null,
+  formType = 'mentoring'
+}) => {
+  const db = makeDb();
+  let result = [];
+
+  try {
+    let whereValues = [vendorId];
+
+    result = formType === 'mentoring'  ? await db.query(
+      `
+        SELECT 
+          BIN_TO_UUID(p.parent_id) as parent_id,
+          BIN_TO_UUID(p.application) as application,
+          p.firstname, 
+          p.lastname, 
+          p.email_address,
+          p.email_type,
+          p.phone_number,
+          p.phone_type,
+          p.occupation,
+          p.parent_goals,
+          p.parent_child_goals,
+          p.live_area,
+          p.level_of_education,
+          p.child_hs_grad,
+          p.child_col_grad,
+          p.address,
+          p.city,
+          p.state,
+          p.zip_code,
+          p.phone_type2,
+          p.phone_number2,
+          p.email_type2,
+          p.email_address2,
+          p.person_recommend,
+          p.age,
+          p.birthdate,
+          p.gender,
+          p.ethnicities,
+          p.image,
+          p.is_parent_allow_shared,
+          p.is_vendor_allow_shared
+        FROM parent p,vendor v,application  a
+        WHERE a.vendor=v.id AND v.id=UUID_TO_BIN(?)
+        AND p.application=a.app_id
+        ${appGroupId ? ` AND a.class_teacher  LIKE '%${appGroupId}%'` : ''}
+      `,
+      [
+        whereValues
+      ]
+    ) : await db.query(
+      `
+        SELECT 
+          BIN_TO_UUID(p.parent_id) as parent_id,
+          BIN_TO_UUID(p.application) as application,
+          p.firstname, 
+          p.lastname, 
+          p.email_address,
+          p.email_type,
+          p.phone_number,
+          p.phone_type,
+          p.occupation,
+          p.parent_goals,
+          p.parent_child_goals,
+          p.live_area,
+          p.level_of_education,
+          p.child_hs_grad,
+          p.child_col_grad,
+          p.address,
+          p.city,
+          p.state,
+          p.zip_code,
+          p.phone_type2,
+          p.phone_number2,
+          p.email_type2,
+          p.email_address2,
+          p.person_recommend,
+          p.age,
+          p.birthdate,
+          p.gender,
+          p.ethnicities,
+          p.image,
+          p.is_parent_allow_shared,
+          p.is_vendor_allow_shared
+        FROM parent p,vendor v,application  a
+        WHERE a.vendor=v.id AND v.id=UUID_TO_BIN(?)
+        AND p.application=a.app_id
+        ${appGroupId ? ` AND a.class_teacher  LIKE '%${appGroupId}%'` : ''}
+      `,
+      [
+        whereValues
+      ]
+    );
+      
+    for(let x = 0; x < result.length; x++) {
+        if(!result[x].is_parent_allow_shared) {
+          result[x] = {
+            parent_id: result[x].parent_id, 
+            firstname:  result[x].firstname, 
+            lastname: result[x].lastname, 
+            email_address: result[x].email_address
+          }
+        }
+    }
+
+  } catch(err) {
+    console.log("getParentByVendor error", err)
+  } finally {
+    await db.close();
+    return result
+  }
+}
+
+export const updateParentSharingByVendor = async({
+  vendor_id,
+  parents = []
+}) => {
+  const db = makeDb();
+  let result = [];
+  console.log('updateParentSharingByVendor vendor_id',vendor_id)
+  try {
+    for(let parent of parents) {
+      console.log('parentttttt', parent)
+      await db.query(
+        `  
+          UPDATE parent SET
+            is_vendor_allow_shared=?
+          WHERE parent_id=UUID_TO_BIN(?)
+        `,
+        [ 
+          parent.is_vendor_allow_shared,
+          parent.parent_id
+        ]
+      )
+    }
+
+    result = await getParentByVendorId({
+      vendorId: vendor_id
+    });
+    console.log('result',result)
+  } catch(err) {
+    console.log("updateParentSharingByVendor error", err)
+    result = []
   } finally {
     await db.close();
     return result

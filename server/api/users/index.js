@@ -565,7 +565,7 @@ export const getUserApplication = async email => {
 
   try {
     let parent = await db.query(
-      `SELECT vendor.name,
+    `SELECT vendor.name,
       parent.email_address,
       parent.firstname,
       parent.lastname,
@@ -657,14 +657,15 @@ export const executeAddUserProfile = async payload => {
     console.log("Execute Add User Profile ", currentUser);
     console.log("Execute Add User Payload", payload);
     await db.query(
-      "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?)",
+      "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,gender,zip_code,birth_date, is_parent_allow_shared) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?)",
       [
         currentUser.id,
         payload.firstname,
         payload.lastname,
         payload.gender || "",
         payload.zip_code || "",
-        payload.dateofbirth || ""
+        payload.dateofbirth || "",
+        payload.is_parent_allow_shared || 0
       ]
     );
   } catch (err) {

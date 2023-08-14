@@ -952,3 +952,59 @@ export const getChildChildRelationship = async (child) => {
     return childs
   }
 }
+
+
+export const getChildByChildId = async childId => {
+  const db = makeDb();
+
+  try {
+
+    const rows = await db.query(
+      `SELECT BIN_TO_UUID(ch_id) as id, email_address, firstname, lastname  FROM child WHERE new_childId=?`,
+      [childId]
+    );
+
+    console.log('getChildByChildId rows',rows )
+
+    if (rows.length > 0) {
+      return rows[rows.length - 1];
+    }
+
+    return {
+      is_exist: false,
+      status: "Child not exist"
+    };
+  } catch (err) {
+    console.log("Child User", err);
+  } finally {
+    await db.close();
+  }
+};
+
+
+export const getGroupByChildId = async (childId) => {
+  const db = makeDb();
+
+  try {
+    const rows = await db.query(
+      `select BIN_TO_UUID(app_grp_id) as app_grp_id  from vendor_app_groups_to_student where child_id=UUID_TO_BIN(?)`,
+      [childId]
+    );
+
+    if (rows.length > 0) {
+      return {
+        app_groups: rows
+      };
+    }
+
+    return {
+
+      app_groups: []
+    };
+  } catch (err) {
+    console.log("Child User", err);
+  } finally {
+    await db.close();
+  }
+};
+
