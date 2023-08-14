@@ -289,6 +289,7 @@ const inputs = `
         gender: String
         ethnicities: String
         parent_id: String
+        is_parent_allow_shared: Int
     }
 
     input DaycareChildInfoInput {
@@ -366,6 +367,7 @@ const inputs = `
         gender: String
         ethnicities: String
         image: String
+        is_parent_allow_shared: Int
     }
 
     input DaycareApplicationInput {
@@ -390,7 +392,6 @@ const inputs = `
         section2_name: String
         section3_name: String
         is_daycare: Int
-        is_parent_allow_shared: Int
     }
 
     input DaycareMainInput {
@@ -422,7 +423,6 @@ const inputs = `
         section3_name: String
         is_daycare: Int
         is_lot: Int
-        is_parent_allow_shared: Int
     }
 
     input UpdateApplicationInput {
