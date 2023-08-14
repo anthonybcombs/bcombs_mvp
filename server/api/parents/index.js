@@ -276,7 +276,7 @@ export const addParent = async ({
       ) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?),
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         application,
         firstname,
@@ -648,10 +648,9 @@ export const updateParentSharingByVendor = async({
 }) => {
   const db = makeDb();
   let result = [];
-  console.log('updateParentSharingByVendor vendor_id',vendor_id)
   try {
     for(let parent of parents) {
-      console.log('parentttttt', parent)
+
       await db.query(
         `  
           UPDATE parent SET
