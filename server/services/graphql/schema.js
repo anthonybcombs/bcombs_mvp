@@ -603,7 +603,8 @@ const inputs = `
         isMultiple: Boolean
         requireAddOption : Boolean
         fixedWidth: Boolean
-        file: FileContentInput
+        file: FileContentInput 
+        imageString: String
     }
     
     input FileContentInput {

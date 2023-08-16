@@ -1453,7 +1453,41 @@ const resolvers = {
         return item.type == "name"
       });
 
+      const staticImageTypeIndex = formData.findIndex((item) => {
+        return item.type === "staticImage"
+      });
+
       const hasNameField = !!(nameType.length > 0);
+
+      if(staticImageTypeIndex > -1) {
+
+        const buf = Buffer.from(
+          formData[staticImageTypeIndex]?.fields[0]?.imageString.replace(/^data:image\/\w+;base64,/, ""),
+          "base64"
+        );
+
+        const s3Payload = {
+          Bucket: currentS3BucketName,
+          Key: `/forms/file/${formData[staticImageTypeIndex]?.fields[0].id}.jpg`,
+          Body: buf,
+          ContentEncoding: "base64",
+          ContentType: "image/jpeg",
+          ACL: "public-read"
+        };
+
+        await uploadFile(s3Payload);
+
+        formData[staticImageTypeIndex].fields[0].value = s3Payload?.Key;
+      }
+
+      
+      const updatedApplication = {
+        ...application,
+        form_contents: {
+          ...(application?.form_contents),
+          formData
+        }
+      }
 
       if(!hasNameField) {
 
@@ -1465,13 +1499,13 @@ const resolvers = {
         return res
       }
 
-      let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
+      let formContentsString = updatedApplication.form_contents ? JSON.stringify(updatedApplication.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
       console.log("formContentsString", formContentsString.length);
-      console.log("custom application", application.form_contents.length);
+      console.log("custom application", updatedApplication.form_contents.length);
 
-      let form = await createCustomApplication(application);
+      let form = await createCustomApplication(updatedApplication);
 
       form = form ? form : {};
 
