@@ -1476,8 +1476,10 @@ const resolvers = {
         };
 
         await uploadFile(s3Payload);
+        console.log('Image form key', s3Payload?.Key)
 
         formData[staticImageTypeIndex].fields[0].value = s3Payload?.Key;
+        console.log(' formData[staticImageTypeIndex].fields[0]', formData[staticImageTypeIndex].fields[0])
       }
 
       
@@ -1485,7 +1487,7 @@ const resolvers = {
         ...application,
         form_contents: {
           ...(application?.form_contents),
-          formData
+          formData: formData
         }
       }
 
