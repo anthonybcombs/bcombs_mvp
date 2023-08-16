@@ -1500,7 +1500,7 @@ const resolvers = {
       }
 
       let formContentsString = updatedApplication.form_contents ? JSON.stringify(updatedApplication.form_contents) : "{}";
-      application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+      updatedApplication.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
       console.log("formContentsString", formContentsString.length);
       console.log("custom application", updatedApplication.form_contents.length);
