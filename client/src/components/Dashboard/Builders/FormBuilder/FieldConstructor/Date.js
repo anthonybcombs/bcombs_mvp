@@ -71,6 +71,7 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
     <div
       className={`formGroup ${type}`}
       id={`group_${groupId}`}
+      key={`group_${groupId}`}
     >
       <p className='formGroup-name' style={{ color }}>
         {showLabel ? (
@@ -100,11 +101,13 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
           className={`field-input`}
         /> */}
         <div
+          id={`datepicker-${groupId}`}
           className={`formGroup-column`}
           style={{ gridColumn: `span 1`}}
           onClick={() => {
             if (!isReadOnly) {
-              document.querySelector('.react-datepicker__input-container input').click()
+              document.querySelector(`#datepicker-${groupId} .react-datepicker__input-container > input`).click()
+        
             }
           }}
         >
@@ -125,6 +128,7 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
             })
           }
           <DatePicker
+            key={`custom-date-picker-${groupId}`}
             renderCustomHeader={({
               date,
               changeYear,
