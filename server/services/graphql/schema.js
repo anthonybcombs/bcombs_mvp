@@ -1491,6 +1491,7 @@ const queryTypes = `
         requireAddOption : Boolean
         fixedWidth: Boolean
         file: FileContent
+        imageString: String
     }
 
     type FileContent {
