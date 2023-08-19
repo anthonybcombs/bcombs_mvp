@@ -26,7 +26,7 @@ export default ({
           ...field,
           key: field.id,
           isBuilder: true,
-          value: tag === 'pageBreak' ? field.value : placeholder,
+          value: tag === 'pageBreak' || tag === 'staticImage'  ? field.value : placeholder,
           isActive,
           errors,
           pageBreakLabel: label,

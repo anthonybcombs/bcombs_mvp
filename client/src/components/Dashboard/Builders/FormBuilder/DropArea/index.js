@@ -261,6 +261,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
       return
     }
     if (form_id) {
+
       dispatch(requestUpdateForm({
         form_id,
         category: formCategory,
@@ -270,10 +271,11 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
         }
       }))
     } else {
-      console.log("create form payload")
+
       dispatch(requestAddForm({
         user: user.user_id,
-        vendor: vendor.id,
+        // vendor: vendor.id,
+        vendor: '38c7479a-af2f-11ec-bf8a-124feb50f71e',
         category: formCategory,
         form_contents: {
           formTitle,
@@ -313,6 +315,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
 
   useEffect(() => {
     if (form_data && form_data.length) {
+      console.log('form_datazzzzzzzzzzzz', form_data)
       beforeSetDrop(cloneDeep(form_data), false)
       checkPageBreaks(cloneDeep(form_data))
     }
@@ -343,7 +346,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
 
   // console.log('@@@@@FORM BUILD LOGS', { droppedFields })
   
-  return ((user && user.user_id && vendor && vendor.id || form_id) && !isLoading) ? (
+  return ((user && user.user_id /* && vendor && vendor.id */ || form_id) && !isLoading) ? (
     <div className='drop-area-wrapper' onClick={handleClearActive}>
       <div ref={drop} className='drop-area-wrapper-droppable'>
         <div className='form-title'>
@@ -380,6 +383,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
         }
         {
           droppedFields.map((fieldProps, index) => {
+         
             return (
               <SortableGroup
                 {...fieldProps}

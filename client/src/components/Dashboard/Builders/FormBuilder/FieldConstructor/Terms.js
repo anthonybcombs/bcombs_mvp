@@ -3,13 +3,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
 
+import { isValidJSONString } from '../../../../../helpers/Arrays'
+
 export default (props) => {
   const { isReadOnly = false, showLabel, settings, label, fields, fieldError, type, id: fieldId, onChange, onCheckError, format } = props
 
   const errors = fieldError[fields[1].id] || []
   const checkBoxError = fieldError[fields[0].id] || []
   // const parseCheckBoxValue = fields[0].checked ? JSON.parse(fields[0].value) : {};
-  const parsedValue = fields[1].value ? JSON.parse(fields[1].value) : {}
+  const parsedValue = fields[1].value ? isValidJSONString(fields[1].value) ? JSON.parse(fields[1].value) : {} : {}
   const date = parsedValue.date || moment().format('L');
 
   const handleAnswer = ({ target: { value } }) => {

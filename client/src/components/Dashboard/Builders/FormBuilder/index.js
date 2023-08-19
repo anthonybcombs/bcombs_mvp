@@ -38,7 +38,8 @@ const FormBuilder = ({ form_id, type, history }) => {
 
   useEffect(() => {
     if (auth.user_id) {
-      dispatch(requestVendor(auth.user_id));
+      console.log('authhhhhhhhhh', auth)
+      // dispatch(requestVendor(auth.user_id));
       isLoading = true
     }
     if (form_id && type === 'edit') {
@@ -47,6 +48,7 @@ const FormBuilder = ({ form_id, type, history }) => {
   }, []);
 
   useEffect(() => {
+    console.log('vendorssss',vendors)
     if(vendors && vendors.length > 0 && !form_id) {
       setVendor(vendors[0])
       isLoading = false

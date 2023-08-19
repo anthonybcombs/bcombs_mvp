@@ -13,6 +13,7 @@ export const Items = {
     file: 'file',
     sectionBreak: 'sectionBreak',
     pageBreak: 'pageBreak',
+    // hyperlink: 'hyperlink',
   },
   prime: {
     name: 'name',
@@ -26,12 +27,23 @@ export const Items = {
     time: 'time',
     price: 'price',
     website: 'website',
-    terms: 'terms'
+    terms: 'terms',
+    staticImage: 'staticImage',
+    formattedText: 'formattedText',
   }
 }
 
 
 export const StandardFields = [
+  // {
+  //   fields: [
+  //     { label: 'Hyperlink', type: 'text', tag: 'input', placeholder: 'Hyperlink', column: '1'},
+  //   ],
+  //   label: 'Hyperlink',
+  //   type: 'hyperlink',
+  //   format: '',
+  //   includeLogic: false
+  // },
   {
     fields: [
       { label: 'Single Line Text', type: 'text', tag: 'input', placeholder: 'Single Line Text', column: '1'}
@@ -55,6 +67,7 @@ export const StandardFields = [
     includeLogic: false,
     format: '',
     includeValidation: true,
+    isReadOnly: false
   },
   {
     fields: [
@@ -455,6 +468,31 @@ export const PrimeFields = [
     ],
     label: 'Terms and Conditions',
     type: 'terms',
+    format: '',
+    includeLogic: false
+  },
+
+  {
+    fields: [
+      { label: '', description: '', tag: 'staticImage' }
+    ],
+    label: 'Static Image',
+    type: 'staticImage',
+    hasSettings: false,
+    showLabel: true,
+    gridMax: 1,
+    format: '',
+    includeLogic: false
+  },
+  {
+    fields: [
+      { label: '', description: '', tag: 'formattedText' }
+    ],
+    label: 'Formatted Text',
+    type: 'formattedText',
+    hasSettings: false,
+    showLabel: true,
+    gridMax: 1,
     format: '',
     includeLogic: false
   },

@@ -7,6 +7,17 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import FieldConstructor from '../FormBuilder/FieldConstructor'
 import { Sources } from '../FormBuilder/Settings/Sources'
 
+import { isValidJSONString } from '../../../../helpers/Arrays';
+
+// function isValidJSONString(str) {
+//   try {
+//     JSON.parse(str);
+//     return true;
+//   } catch (error) {
+//     return false;
+//   }
+// }
+
 export default ({ 
   label, fields, fieldError, onChange, type: itemGroup, settings, onCheckError, historyFields, format,
   gridMax, showLabel, addresses, id: groupId, onCopyFirstAddress, isReadOnly, onGetGroupById, isApplication
@@ -56,7 +67,7 @@ export default ({
   if (isNotFirstAddress) {
     const firstAddress = onGetGroupById(addresses[0].id, 'fields')
     const currAddress = fields
-    const isNotemptyAddress = fields.find(e => !!(e.value ? JSON.parse(e.value) : e.value))
+    const isNotemptyAddress =  fields.find(e => !!(e.value ? JSON.parse(e.value) : e.value))
     if (!!isNotemptyAddress) {
       currAddress.forEach(({ value }, index) => {
         if (value !== firstAddress[index].value) {
@@ -72,7 +83,7 @@ export default ({
   const finalLabel = isRequired
     ? label.slice(-1) === '*' ? label : label + ' *'
     : label
-  const formatObj = format ? JSON.parse(format) : {}
+  const formatObj = format ? isValidJSONString(format) ? JSON.parse(format) : {} : {}
   const color = formatObj?.color || '#000'
   console.log('fieldsvssss', fields)
   return (
@@ -126,8 +137,12 @@ export default ({
                     ...field,
                     ...( tag === 'checkbox' ? { checked: field.value  } : {}),
                     placeholder: `${placeholder} ${required ? '*' : ''}`,
-                    value: field.value ? JSON.parse(field.value) : '',
+                    value: field.value ? isValidJSONString(field.value) ? JSON.parse(field.value) : field.value || field.value : '',
                     onChange: (e) => handleChange(e, field),
+                    // onFileChange: (e, fieldName)=> {
+                    //   console.log('eeeeeeeeee', e)
+                    //   console.log('eeeeeeeeee fieldName', fieldName)
+                    // },
                     onBlur:  (e) => handleChange(e, field, true),
                     onCheckError,
                     errors,

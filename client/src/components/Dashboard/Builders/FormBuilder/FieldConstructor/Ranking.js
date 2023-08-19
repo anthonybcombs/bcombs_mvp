@@ -124,7 +124,7 @@ export default ({
   const handleRemoveRow = (index) => {
     let newItems = cloneDeep(items)
     newItems.splice(index, 1)
-    newItems = newItems.map((e, i) => ({ ...e, rank: i + 1 }))
+    newItems = Array.isArray(newItems) &&  newItems.map((e, i) => ({ ...e, rank: i + 1 }))
     onChangeFieldSettings({ items: newItems })
     handleCheckError(newItems)
   }
@@ -193,7 +193,7 @@ export default ({
           <div className={`rankingForm ${className}`}>
             <DndProvider backend={HTML5Backend}>
               {
-                newItems.map((item, itemIndex) => {
+                 Array.isArray(newItems) && newItems.map((item, itemIndex) => {
                   return (
                     <SortableItem
                       {...item}

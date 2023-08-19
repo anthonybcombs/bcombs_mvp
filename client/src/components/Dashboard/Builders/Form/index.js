@@ -16,10 +16,13 @@ import { requestGetFormById, requestSubmitForm } from '../../../../redux/actions
 import { requestVendorById } from "../../../../redux/actions/Vendors";
 import Loading from '../../../../helpers/Loading.js'
 
+
 import Stepper from './Wizard/stepper'
 import Content from './Wizard/content'
 import Actions from './Wizard/actions'
 import ThankyouPage from './ThankyouPage'
+
+import { isValidJSONString } from '../../../../helpers/Arrays'
 
 export default (props) => {
   const {
@@ -28,7 +31,7 @@ export default (props) => {
     isReadOnly = false,
     onChangeToEdit,
     form,
-    application_date = 'Most Up to date Application',
+    application_date = 'Most Up to date Appli 2cation',
     vendor: applicationVendor,
     onGetUpdatedApplication,
     onSubmitApplication,
@@ -100,124 +103,124 @@ export default (props) => {
   }, [formData])
 
   useEffect(() => {
-    if(vendor){
+    if (vendor) {
 
       dispatch(requestVendorById(vendor));
     }
-  },[vendor])
-  
+  }, [vendor])
+
   useEffect(() => {
 
     let newFormFields = actualFormFields
 
-    if(auth.status == "SIGNED_IN") {
-      if(auth.user && 
+    if (auth.status == "SIGNED_IN") {
+      if (auth.user &&
         auth.user.address) {
-          for(let f of newFormFields) {
-            if(f.type == 'address') {
-              for(let x of f.fields) {
-                if(x.label == 'Street Address') {
-                  x.value = JSON.stringify(auth.user.address);
-                  break;
-                }
+        for (let f of newFormFields) {
+          if (f.type == 'address') {
+            for (let x of f.fields) {
+              if (x.label == 'Street Address') {
+                x.value = JSON.stringify(auth.user.address);
+                break;
               }
-              break;
             }
+            break;
           }
+        }
       }
 
-      if(auth.user && 
+      if (auth.user &&
         auth.user.zip_code) {
-          for(let f of newFormFields) {
-            if(f.type == 'address') {
-              for(let x of f.fields) {
-                if(x.label == 'Postal / Zip Code') {
-                  x.value = JSON.stringify(auth.user.zip_code);
-                  break;
-                }
+        for (let f of newFormFields) {
+          if (f.type == 'address') {
+            for (let x of f.fields) {
+              if (x.label == 'Postal / Zip Code') {
+                x.value = JSON.stringify(auth.user.zip_code);
+                break;
               }
-              break;
             }
+            break;
           }
+        }
       }
 
-      if(auth.user && 
+      if (auth.user &&
         auth.user.email) {
-          for(let f of newFormFields) {
-            if(f.type == 'login') {
-              for(let x of f.fields) {
-                if(x.label == 'Email Address') {
-                  x.value = JSON.stringify(auth.user.email);
-                  break;
-                }
+        for (let f of newFormFields) {
+          if (f.type == 'login') {
+            for (let x of f.fields) {
+              if (x.label == 'Email Address') {
+                x.value = JSON.stringify(auth.user.email);
+                break;
               }
-              break;
             }
+            break;
           }
+        }
 
-          for(let f of newFormFields) {
-            if(f.type == 'email') {
-              for(let x of f.fields) {
-                if(x.label == 'Email') {
-                  x.value = JSON.stringify(auth.user.email);
-                  break;
-                }
+        for (let f of newFormFields) {
+          if (f.type == 'email') {
+            for (let x of f.fields) {
+              if (x.label == 'Email') {
+                x.value = JSON.stringify(auth.user.email);
+                break;
               }
-              break;
             }
+            break;
           }
+        }
       }
 
-      if(auth.user && 
+      if (auth.user &&
         auth.user.first_name) {
-          for(let f of newFormFields) {
-            if(f.type == 'name') {
-              for(let x of f.fields) {
-                if(x.label == 'First Name') {
-                  x.value = JSON.stringify(auth.user.first_name);
-                  break;
-                }
+        for (let f of newFormFields) {
+          if (f.type == 'name') {
+            for (let x of f.fields) {
+              if (x.label == 'First Name') {
+                x.value = JSON.stringify(auth.user.first_name);
+                break;
               }
-              break;
             }
+            break;
           }
+        }
       }
 
-      if(auth.user && 
+      if (auth.user &&
         auth.user.last_name) {
-          for(let f of newFormFields) {
-            if(f.type == 'name') {
-              for(let x of f.fields) {
-                if(x.label == 'Last Name') {
-                  x.value = JSON.stringify(auth.user.last_name);
-                  break;
-                }
+        for (let f of newFormFields) {
+          if (f.type == 'name') {
+            for (let x of f.fields) {
+              if (x.label == 'Last Name') {
+                x.value = JSON.stringify(auth.user.last_name);
+                break;
               }
-              break;
             }
+            break;
           }
+        }
       }
 
-      if(auth.user && 
+      if (auth.user &&
         auth.user.birth_date) {
-          const bdate = format(new Date(parseInt(auth.user.birth_date)), "MM/dd/yyyy");
-          const splitDate = bdate.split('/');
+        const bdate = format(new Date(parseInt(auth.user.birth_date)), "MM/dd/yyyy");
+        const splitDate = bdate.split('/');
 
-          console.log('splitDate', splitDate);
-          for(let f of newFormFields) {
-            if(f.type == 'date') {
-              for(let x of f.fields) {
-                if(x.label == "MM")
-                  x.value = splitDate[0] ? JSON.stringify(splitDate[0]) : "";
-                else if(x.label == "DD")
-                  x.value = splitDate[1] ? JSON.stringify(splitDate[1]) : "";
-                else if(x.label == "YYYY")
-                  x.value = splitDate[2] ? JSON.stringify(splitDate[2]) : "";
+        console.log('splitDate', splitDate);
+        for (let f of newFormFields) {
+          if (f.type == 'date') {
+            for (let x of f.fields) {
+              if (x.label == "MM")
+                x.value = splitDate[0] ? JSON.stringify(splitDate[0]) : "";
+              else if (x.label == "DD")
+                x.value = splitDate[1] ? JSON.stringify(splitDate[1]) : "";
+              else if (x.label == "YYYY")
+                x.value = splitDate[2] ? JSON.stringify(splitDate[2]) : "";
 
-              }
-              break;
             }
+            break;
           }
+        }
       }
     }
   }, [auth])
@@ -363,10 +366,10 @@ export default (props) => {
   const handleCheckRequired = () => {
     // Check for required
     let newFielderrors = cloneDeep(fieldError)
-    const fields = hasWizard 
+    const fields = hasWizard
       ? actualFormFields[currentStep].formFields
       : actualFormFields
- 
+
     fields.reduce((acc, curr) => {
       acc = [
         ...acc,
@@ -374,38 +377,38 @@ export default (props) => {
       ]
       return acc
     }, [])
-    .forEach(({ required, value, id, placeholder, label, tag, type }) => {
-      const newVal = value  ? typeof value === 'boolean' ? value : JSON.parse(value) : ''
- 
-      if (required && !newVal && newVal === '' && tag !== 'icon' && tag !== 'checkbox') {
-        const requiredError = `${placeholder || label || 'This'} is required.`
-        if (!newFielderrors[id] || !newFielderrors[id].find(e => e === requiredError)) {
-          newFielderrors[id] = [
-            ...(newFielderrors[id] || []),
-            requiredError
-          ]
-        }
-      }
-      if (type === 'terms' && (tag === 'input' || tag === 'checkbox')) {
-        let parsedValue = null;
-    
-        if(typeof newVal === 'object') {
-          console.log('newValv',newVal)
-          parsedValue = newVal ? JSON.parse(newVal) : {};
-          newFielderrors[id] = parsedValue?.value ? [] : ['Electronic Signature is required']
-        }
-        else if(tag === 'checkbox'){
-          parsedValue = newVal && newVal !== '' ? newVal : null;
+      .forEach(({ required, value, id, placeholder, label, tag, type }) => {
+        const newVal = value ? typeof value === 'boolean' ? value : isValidJSONString(value) ? JSON.parse(value) : value : ''
 
-          newFielderrors[id] = parsedValue ? [] : ['Checkbox is required']
+        if (required && !newVal && newVal === '' && tag !== 'icon' && tag !== 'checkbox') {
+          const requiredError = `${placeholder || label || 'This'} is required.`
+          if (!newFielderrors[id] || !newFielderrors[id].find(e => e === requiredError)) {
+            newFielderrors[id] = [
+              ...(newFielderrors[id] || []),
+              requiredError
+            ]
+          }
         }
-       
-       
-      }
-      if (newFielderrors[id] && !newFielderrors[id].length) {
-        delete newFielderrors[id]
-      }
-    })
+        if (type === 'terms' && (tag === 'input' || tag === 'checkbox')) {
+          let parsedValue = null;
+
+          if (typeof newVal === 'object') {
+            console.log('newValv', newVal)
+            parsedValue = newVal ? JSON.parse(newVal) : {};
+            newFielderrors[id] = parsedValue?.value ? [] : ['Electronic Signature is required']
+          }
+          else if (tag === 'checkbox') {
+            parsedValue = newVal && newVal !== '' ? newVal : null;
+
+            newFielderrors[id] = parsedValue ? [] : ['Checkbox is required']
+          }
+
+
+        }
+        if (newFielderrors[id] && !newFielderrors[id].length) {
+          delete newFielderrors[id]
+        }
+      })
 
     return {
       formHasError: Object.keys(newFielderrors).length > 0,
@@ -429,9 +432,9 @@ export default (props) => {
       }
 
       if (nextPage === 'end') {
-        handleSubmit(true)  
+        handleSubmit(true)
       }
-      
+
       beforeSetStep(step)
     }
 
@@ -461,7 +464,7 @@ export default (props) => {
           return {
             ...e,
             fields: cloneDeep(e.fields).map(f => {
-              const fValue = f.value ? JSON.parse(f.value) : f.value
+              const fValue = isValidJSONString(f.value) ? JSON.parse(f.value) : f.value;
               if (
                 fValue === '' ||
                 (Array.isArray(fValue) && fValue.length === 0) ||
@@ -475,6 +478,11 @@ export default (props) => {
         })
       // Submit for update custom application form
 
+
+      console.log('Submit Dataaaaa', {
+        formTitle,
+        formData: newFormContents
+      })
       if (isApplication) {
         onSubmitApplication({
           formTitle,
@@ -508,7 +516,7 @@ export default (props) => {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     copyStyles: true,
-    pageStyle:`
+    pageStyle: `
     #form .highlights{
 
       border-top: none !important;
@@ -540,17 +548,17 @@ export default (props) => {
 
 
   // console.log('@fieldError', fieldError)
-  
+
   // For application
   const { form_contents: historyContents } = historyList && historyList.length ? JSON.parse(historyList[0].details) : {}
   const { formData: historyfields } = historyContents || {}
   const hideStepper = hasWizard && !!actualFormFields.find(e => !e.showLabel)
-  
+
   // console.log('@actualFormFields', { actualFormFields, nextPage, fieldError })
   // console.log('flattenFields ', flattenFields());
 
   const hasLoginField = !!(flattenFields().find(e => e.type === 'login'))
-  
+
   return (
     <FormStyled ref={componentRef}>
       <div id='form' >
@@ -580,10 +588,10 @@ export default (props) => {
                       <FontAwesomeIcon icon={faEdit} />
                     </button>
                   ) : (
-                    <a 
+                    <a
                       href=''
                       className='view-latest'
-                      target='_blank' 
+                      target='_blank'
                       onClick={(e) => {
                         e.preventDefault();
                         onSelectLatest()
@@ -598,10 +606,10 @@ export default (props) => {
           }
         </div>
         <div className={`form-content ${isApplication ? 'read-only' : ''}`}>
-          <> 
+          <>
             {
               (isSuccessfulSubmit && form_id) ? (
-                <ThankyouPage hasLoginField={hasLoginField}/>
+                <ThankyouPage hasLoginField={hasLoginField} />
               ) : (
                 (loading.getForm || loading.submitForm) ? (
                   <Loading />
