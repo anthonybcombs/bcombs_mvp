@@ -9,6 +9,18 @@ import { customConnection, makeDb } from "../helpers/database";
 import fetch from "node-fetch";
 import { v4 as uuidv4 } from "uuid";
 import { sendMigratedAccount, bookDemoSchedule } from "../helpers/email";
+
+import { submitCustomApplication, addApplicationUser, createApplication } from '../api/applications';
+import { addChild } from '../api/child';
+import { checkUserEmail, executeSignUp, executeAddUserProfile } from '../api/users';
+import { getUserTypes } from "../api/userTypes/";
+
+import { 
+  addParent
+} from "../api/parents";
+
+
+
 const multer = require("multer");
 const router = express.Router();
 
@@ -1005,6 +1017,182 @@ router.get("/parentvendor", async (req, res) => {
     await db.close();
   }
 });
+
+
+router.post("/application/import", async (req, res) => {
+
+  const db = makeDb();
+  try {
+    const { type } = req.query;
+    const { data } = req.body;
+
+    if (type === 'custom') {
+
+      for (let application of data) {
+
+        let loginType = application.form_contents.formData.filter((item) => {
+          return item.type == "login"
+        });
+
+        let nameType = application.form_contents.formData.filter((item) => {
+          return item.type == "name"
+        });
+
+        const formContentString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
+        application.form_contents = Buffer.from(formContentString, "utf-8").toString("base64");
+
+        let email;
+        let password;
+        let firstname = '';
+        let middlename = '';
+        let lastname = '';
+        const hasLoginField = loginType;
+        const hasNameField = nameType;
+
+        loginType = loginType ? loginType[0] : {};
+
+        nameType = nameType ? nameType[0] : {};
+
+        if (hasLoginField) {
+          email = loginType?.fields.filter((item) => {
+            return item.type == "email"
+          });
+          password = loginType?.fields.filter((item) => {
+            return item.type == "password"
+          });
+
+          email = email && email.length > 0 ? email[0] : "";
+          password = password && password.length > 0 ? password[0] : "";
+        }
+
+        if (hasNameField) {
+          firstname = nameType?.fields.filter((item) => {
+            return item.label == "First Name"
+          });
+          middlename = nameType?.fields.filter((item) => {
+            return item.label == "Middle Name"
+          });
+          lastname = nameType?.fields.filter((item) => {
+            return item.label == "Last Name"
+          });
+
+    
+          let firstnameValue = firstname && firstname[0]?.value.slice(1, -1);
+          let lastnameValue = lastname && lastname[0]?.value.slice(1, -1);
+          let middlenameValue  = middlename && middlename[0]?.value.slice(1, -1);
+  
+          const childObj = {
+            firstname: firstnameValue,
+            lastname: lastnameValue,
+            middlename: middlenameValue
+          }
+
+          const child = await addChild(childObj);
+
+          application.child = child.ch_id;
+
+          const response = await submitCustomApplication(application);
+          console.log('Responseee', response) 
+
+        } else {
+
+          return res.json({
+            messageType: "error",
+            message: "Prime field name is required"
+          })
+        }
+
+
+      }
+
+    }
+    // IMPORT MENTORING STARTS HERE
+    else if (type === 'mentoring') {
+      let newChilds = [];
+      let newParents = [];
+
+      for (let application of data) {
+
+        const tempChildId = null;
+
+        const child = await addChild(application.child);
+        const parents = application.parents;
+
+        application.class_teacher = "";
+        application.child = child.ch_id;
+
+        newChilds.push({
+          tempId: tempChildId,
+          newId: child.ch_id
+        })
+
+        application = await createApplication(application);
+
+        const tempParentId = null;
+        parents.application = application.app_id;
+        const newParent = await addParent(parents);
+        let checkEmail = await checkUserEmail(parents.email_address);
+
+        if (checkEmail && checkEmail.is_exist) {
+          console.log("Parent Status: ", checkEmail.status);
+        } else {
+          let userType = await getUserTypes();
+
+          userType = userType.filter(type => {
+            return type.name === "USER";
+          })[0];
+
+          let user = {
+            username: parents.firstname + "" + parents.lastname,
+            email: parents.email_address,
+            password: parents.password,
+            type: userType
+          };
+
+ 
+          await executeSignUp(user);
+    
+          let parentInfo = {
+            ...parents,
+            email: parents.email_address,
+            dateofbirth:parents.birthdate
+          };
+
+          await executeAddUserProfile(parentInfo);
+
+        }
+
+        newParents.push({
+          tempId: tempParentId,
+          newId: newParent?.parent_id
+        })
+
+        const parentUser = await getUserFromDatabase(parents.email_address);
+
+        console.log("PARENT USER", parentUser);
+
+        await addApplicationUser({
+          user_id: parentUser.id,
+          app_id: application.app_id
+        });
+      }
+    }
+
+  }
+  catch (error) {
+    console.log("GET Parent Vendor Error", error);
+
+    return res.json({
+      message: 'Something went wrong'
+    })
+  } finally {
+    await db.close();
+
+    return res.json({
+      message: 'Import Success'
+    })
+  }
+})
 
 
 router.post("/demo_schedule/request", async (req, res) => {
