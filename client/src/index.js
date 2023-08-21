@@ -361,7 +361,7 @@ body {
     fill: #FF0000 !important;
   }
 
-  .gZJpYg .sortableGroup svg:not(.exclude-global) {
+  .sortableGroup svg:not(.exclude-global) {
     padding: 0px !important;
 
   }
