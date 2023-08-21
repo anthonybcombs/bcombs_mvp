@@ -24,7 +24,7 @@ export default (props) => {
   } = props
 
 
-  const actualImage = value ? 'https://bcombs.s3.amazonaws.com/' + value : ''
+  const actualImage = value ? `https://bcombs.s3.amazonaws.com/${value}?date=${new Date()}` : ''
 
   const [imagePreview, setImagePreview] = useState('');
 
