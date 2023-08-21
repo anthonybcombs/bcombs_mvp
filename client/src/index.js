@@ -351,6 +351,20 @@ body {
     -webkit-appearance: none;
     -moz-appearance: none;
   }
+
+  .ql-snow .ql-picker-label {
+    padding-left: 0px !important;
+  }
+
+  .ql-snow.ql-toolbar button svg,
+  .ql-snow .ql-toolbar button svg {
+    fill: #FF0000 !important;
+  }
+
+  .gZJpYg .sortableGroup svg:not(.exclude-global) {
+    padding: 0px !important;
+
+  }
 `;
 let history = createHistory(window);
 ReactDOM.render(
