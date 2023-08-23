@@ -85,7 +85,8 @@ import {
   getVendorAdminsByUser,
   getVendorApplicationReminder,
   createAppGroupReminder,
-  updateLogo
+  updateLogo,
+  setDefaultVendor
 } from "../../api/vendor";
 import {
   createApplication,
@@ -2104,6 +2105,10 @@ const resolvers = {
     
     async updateParentVendorShare(root, data, context) { 
       return await updateParentSharingByVendor(data)
+    },
+
+    async updateDefaultVendor(root, { vendor_id, user_id}, context) {
+      return await setDefaultVendor({ vendor_id, user_id})
     }
   }
 };

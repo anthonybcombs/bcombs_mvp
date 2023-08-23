@@ -1412,3 +1412,75 @@ export const updateLogo = async ({
 };
 
 
+export const setDefaultVendor = async ({
+  user_id,
+  vendor_id
+}) => {
+  const db = makeDb();
+  let vendors = [];
+  console.log('useridddd', user_id)
+  console.log('useridddd vendor_id', vendor_id)
+  try {
+
+    if (vendor_id) {
+      await db.query(`UPDATE vendor
+        SET is_default = CASE
+        WHEN id=UUID_TO_BIN(?) THEN 1
+        ELSE 0
+        END
+        WHERE user=UUID_TO_BIN(?);
+      `,
+        [vendor_id, user_id]
+      );
+    }
+    else {
+      await db.query(`UPDATE vendor
+        SET is_default = 0
+        WHERE user=UUID_TO_BIN(?);
+      `,
+        [user_id]
+      );
+    }
+
+
+
+    const response = await db.query(`    
+      SELECT 
+        BIN_TO_UUID(v.id) as id, 
+        BIN_TO_UUID(v.user) as user,
+        BIN_TO_UUID(v.user) as vendor_user,
+        v.id2,
+        v.name, 
+        v.section1_text,
+        v.section2_text,
+        v.section3_text,
+        v.section1_name,
+        v.section2_name,
+        v.section3_name,
+        v.section1_show,
+        v.section2_show,
+        v.section3_show,
+        v.created_at as created_at,
+        v.is_daycare,
+        v.logo,
+        v.is_default
+      FROM vendor v
+      WHERE v.user=UUID_TO_BIN(?)
+      ORDER BY v.id2 ASC
+    `,
+      [user_id]
+    );
+
+    vendors = response;
+
+  }
+  catch (error) {
+    console.log('Vendor Default Error', error)
+    return []
+  } finally {
+    await db.close();
+    return vendors
+  }
+
+}
+
