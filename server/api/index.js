@@ -1076,11 +1076,11 @@ router.post("/application/import", async (req, res) => {
             return item.label == "Last Name"
           });
 
-    
+
           let firstnameValue = firstname && firstname[0]?.value.slice(1, -1);
           let lastnameValue = lastname && lastname[0]?.value.slice(1, -1);
-          let middlenameValue  = middlename && middlename[0]?.value.slice(1, -1);
-  
+          let middlenameValue = middlename && middlename[0]?.value.slice(1, -1);
+
           const childObj = {
             firstname: firstnameValue,
             lastname: lastnameValue,
@@ -1092,7 +1092,7 @@ router.post("/application/import", async (req, res) => {
           application.child = child.ch_id;
 
           const response = await submitCustomApplication(application);
-          console.log('Responseee', response) 
+
 
         } else {
 
@@ -1133,7 +1133,7 @@ router.post("/application/import", async (req, res) => {
         const newParent = await addParent(parents);
         let checkEmail = await checkUserEmail(parents.email_address);
 
-        if (checkEmail && checkEmail.is_exist) {
+        if (checkEmail && checkEmail.is_exist && checkEmail.status !== 'Email is available to use') {
           console.log("Parent Status: ", checkEmail.status);
         } else {
           let userType = await getUserTypes();
@@ -1149,32 +1149,39 @@ router.post("/application/import", async (req, res) => {
             type: userType
           };
 
- 
-          await executeSignUp(user);
-    
-          let parentInfo = {
-            ...parents,
-            email: parents.email_address,
-            dateofbirth:parents.birthdate
-          };
 
-          await executeAddUserProfile(parentInfo);
+          console.log('parents.create_profile', parents.create_profile)
+          if (parents.create_profile) {
+            await executeSignUp(user);
+
+            let parentInfo = {
+              ...parents,
+              email: parents.email_address,
+              dateofbirth: parents.birthdate
+            };
+
+            await executeAddUserProfile(parentInfo);
+          }
+
+          newParents.push({
+            tempId: tempParentId,
+            newId: newParent?.parent_id
+          })
+
+          const parentUser = await getUserFromDatabase(parents.email_address);
+
+
+          if (parentUser) {
+            await addApplicationUser({
+              user_id: parentUser.id,
+              app_id: application.app_id
+            });
+          }
+
 
         }
 
-        newParents.push({
-          tempId: tempParentId,
-          newId: newParent?.parent_id
-        })
 
-        const parentUser = await getUserFromDatabase(parents.email_address);
-
-        console.log("PARENT USER", parentUser);
-
-        await addApplicationUser({
-          user_id: parentUser.id,
-          app_id: application.app_id
-        });
       }
     }
 
