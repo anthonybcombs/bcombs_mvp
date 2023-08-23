@@ -1195,6 +1195,49 @@ router.post("/application/import", async (req, res) => {
 })
 
 
+router.post("/vendor/default", async (req, res) => {
+  const db = makeDb();
+  try {
+    const { user_id, vendor_id } = req.body;
+    console.log('user_id', user_id)
+    console.log('vendor_id', vendor_id)
+    
+    if (vendor_id) {
+      await db.query(`UPDATE vendor
+        SET is_default = CASE
+        WHEN id=UUID_TO_BIN(?) THEN 1
+        ELSE 0
+        END
+        WHERE user=UUID_TO_BIN(?);
+      `,
+        [vendor_id, user_id]
+      );
+    }
+    else {
+      await db.query(`UPDATE vendor
+        SET is_default = 0
+        WHERE user=UUID_TO_BIN(?);
+      `,
+        [user_id]
+      );
+    }
+
+  }
+  catch (error) {
+    console.log('Vendor Default Error', error)
+    return res.json({
+      message: 'Something went wrong'
+    })
+  } finally {
+    await db.close();
+    return res.json({
+      message: 'Vendor Updated'
+    })
+  }
+
+});
+
+
 router.post("/demo_schedule/request", async (req, res) => {
   try {
     const {
