@@ -1476,10 +1476,14 @@ export const setDefaultVendor = async ({
   }
   catch (error) {
     console.log('Vendor Default Error', error)
-    return []
+    return {
+      message: 'Something went wrong'
+    }
   } finally {
     await db.close();
-    return vendors
+    return {
+      message: 'Default vendor has been updated'
+    }
   }
 
 }

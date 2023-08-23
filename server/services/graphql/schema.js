@@ -1105,6 +1105,10 @@ const queryTypes = `
       is_default: Int
   }
 
+    type DefaultVendorResponse{
+        message: String
+    }
+
     type LocationSite {
         id: String!
         vendor_location_site_id: String!
@@ -1868,7 +1872,7 @@ const mutations = `
         updateVendorLogo(vendorLogo: VendorLogoInput): Vendor
         createUpdateChildAttendance(user: UserAttendanceInput): UserAttendance
         updateParentVendorShare(parents: [ParentShareByVendorInput], vendor_id: String): [Parent]
-        updateDefaultVendor(user_id: String!, vendor_id:String): [Vendor]
+        updateDefaultVendor(user_id: String!, vendor_id:String): DefaultVendorResponse
     }
 `;
 
