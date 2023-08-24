@@ -619,7 +619,8 @@ export const getParentByVendorId = async({
             parent_id: applications[x].parent_id, 
             firstname:  applications[x].firstname, 
             lastname: applications[x].lastname, 
-            email_address: applications[x].email_address
+            email_address: applications[x].email_address,
+            is_profile_filled: applications[x].is_profile_filled
           }
         }
     }
