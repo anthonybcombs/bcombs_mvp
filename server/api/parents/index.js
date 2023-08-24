@@ -532,12 +532,12 @@ export const getParentByVendorId = async({
   formType = 'mentoring'
 }) => {
   const db = makeDb();
-  let result = [];
+  let applications = [];
 
   try {
     let whereValues = [vendorId];
 
-    result = formType === 'mentoring'  ? await db.query(
+    applications = await db.query(
       `
         SELECT 
           BIN_TO_UUID(p.parent_id) as parent_id,
@@ -570,75 +570,68 @@ export const getParentByVendorId = async({
           p.ethnicities,
           p.image,
           p.is_parent_allow_shared,
-          p.is_vendor_allow_shared
-        FROM parent p,vendor v,application  a
-        WHERE a.vendor=v.id AND v.id=UUID_TO_BIN(?)
-        AND p.application=a.app_id
-        ${appGroupId ? ` AND a.class_teacher  LIKE '%${appGroupId}%'` : ''}
-      `,
-      [
-        whereValues
-      ]
-    ) : await db.query(
-      `
-        SELECT 
-          BIN_TO_UUID(p.parent_id) as parent_id,
-          BIN_TO_UUID(p.application) as application,
-          p.firstname, 
-          p.lastname, 
-          p.email_address,
-          p.email_type,
-          p.phone_number,
-          p.phone_type,
-          p.occupation,
-          p.parent_goals,
-          p.parent_child_goals,
-          p.live_area,
-          p.level_of_education,
-          p.child_hs_grad,
-          p.child_col_grad,
-          p.address,
-          p.city,
-          p.state,
-          p.zip_code,
-          p.phone_type2,
-          p.phone_number2,
-          p.email_type2,
-          p.email_address2,
-          p.person_recommend,
-          p.age,
-          p.birthdate,
-          p.gender,
-          p.ethnicities,
-          p.image,
-          p.is_parent_allow_shared,
-          p.is_vendor_allow_shared
-        FROM parent p,vendor v,application  a
-        WHERE a.vendor=v.id AND v.id=UUID_TO_BIN(?)
-        AND p.application=a.app_id
-        ${appGroupId ? ` AND a.class_teacher  LIKE '%${appGroupId}%'` : ''}
-      `,
-      [
-        whereValues
-      ]
-    );
+          p.is_vendor_allow_shared,
+          u.is_profile_filled
+        FROM parent p
+
+        CROSS JOIN application a ON p.application=a.app_id AND p.application=a.app_id
+        CROSS JOIN vendor v ON a.vendor=v.id 
+
+        LEFT JOIN users u ON u.email=p.email_address
+        LEFT JOIN user_profiles up ON u.id=up.user_id
+
+        WHERE v.id=UUID_TO_BIN(?)
       
-    for(let x = 0; x < result.length; x++) {
-        if(!result[x].is_parent_allow_shared) {
-          result[x] = {
-            parent_id: result[x].parent_id, 
-            firstname:  result[x].firstname, 
-            lastname: result[x].lastname, 
-            email_address: result[x].email_address
+        ${appGroupId ? ` AND a.class_teacher  LIKE '%${appGroupId}%'` : ''}
+      `,
+      [
+        whereValues
+      ]
+    ) 
+
+    // HOLD CUSTOM APPLICATION FOR NOW
+    // let customApplications = await db.query(
+    //   `
+    //   SELECT
+    //     BIN_TO_UUID(c.app_id) as application,
+    //     u.first_name as firstname, 
+    //     u.last_name as lastname, 
+    //     u.address as address, 
+    //     u.is_parent_allow_shared as is_parent_allow_shared
+      
+    //   FROM custom_application c, application_user a, user_profiles u
+    //   WHERE vendor=UUID_TO_BIN(?) 
+    //   AND c.app_id=a.custom_app_id
+    //   AND u.user_id=a.user_id
+    //   ${appGroupId ? ` AND c.class_teacher  LIKE '%${appGroupId}%'` : ''}
+    //   `,
+    //   [
+    //     whereValues
+    //   ]
+    // );
+    // for (const application of applications) {
+    //   application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+    //   application.form_contents = JSON.parse(application.form_contents);
+    // }
+      
+    for(let x = 0; x < applications.length; x++) {
+        if(!applications[x].is_parent_allow_shared) {
+          applications[x] = {
+            parent_id: applications[x].parent_id, 
+            firstname:  applications[x].firstname, 
+            lastname: applications[x].lastname, 
+            email_address: applications[x].email_address
           }
         }
     }
+
+    applications = [...applications,];
 
   } catch(err) {
     console.log("getParentByVendor error", err)
   } finally {
     await db.close();
-    return result
+    return applications
   }
 }
 

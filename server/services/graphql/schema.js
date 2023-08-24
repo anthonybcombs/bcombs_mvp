@@ -1268,6 +1268,7 @@ const queryTypes = `
         ethnicities: String
         is_parent_allow_shared: Int
         is_vendor_allow_shared: Int
+        is_profile_filled: Int
     }
 
     type Application {
