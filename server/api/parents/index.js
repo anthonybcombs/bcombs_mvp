@@ -578,7 +578,6 @@ export const getParentByVendorId = async({
         CROSS JOIN vendor v ON a.vendor=v.id 
 
         LEFT JOIN users u ON u.email=p.email_address
-        LEFT JOIN user_profiles up ON u.id=up.user_id
 
         WHERE v.id=UUID_TO_BIN(?)
       
