@@ -645,7 +645,7 @@ export default function Layout({ children }) {
         </HeaderStyled>
         {children}
         <footer data-testid="app-footer"></footer>
-        {location.href.includes(applicationUrl) || location.href.includes(customFormUrl) ?
+        {/* {location.href.includes(applicationUrl) || location.href.includes(customFormUrl) ?
           auth.status == "SIGNED_IN" ? ""
             : showLoginBox ? (
               <LoginBox
@@ -655,7 +655,7 @@ export default function Layout({ children }) {
             )
               : ""
           : ""
-        }
+        } */}
       </LayoutStyled>
   );
 }
