@@ -881,7 +881,7 @@ export default function index({
                   id={`parent_phonenumber_${counter - 1}`}
                   name={"parent_phonenumber" + (counter - 1)}
                   // className="field-input"
-                  className={`${((emptyFields.phone_number && parentProfile.phone_number === '') || ( emptyFields.phone_invalid && parentProfile.phone_number.includes('_')) && 'highlights') && 'highlights'} field-input`} 
+                  className={`${((emptyFields.phone_number && parentProfile.phone_number === '') || (emptyFields.phone_invalid && parentProfile.phone_number.includes('_')) && 'highlights') && 'highlights'} field-input`}
                   placeholder="Phone Number"
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
@@ -1038,20 +1038,20 @@ export default function index({
                     readOnly={isReadonly}
                     name={"parent_phonenumber2" + (counter - 1)}
                     // className={
-                      // isReadonly &&
-                      //   pastParentInformation &&
-                      //   !isVendorView &&
-                      //   (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
-                      //   pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
-                      //   "field-input highlights" : "field-input"
+                    // isReadonly &&
+                    //   pastParentInformation &&
+                    //   !isVendorView &&
+                    //   (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
+                    //   pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
+                    //   "field-input highlights" : "field-input"
                     // }
                     className={`${(emptyFields.phone_number && parentProfile.phone_number === '') && 'highlights'} 
-                    ${     isReadonly &&
-                      pastParentInformation &&
-                      !isVendorView &&
-                      (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
-                      pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
-                      "field-input highlights" : "field-input"
+                    ${isReadonly &&
+                        pastParentInformation &&
+                        !isVendorView &&
+                        (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
+                        pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
+                        "field-input highlights" : "field-input"
                       }
                      `
                     }
@@ -1291,7 +1291,7 @@ export default function index({
                   type="password"
                   id={`password_${counter - 1}`}
                   name={"parent_password" + (counter - 1)}
-                  className={`field-input ${(emptyFields.password && parentProfile.password === '' || (emptyFields.password_not_match &&  parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
+                  className={`field-input ${(emptyFields.password && parentProfile.password === '' || (emptyFields.password_not_match && parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
                   placeholder="Password"
                   autoComplete="new-password"
                   defaultValue={parentProfile?.password}
@@ -1324,7 +1324,7 @@ export default function index({
                         return oneSpecialCharacterRegex.test(value);
                       }
                     }
-                   
+
                   })}
                 />
                 <label className="field-label" for={`password_${counter - 1}`}>
@@ -1332,7 +1332,7 @@ export default function index({
                 </label>
               </div>
               <ErrorMessage
-                field={errors["parent_password" + (counter - 1)] || (emptyFields.password && parentProfile.password === '' || (emptyFields.password_not_match &&  parentProfile.password !== parentProfile.confirmed_password))}
+                field={errors["parent_password" + (counter - 1)] || (emptyFields.password && parentProfile.password === '' || (emptyFields.password_not_match && parentProfile.password !== parentProfile.confirmed_password))}
                 errorType="required"
                 message={
                   <>
@@ -1362,7 +1362,7 @@ export default function index({
                   type="password"
                   id={`parent_confirmed_paswword_${counter - 1}`}
                   name={`parent_confirmed_paswword${counter - 1}`}
-                  className={`field-input ${((emptyFields.confirmed_password && parentProfile.confirmed_password === '') || (emptyFields.password_not_match &&  parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
+                  className={`field-input ${((emptyFields.confirmed_password && parentProfile.confirmed_password === '') || (emptyFields.password_not_match && parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
                   placeholder="Confirmed Password"
                   autoComplete="new-password"
                   defaultValue={parentProfile?.confirmed_password}
@@ -1393,7 +1393,7 @@ export default function index({
                 </label>
               </div>
               <ErrorMessage
-                field={errors[`parent_confirmed_paswword${counter - 1}`] || emptyFields.confirmed_password && parentProfile.confirmed_password === ''}  
+                field={errors[`parent_confirmed_paswword${counter - 1}`] || emptyFields.confirmed_password && parentProfile.confirmed_password === ''}
                 errorType="required"
                 message="Confirm password is required."
               />
@@ -2119,7 +2119,7 @@ export default function index({
                 <span className="required">*</span> How did you find us?
               </label>
               <input
-                required={selectedStep === 2}
+                //     required={selectedStep === 2}
                 readOnly={isReadonly}
                 id={`parent_person_recommend_${counter - 1}`}
                 name={"parent_person_recommend" + (counter - 1)}

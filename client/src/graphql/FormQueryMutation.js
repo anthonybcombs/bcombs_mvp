@@ -141,6 +141,7 @@ export const FORM_UPDATE_MUTATION = gql`
               column
               value
               required
+              imageString
               validation {
                 include
                 items {

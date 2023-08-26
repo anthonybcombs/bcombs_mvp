@@ -16,8 +16,7 @@ export default (props) => {
 
   const handleAnswer = ({ target: { value } }) => {
     
-      console.log('fields[1].id',fields[1].id)
-      console.log('fields[1].id value',value)
+  
     onChange(fields[1].id, !value ? null : JSON.stringify({ value, date }))
     onCheckError(fields[1].id, !value || value === '' ? ['Electronic Signature is required'] : '')
   }

@@ -6,7 +6,7 @@ import { faArrowLeft, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { StandardFields, PrimeFields } from './Fields'
 import DraggableField from './DraggbleField'
 
-export default ({ handleBuilderDrawerOpen, form_id, getItem }) => {
+export default ({ handleBuilderDrawerOpen, form_id, getItem, vendor }) => {
   const [standardFields] = useState([...StandardFields])
   const [primeFields] = useState([...PrimeFields])
 
@@ -24,7 +24,7 @@ export default ({ handleBuilderDrawerOpen, form_id, getItem }) => {
 
       <div >
       <div>
-          <Link to={`/dashboard/forms`} className="back-btn" >
+          <Link to={`/dashboard/forms${vendor ? `?vendor=${vendor}` : ''}`} className="back-btn" >
             <h4>
               <FontAwesomeIcon className="back-icon" icon={faAngleLeft} />{`  `}
               Back

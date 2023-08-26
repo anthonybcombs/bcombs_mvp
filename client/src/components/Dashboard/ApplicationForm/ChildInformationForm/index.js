@@ -1777,7 +1777,7 @@ export default function index({
 
     
             </div>
-            <input
+            {/* <input
               type="checkbox"
               name="child_select_all"
               onChange={e => {
@@ -1805,7 +1805,7 @@ export default function index({
               field={errors["ch_lives_with" + (counter - 1)]}
               errorType="required"
               message="Child lives with is required"
-            />
+            /> */}
           </div>
         </div>
       </div>
