@@ -252,13 +252,13 @@ export default function Form({
             id="username"
             name="username"
             data-testid="app-create-input-username"
-            placeholder="Public Display Name"
+            placeholder={type?.name === 'VENDOR' ? 'Vendor Name' : 'Public Display Name'}
             onChange={({ target }) => {
               handleInputChange("username", target.value);
             }}
             ref={register({
               minLength: 2,
-              maxLength: 15
+              // maxLength: 15
               //pattern: /^(([0-9][A-z]+)|([A-z]+))$/
               // validate: {
               //   alphanumeric: value => {
@@ -268,7 +268,7 @@ export default function Form({
               // }
             })}
           />
-          <label className="field-label" for="username">Public Display Name</label>
+          <label className="field-label" for="username">{type?.name === 'VENDOR' ? 'Vendor Name' : 'Public Display Name'}</label>
         </div>
         <ErrorMessage
           field={errors.username}
@@ -276,7 +276,7 @@ export default function Form({
           message={
             <>
               <p className="error error-size">
-                Username must be 2 to 15 characters long
+                Username must be at least 2 characters
               </p>
             </>
           }
