@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from '@reach/router';
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
@@ -24,12 +23,12 @@ export default ({ handleBuilderDrawerOpen, form_id, getItem, vendor }) => {
 
       <div >
       <div>
-          <Link to={`/dashboard/forms${vendor ? `?vendor=${vendor}` : ''}`} className="back-btn" >
+          <a href={`/dashboard/forms${vendor ? `?vendor=${vendor}` : ''}`} className="back-btn" >
             <h4>
               <FontAwesomeIcon className="back-icon" icon={faAngleLeft} />{`  `}
               Back
             </h4>
-          </Link>
+          </a>
         </div>
 
         <div>
