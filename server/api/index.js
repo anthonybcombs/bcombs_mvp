@@ -987,26 +987,31 @@ router.get("/parentvendor", async (req, res) => {
 
   try {
     const vendors = await db.query(
-      `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name from parent p, application a, vendor v 
+      `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name, a.class_teacher from parent p, application a, vendor v 
       WHERE p.email_address=? AND
       p.application=a.app_id AND v.id=a.vendor;
  `,
       [email]
     );
 
-    
+    const applicationGroups = vendors.map(item => {
+      return item.class_teacher ? item.class_teacher.split(',') : []
+    }).flat()
+
+
     let vendorAppGroups = [];
     let vendorsIds = vendors.map(item => `UUID_TO_BIN('${item.vendor_id}')`).join(',');
-   
-    if(vendorsIds.length > 0) {
+    const vendorAppGroupIds = applicationGroups.map(id => `UUID_TO_BIN('${id}')`).join(',');
+
+    if (vendorsIds.length > 0) {
       vendorAppGroups = await db.query(
         `SELECT name, BIN_TO_UUID(app_grp_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_app_groups
-         WHERE vendor IN (${vendorsIds});
-      `,
-        [email]
+         WHERE app_grp_id IN (${vendorAppGroupIds});
+      `
+        // [email]
       );
-    } 
-   
+    }
+
     return res.json({
       vendors,
       vendorAppGroups
