@@ -2162,6 +2162,22 @@ export default function index({
               message="This field is required"
             />
           </div>
+          <div className="form-group">
+            <input
+              type="checkbox"
+              name="is_parent_allow_shared"
+              defaultChecked={parentProfile?.is_parent_allow_shared}
+              onChange={e => {
+                handleParentFormDetailsChange(
+                  counter - 1,
+                  "profile",
+                  "is_parent_allow_shared",
+                  e.target.value === 'on' ? 1 : 0
+                );
+              }}
+
+            /> Share Information to Others
+          </div>
         </div>
       </div>
     </ParentInformationStyled >

@@ -603,17 +603,23 @@ const ImportExportApplication = props => {
                             />
                         </div>
                         <br />
-                        {createProfileFeature && 
+                        <div>
+                            <label style={{ color: 'orange' }}>Note:</label>
+                            <div>For date field, the format should be <i>"YYYY-MM-DD"</i></div>
+                        </div>
+                        <br />
+                        {createProfileFeature &&
                             <div>
-                                <label>Create Profile?</label> 
+                                <label>Create Profile?</label>
                                 <input type="checkbox" onChange={handleCreateProfileChange} checked={isCreateProfile} />
-                        </div>}
+                            </div>}
                         <br />
 
                         {isImportSuccess && <div style={{ color: 'green', paddingBottom: 12 }}>Data has been imported successfully!</div>}
+                 
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
 
-                      
+
                             {currentFormPayload && <button
                                 disabled={isUploadLoading}
                                 // disabled={!currentFormPayload ? true : false}
