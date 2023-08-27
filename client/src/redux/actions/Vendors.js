@@ -253,6 +253,7 @@ const updateDefaultVendorFromDataBase = payload => {
 
       return resolve(data.updateDefaultVendor);
     } catch (error) {
+      console.log("updateDefaultVendorFromDataBase error", error);
       reject(error);
     }
   });
@@ -670,8 +671,9 @@ export function* updateDefaultVendor({ user_id, vendor_id}) {
     console.log('updateDefaultVendor vendor_id', vendor_id)
     const response = yield call(updateDefaultVendorFromDataBase, { user_id, vendor_id});
 
-    console.log('responseee', response)
+    console.log('updateDefaultVendor responseee', response)
   } catch (err) {
+    console.log('updateDefaultVendor err', err)
   }
 }
 
