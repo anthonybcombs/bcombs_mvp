@@ -13,7 +13,8 @@ import {
   CREATE_GROUP_REMINDER,
   GET_VENDOR_REMINDER,
   UPDATE_VENDOR_LOGO,
-  CREATE_VENDOR
+  CREATE_VENDOR,
+  UPDATE_DEFAULT_VENDOR
 } from "../../graphql/vendorMutation";
 
 import { GET_FORM_APP_GROUP } from "../../graphql/groupQuery";
