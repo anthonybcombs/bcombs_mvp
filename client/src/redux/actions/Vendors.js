@@ -241,6 +241,27 @@ const updateVendorLogoToDatabase = payload => {
   });
 };
 
+const updateDefaultVendorFromDataBase = payload => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: UPDATE_DEFAULT_VENDOR,
+        variables: { user_id: payload.user_id, vendor_id: payload.vendor_id }
+      });
+
+      console.log("updateDefaultVendorFromDataBase data", data);
+
+      return resolve(data.updateDefaultVendor);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+
+
+
+
 const updateVendorToDatabase = vendor => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -385,6 +406,15 @@ export const requestGetVendorReminders = vendor => {
     vendor
   };
 }
+
+export const setDefaultVendor = ({ user_id = '', vendor_id = '' }) => {
+  return {
+    type: actionType.SET_DEFAULT_VENDOR,
+    user_id,
+    vendor_id
+  };
+}
+
 
 export function* getVendorReminders({ vendor }) {
   try {
@@ -633,6 +663,20 @@ export function* updateVendorLogo({ data }) {
   
   }
 }
+
+export function* updateDefaultVendor({ user_id, vendor_id}) {
+  try {
+    console.log('updateDefaultVendor user_id', user_id)
+    console.log('updateDefaultVendor vendor_id', vendor_id)
+    const response = yield call(updateDefaultVendorFromDataBase, { user_id, vendor_id});
+
+    console.log('responseee', response)
+  } catch (err) {
+  }
+}
+
+
+
 
 export function* createVendor({ vendor }) {
   try {

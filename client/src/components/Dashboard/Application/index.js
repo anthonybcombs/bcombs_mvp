@@ -1957,6 +1957,21 @@ export default function index() {
   }
 
 
+  const handleSetDefaultVendor = () => {
+    if (!isSettingDefaultVendorLoading) {
+      setIsSettingDefaultVendorLoading(true);
+      dispatch(setDefaultVendor({
+        user_id: auth?.user_id,
+        vendor_id: selectedVendor?.id
+      }));
+
+      setTimeout(() => {
+        setIsSettingDefaultVendorLoading(false);
+      }, 1500)
+    }
+
+  }
+
   const handleParentChildRelationship = (parent, child, relationship) => {
 
     let exists = false;
@@ -2186,6 +2201,13 @@ export default function index() {
                 </option>
               ))}
             </select>
+            <span
+              onClick={handleSetDefaultVendor}
+              style={{ color: 'blue', cursor: 'pointer' }}
+
+            >
+              {isSettingDefaultVendorLoading ? 'Setting as Default...' : 'Set as default'}
+            </span>
           </div>
         )}
 

@@ -499,3 +499,13 @@ export const UPDATE_VENDOR_LOGO = gql`
 `;
 
 
+export const UPDATE_DEFAULT_VENDOR = gql`
+  mutation updateDefaultVendor($user_id: String!, $vendor_id: String) {
+    updateDefaultVendor(user_id: $user_id, vendor_id: $vendor_id) {
+      message
+    }
+  }
+`;
+
+
+
