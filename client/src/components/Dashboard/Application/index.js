@@ -1960,6 +1960,10 @@ export default function index() {
   const handleSetDefaultVendor = () => {
     if (!isSettingDefaultVendorLoading) {
       setIsSettingDefaultVendorLoading(true);
+      console.log('Handle Set Default Vendor', {
+        user_id: auth?.user_id,
+        vendor_id: selectedVendor?.id
+      })
       dispatch(setDefaultVendor({
         user_id: auth?.user_id,
         vendor_id: selectedVendor?.id
