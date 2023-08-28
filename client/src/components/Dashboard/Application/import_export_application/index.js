@@ -70,6 +70,7 @@ const childFields = {
     phone_number: 'Child Phone Number',
     email_type: 'Child Email Type',
     email_address: 'Child Email Address',
+    password: 'Child Password',
     address: 'Child Address',
     city: 'Child City',
     state: 'Child State',
