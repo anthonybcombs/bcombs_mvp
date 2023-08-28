@@ -2289,7 +2289,7 @@ export default function index() {
             formType={selectedForm !== "default" && selectedForm !== "lot" ? 'custom' : 'mentoring'}
             vendor={selectedVendor?.id}
             isLot={selectedForm === 'lot'}
-            createProfileFeature={false}
+            createProfileFeature={true}
             refreshData={() => {
               handleGetForms(selectedForm)
             }}
