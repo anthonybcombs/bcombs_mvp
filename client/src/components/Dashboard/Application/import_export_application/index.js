@@ -165,6 +165,7 @@ const ImportExportApplicationModal = styled.div`
   }`;
 
 
+  //      max-width: 200px;
 const ImportExportApplicationStyled = styled.div`
     padding-bottom: 12px !important;
 
@@ -175,7 +176,7 @@ const ImportExportApplicationStyled = styled.div`
         display: block;
         color: white;
         border-radius: 5px;
-        max-width: 200px;
+
         margin: 0 10px;
         text-decoration: none;
         text-align: center;
@@ -207,8 +208,9 @@ const ImportExportApplication = props => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isCreateProfile, setIsCreateProfile] = useState(false);
     const [isImportSuccess, setIsImportSuccess] = useState(false);
+    const applicationName = `${formType === 'custom' && !isLot ? form?.form_contents?.formTitle || 'Custom Form' : isLot ? 'LOT Form' : 'Mentoring Application'}`;
 
-    console.log('form',form)
+    console.log('form', form)
 
     let currentFormData = form?.form_contents?.formData ? form?.form_contents?.formData.map(item => {
         let fields = item.fields;
@@ -239,7 +241,7 @@ const ImportExportApplication = props => {
             setCurrentFormPayload(null);
             setIsImportSuccess(false);
         }
-    },[isModalVisible])
+    }, [isModalVisible])
 
     useEffect(() => {
 
@@ -596,22 +598,25 @@ const ImportExportApplication = props => {
                         <br />
 
                         {isImportSuccess && <div style={{ color: 'green', paddingBottom: 12 }}>Data has been imported successfully!</div>}
-                 
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
 
-                            {currentFormPayload && <button
-                                disabled={isUploadLoading}
-                                // disabled={!currentFormPayload ? true : false}
-                                id="uploadButton"
-                                // onClick={() => {
-                                //     console.log('currentFormPayload', JSON.stringify({
-                                //         data: currentFormPayload
-                                //     }))
-                                // }}
-                                onClick={handleUploadCustomForm}
-                                type="button">{isUploadLoading ? 'Uploading...' : 'Upload Data'}
-                            </button>}
+                            {currentFormPayload && <>
+                                <button
+                                    disabled={isUploadLoading}
+                                    // disabled={!currentFormPayload ? true : false}
+                                    id="uploadButton"
+                                    // onClick={() => {
+                                    //     console.log('currentFormPayload', JSON.stringify({
+                                    //         data: currentFormPayload
+                                    //     }))
+                                    // }}
+                                    onClick={handleUploadCustomForm}
+                                    type="button">{isUploadLoading ? 'Uploading...' : 'Upload Data'}
+                                </button>
+                                <br />
+                            </>}
                             <CSVLink
                                 id="exportButton"
                                 onClick={() => {
@@ -619,8 +624,8 @@ const ImportExportApplication = props => {
 
                                 data={[columns]}
 
-                                filename={`${formType === 'custom' ? form?.form_contents?.formTitle || 'Application' :  'Application'}`}>
-                                <span >Download Application CSV</span>
+                                filename={applicationName}>
+                                <span >Download {applicationName} CSV</span>
                             </CSVLink>
                         </div>
                     </div>

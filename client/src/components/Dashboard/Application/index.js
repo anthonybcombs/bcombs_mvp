@@ -2283,10 +2283,10 @@ export default function index() {
             </div>
           )
         }
-        {selectedVendor && <div style={{ marginLeft: 12, marginTop: 12 }}>
+        {selectedVendor ?<div style={{ marginLeft: 12, marginTop: 12 }}>
           <ImportExportApplication
             form={currentForm}
-            formType={selectedForm !== "default" && selectedForm !== 'lot' ? 'custom' : 'mentoring'}
+            formType={selectedForm !== "default" && selectedForm !== "lot" ? 'custom' : 'mentoring'}
             vendor={selectedVendor?.id}
             isLot={selectedForm === 'lot'}
             createProfileFeature={false}
@@ -2294,7 +2294,7 @@ export default function index() {
               handleGetForms(selectedForm)
             }}
           />
-        </div>}
+        </div> : <span/>}
         {
           vendors && vendors.length > 0 && isNbmbaa ? (
             <div className="copy-vendor-btn">
