@@ -1121,7 +1121,9 @@ router.post("/application/import", async (req, res) => {
 
         const tempChildId = null;
 
-        const child = await addChild(application.child);
+        console.log('application.child',application.child)
+
+        const child = await addChild({ ...application.child });
         const parents = application.parents;
         const currentChild = { ...application.child };
 
