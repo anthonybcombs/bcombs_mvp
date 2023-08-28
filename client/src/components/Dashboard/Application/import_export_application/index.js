@@ -536,8 +536,8 @@ const ImportExportApplication = props => {
                     });
                 }
 
-
-                console.log('updatedPayloaddddddddd', JSON.stringify(updatedPayload))
+                console.log('updatedPayloaddddddddd',updatedPayload)
+                // console.log('updatedPayloaddddddddd', JSON.stringify(updatedPayload))
                 setIsUploadLoading(true);
                 await importCustomForm(updatedPayload, formType);
                 setIsUploadLoading(false);
