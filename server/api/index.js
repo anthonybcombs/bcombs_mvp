@@ -1168,14 +1168,14 @@ router.post("/application/import", async (req, res) => {
             await executeAddUserProfile(parentInfo);
           }
 
-          if (child.create_profile) {
+          if (child.create_profile && child.password) {
             let childUser = {
-              username: childUser.firstname + "" + childUser.lastname,
-              email: childUser.email_address,
-              password: childUser.password,
+              username: child.firstname + "" + child.lastname,
+              email: child.email_address,
+              password: child.password,
               type: userType
             };
-            await executeSignUp(user);
+            await executeSignUp(childUser);
           }
 
           newParents.push({
