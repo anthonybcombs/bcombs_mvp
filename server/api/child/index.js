@@ -517,7 +517,7 @@ export const addChild = async ({
     child = child.length > 0 ? child[0] : "";
 
   } catch (err) {
-    console.log("add child error", err);
+    console.error("add child error", err);
   } finally {
     await db.close();
     console.log("Add child", result);
