@@ -1117,11 +1117,13 @@ router.post("/application/import", async (req, res) => {
       let newParents = [];
 
       for (let application of data) {
+        console.log('application.child', application.child.create_profile)
 
         const tempChildId = null;
 
         const child = await addChild(application.child);
         const parents = application.parents;
+        const currentChild = { ...application.child };
 
         application.class_teacher = "";
         application.child = child.ch_id;
