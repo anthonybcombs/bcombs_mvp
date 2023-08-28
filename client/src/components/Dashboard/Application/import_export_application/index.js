@@ -234,9 +234,6 @@ const ImportExportApplication = props => {
     }) : []
 
 
-    console.log('importexport application 2222222',vendor)
-    console.log('importexport application 33333333',form)
-
     useEffect(() => {
         return () => {
             setCurrentFormPayload(null);
@@ -250,8 +247,7 @@ const ImportExportApplication = props => {
 
             const currentFormContents = form?.form_contents?.formData.reduce((accum, item, index) => {
 
-                // console.log('item.fieldssssss',item)
-                if(item.type !== 'terms') {
+                if (item.type !== 'terms') {
                     return {
                         ...accum,
                         [index]: {
@@ -266,7 +262,7 @@ const ImportExportApplication = props => {
                         }
                     }
                 }
-          
+
                 return {
                     ...accum
                 }
@@ -320,9 +316,9 @@ const ImportExportApplication = props => {
                 const importedColumns = formattedRows[0]; // columns
                 const importedData = formattedRows.slice(1); // data from csv
 
-                console.log('formattedRows',formattedRows)
-                console.log('formattedRows importedColumns',importedColumns)
-                console.log('formattedRows importedData',importedData)
+                console.log('formattedRows', formattedRows)
+                console.log('formattedRows importedColumns', importedColumns)
+                console.log('formattedRows importedData', importedData)
                 // CUSTOM FORM IMPORT DATA //
                 if (formType === 'custom') {
                     let formattedImportData = importedData.map((data, index) => {
@@ -340,7 +336,6 @@ const ImportExportApplication = props => {
                     });
 
 
-                    console.log('formattedRows currentFormData',currentFormData)
                     const getCurrentData = (data, field) => {
                         return Object.keys(data).find(key => key && key.includes(field.label))
                     }
@@ -349,7 +344,7 @@ const ImportExportApplication = props => {
 
                         const formContentWithValues = currentFormData.map(formData => {
 
-                            
+
                             let parentKey = null;
 
                             if (formData.type === 'date') {
@@ -357,12 +352,12 @@ const ImportExportApplication = props => {
                             }
 
                             const updatedFields = formData.fields.map(field => {
-                              
-                                if( !['formattedText','staticImage','pageBreak'].includes(field.tag) && !['terms'].includes(field.type)) {
+
+                                if (!['formattedText', 'staticImage', 'pageBreak'].includes(field.tag) && !['terms'].includes(field.type)) {
                                     const currentData = getCurrentData(item, field);
 
                                     let currentKey = currentData && Object.keys(item).find(key => {
-                                        if (formData.type === 'date' ) {
+                                        if (formData.type === 'date') {
                                             return key && key.includes(formData.label)
                                         }
                                         return key && key.includes(field.label)
@@ -375,20 +370,20 @@ const ImportExportApplication = props => {
                                     //     console.log('field.type === select value', value)
                                     //     console.log('field.type === select currentKey', currentKey)
                                     //     console.log('field.type === select item', item)
-    
+
                                     // }
-                                   
-                    
-                             
-    
+
+
+
+
                                     if ((field.tag.includes('multipleChoice')) && value) {
-    
+
                                         value = field.options.find(opt => opt.label.includes(removeCarriageReturn(value)));
-    
+
                                         if (typeof value === 'object') {
                                             value = JSON.stringify({ [value.name]: value.label });
                                         }
-    
+
                                     }
                                     else if (field.type === 'text' && formData.type === 'date') {
                                         const dateValue = item[parentKey].split('-');
@@ -403,7 +398,7 @@ const ImportExportApplication = props => {
                                                 value = dateValue[0]
                                             }
                                         }
-    
+
                                     }
 
 
@@ -440,7 +435,7 @@ const ImportExportApplication = props => {
                         }
                     });
 
-                 
+
                     setCurrentFormPayload(formWithValues);
                 }
                 // END OF CUSTOM FORM IMPORT DATA //
@@ -475,11 +470,11 @@ const ImportExportApplication = props => {
                         return {
                             child: {
                                 ...childPayload,
-                                // create_profile: parentPayload?.create_profile ? true : false
+                                create_profile: parentPayload?.create_profile ? true : false
                             },
                             parents: {
                                 ...parentPayload,
-                                // create_profile: parentPayload?.create_profile ? true : false
+                                create_profile: parentPayload?.create_profile ? true : false
                             },
                             vendor,
                             is_lot: isLot ? 1 : 0
@@ -510,13 +505,13 @@ const ImportExportApplication = props => {
 
             console.log('handleUploadCustomForm currentFormPayloaddd', currentFormPayload)
             console.log('handleUploadCustomForm isCreateProfilezzzzzzz', isCreateProfile)
-            
-    
-            if (currentFormPayload) {
-                let updatedPayload = [ ...(currentFormPayload || [])];
 
-                if(createProfileFeature) {
-                     updatedPayload = formType === 'custom'  ? currentFormPayload.map(item => {
+
+            if (currentFormPayload) {
+                let updatedPayload = [...(currentFormPayload || [])];
+
+                if (createProfileFeature) {
+                    updatedPayload = formType === 'custom' ? currentFormPayload.map(item => {
                         return {
                             ...item,
                             create_profile: isCreateProfile
@@ -538,6 +533,8 @@ const ImportExportApplication = props => {
                     });
                 }
 
+
+                console.log('updatedPayloaddddddddd', JSON.stringify(updatedPayload))
                 setIsUploadLoading(true);
                 await importCustomForm(updatedPayload, formType);
                 setIsUploadLoading(false);
@@ -550,7 +547,7 @@ const ImportExportApplication = props => {
             refreshData();
             setTimeout(() => {
                 setIsModalVisible(false);
-            },2000);
+            }, 2000);
         }
     }
 
@@ -566,23 +563,6 @@ const ImportExportApplication = props => {
 
 
     return <ImportExportApplicationStyled>
-        {/* <a href="#" onClick={e => {
-            e.preventDefault();
-
-        }}>
-            Import Application
-        </a>
-        {`        `}
-        <a
-            href="#"
-            onClick={e => {
-                e.preventDefault();
-
-            }}>
-            Export Application
-        </a> */}
-
-
 
         {isModalVisible && <ImportExportApplicationModal>
             <div className="modal">
@@ -639,7 +619,7 @@ const ImportExportApplication = props => {
 
                                 data={[columns]}
 
-                                filename={`${form?.form_contents?.formTitle || 'Application'}`}>
+                                filename={`${formType === 'custom' ? form?.form_contents?.formTitle || 'Application' :  'Application'}`}>
                                 <span >Download Application CSV</span>
                             </CSVLink>
                         </div>
