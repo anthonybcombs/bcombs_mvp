@@ -958,7 +958,7 @@ export const createCustomApplication = async ({
   let application;
 
   try {
-    console.log('form_contents createCustomApplication', form_contents)
+//    console.log('form_contents createCustomApplication', form_contents)
     result = await db.query(
       `INSERT INTO vendor_custom_application(
         form_id,
@@ -1001,7 +1001,7 @@ export const createCustomApplication = async ({
     if (application.length > 0) {
       application = application[0];
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-      console.log("get custom application string", application);
+     // console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
     } else {
       application = ""
