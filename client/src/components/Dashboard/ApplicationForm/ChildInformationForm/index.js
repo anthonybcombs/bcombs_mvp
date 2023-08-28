@@ -688,7 +688,7 @@ export default function index({
                 )}
                 selected={childProfile.date_of_birth}
                 disabled={isReadonly}
-                maxDate={new Date()}
+                // maxDate={new Date()}
                 onChange={date => {
                   handleChildFormDetailsChange(
                     counter - 1,

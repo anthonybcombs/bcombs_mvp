@@ -431,6 +431,7 @@ export default function index({
             <div className="form-group">
               <div className="field">
                 <DatePicker
+                  //  maxDate={new Date()}
                   readOnly={false}
                   renderCustomHeader={({
                     date,

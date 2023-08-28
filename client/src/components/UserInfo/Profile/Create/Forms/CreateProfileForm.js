@@ -607,7 +607,7 @@ export default function CreateProfileForm({
         <div className="form-group" style={{ marginTop: 12 }}>
           <div className="field">
             <DatePicker
-              maxDate={new Date()}
+              // maxDate={new Date()}
               readOnly={false}
               renderCustomHeader={({
                 date,
