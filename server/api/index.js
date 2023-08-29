@@ -15,7 +15,7 @@ import { addChild } from '../api/child';
 import { checkUserEmail, executeSignUp, executeAddUserProfile } from '../api/users';
 import { getUserTypes } from "../api/userTypes/";
 
-import { 
+import {
   addParent
 } from "../api/parents";
 
@@ -1031,6 +1031,15 @@ router.post("/application/import", async (req, res) => {
     const { type } = req.query;
     const { data } = req.body;
 
+    
+    let userType = await getUserTypes();
+
+    userType = userType.filter(type => {
+      return type.name === "USER";
+    })[0];
+
+    console.log('userType',userType)
+
     if (type === 'custom') {
 
       for (let application of data) {
@@ -1040,7 +1049,7 @@ router.post("/application/import", async (req, res) => {
         });
 
         let nameType = application.form_contents.formData.filter((item) => {
-          return item.type == "name"
+          return item.type == "name" && item.label !== 'Parent'
         });
 
         const formContentString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
@@ -1092,11 +1101,50 @@ router.post("/application/import", async (req, res) => {
             middlename: middlenameValue
           }
 
+          
+
           const child = await addChild(childObj);
+
 
           application.child = child.ch_id;
 
-          const response = await submitCustomApplication(application);
+          const customApplication = await submitCustomApplication(application);
+
+          if(application.account_details) {
+ 
+            if(application.create_profile) {
+              let parent = {
+                username: application.account_details.firstname + "" + application.account_details.lastname,
+                email: application.account_details.email,
+                password: application.account_details.password,
+                type: userType
+              };
+    
+              const resp = await executeSignUp(parent);
+  
+              let parentInfo = {
+                ...parent,
+                email: parent.email,
+                dateofbirth: new Date()
+              };
+  
+              await executeAddUserProfile(parentInfo);
+              const parentUser = await getUserFromDatabase(parent.email);
+
+              if (parentUser) {
+                await addApplicationUser({
+                  user_id: parentUser.id,
+                  custom_app_id: customApplication.app_id
+                });
+              }
+
+              
+  
+  
+              console.log('Execute Signup on custom form', resp)
+            }
+          }
+    
 
 
         } else {
@@ -1117,8 +1165,7 @@ router.post("/application/import", async (req, res) => {
       let newParents = [];
 
       for (let application of data) {
-        console.log('application.child', application.child.create_profile)
-
+      
         const tempChildId = null;
 
         console.log('application.child',application.child)
@@ -1128,7 +1175,7 @@ router.post("/application/import", async (req, res) => {
         const currentChild = { ...application.child };
 
         application.class_teacher = "";
-        application.child = child.ch_id;
+        application.child = child && child.ch_id;
 
         newChilds.push({
           tempId: tempChildId,
@@ -1145,12 +1192,7 @@ router.post("/application/import", async (req, res) => {
         if (checkEmail && checkEmail.is_exist && checkEmail.status !== 'Email is available to use') {
           console.log("Parent Status: ", checkEmail.status);
         } else {
-          let userType = await getUserTypes();
-
-          userType = userType.filter(type => {
-            return type.name === "USER";
-          })[0];
-
+       
           let user = {
             username: parents.firstname + "" + parents.lastname,
             email: parents.email_address,
@@ -1172,18 +1214,18 @@ router.post("/application/import", async (req, res) => {
             await executeAddUserProfile(parentInfo);
           }
 
-          if (currentChild && currentChild.create_profile && currentChild.password) {
-            let childUser = {
-              username: currentChild.firstname + "" + currentChild.lastname,
-              email: currentChild.email_address,
-              password: currentChild.password,
-              type: userType
-            };
+          // if (currentChild && currentChild.create_profile && currentChild.password) {
+          //   let childUser = {
+          //     username: currentChild.firstname + "" + currentChild.lastname,
+          //     email: currentChild.email_address,
+          //     password: currentChild.password,
+          //     type: userType
+          //   };
 
-            console.log('childUser', childUser)
-            const resp = await executeSignUp(childUser);
-            console.log('childUser resp', resp)
-          }
+          //   console.log('childUser', childUser)
+          //   const resp = await executeSignUp(childUser);
+          //   console.log('childUser resp', resp)
+          // }
 
           newParents.push({
             tempId: tempParentId,
@@ -1224,47 +1266,47 @@ router.post("/application/import", async (req, res) => {
 })
 
 
-router.post("/vendor/default", async (req, res) => {
-  const db = makeDb();
-  try {
-    const { user_id, vendor_id } = req.body;
-    console.log('user_id', user_id)
-    console.log('vendor_id', vendor_id)
+// router.post("/vendor/default", async (req, res) => {
+//   const db = makeDb();
+//   try {
+//     const { user_id, vendor_id } = req.body;
+//     console.log('user_id', user_id)
+//     console.log('vendor_id', vendor_id)
     
-    if (vendor_id) {
-      await db.query(`UPDATE vendor
-        SET is_default = CASE
-        WHEN id=UUID_TO_BIN(?) THEN 1
-        ELSE 0
-        END
-        WHERE user=UUID_TO_BIN(?);
-      `,
-        [vendor_id, user_id]
-      );
-    }
-    else {
-      await db.query(`UPDATE vendor
-        SET is_default = 0
-        WHERE user=UUID_TO_BIN(?);
-      `,
-        [user_id]
-      );
-    }
+//     if (vendor_id) {
+//       await db.query(`UPDATE vendor
+//         SET is_default = CASE
+//         WHEN id=UUID_TO_BIN(?) THEN 1
+//         ELSE 0
+//         END
+//         WHERE user=UUID_TO_BIN(?);
+//       `,
+//         [vendor_id, user_id]
+//       );
+//     }
+//     else {
+//       await db.query(`UPDATE vendor
+//         SET is_default = 0
+//         WHERE user=UUID_TO_BIN(?);
+//       `,
+//         [user_id]
+//       );
+//     }
 
-  }
-  catch (error) {
-    console.log('Vendor Default Error', error)
-    return res.json({
-      message: 'Something went wrong'
-    })
-  } finally {
-    await db.close();
-    return res.json({
-      message: 'Vendor Updated'
-    })
-  }
+//   }
+//   catch (error) {
+//     console.log('Vendor Default Error', error)
+//     return res.json({
+//       message: 'Something went wrong'
+//     })
+//   } finally {
+//     await db.close();
+//     return res.json({
+//       message: 'Vendor Updated'
+//     })
+//   }
 
-});
+// });
 
 
 router.post("/demo_schedule/request", async (req, res) => {
