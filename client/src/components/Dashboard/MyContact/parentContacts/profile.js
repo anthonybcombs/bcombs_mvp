@@ -84,7 +84,7 @@ export default function index({
     }))
 
     setTimeout(() => {
-      setIsSharedByVendor(false);
+      toggleProfileModal();
     }, 1500);
   }
   if (!isVisible) {
