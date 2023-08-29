@@ -13,6 +13,7 @@ import ContactList from "./contactList";
 import NewContactModal from "./create";
 import EditContactModal from "./edit/contact";
 import SendMessageModal from "./message";
+import ParentContacts from "./parentContacts";
 import NewGroupModal from "../MyGroups/create";
 import EditGroupModal from "../MyGroups/edit";
 import JoinedGroupModal from "../MyGroups/view";
@@ -29,6 +30,7 @@ import {
   requestMembers
 } from "../../../redux/actions/Groups";
 import { requestVendor, requestUserVendorForms } from "../../../redux/actions/Vendors";
+import { requestParentByVendor } from "../../../redux/actions/Parents";
 
 const MyContactsStyled = styled.div`
   // padding: 1em;
@@ -124,6 +126,24 @@ const MyContactsStyled = styled.div`
       margin-right: 1em;
     }
   }
+
+  .field-input {
+    font-size: 18px;
+    border: 0;
+    border-bottom: 2px solid #ccc;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 0;
+    padding: 5px;
+    cursor: text;
+    line-height: 1.8;
+
+    padding: 5px 0;
+    width: 100%;
+    display: block;
+    text-indent: 5px;
+  }
 `;
 export default function index() {
   const [selectedLabel, setSelectedLabel] = useState("Contacts");
@@ -139,6 +159,9 @@ export default function index() {
   const [isNewAppGroupModalVisible, setIsNewAppGroupModalVisible] = useState(
     false
   );
+  const [selectedVendor, setSelectedVendor] = useState(null);
+  const [selectedGroupByVendorOptions, setSelectedGroupbyVendorOptions] = useState([]);
+  const [selectedGroupByVendor, setSelectedGroupbyVendor] = useState(null);
   const [isAppGroupEditMode, setIsAppGroupEditMode] = useState(false);
   const [currentAppGroup, setCurrentAppGroup] = useState(null);
   const {
@@ -149,9 +172,10 @@ export default function index() {
     loading,
     vendors,
     userTypes,
-    vendorForms
+    vendorForms,
+    parents
   } = useSelector(
-    ({ auth, groups, groupMembers, contacts, loading, vendors, userTypes, vendorForms }) => {
+    ({ auth, groups, groupMembers, contacts, loading, vendors, userTypes, vendorForms, parents }) => {
       return {
         auth,
         groups,
@@ -160,16 +184,20 @@ export default function index() {
         loading,
         vendors,
         userTypes,
-        vendorForms
+        vendorForms,
+        parents
       };
     }
   );
+
   const dispatch = useDispatch();
   useEffect(() => {
     if (auth.email) {
       dispatch(requestUserGroup(auth.email));
       dispatch(requestUserVendorForms(auth.user_id));
-      //dispatch(requestVendor(auth.user_id));
+
+
+
     }
     if (contacts) {
       setCurrentContacts(contacts);
@@ -177,9 +205,50 @@ export default function index() {
   }, [contacts]);
 
   useEffect(() => {
+    if (auth.user_id && (!vendors.length || (typeof vendors === 'object' && !Object.keys(vendors).length))) {
+      dispatch(requestVendor(auth.user_id));
+    }
+  }, [auth])
+
+
+
+  useEffect(() => {
     dispatch(getContact(auth.email));
+
     setCurrentContacts(contacts);
   }, []);
+
+
+
+  useEffect(() => {
+    if (vendors && Array.isArray(vendors) && vendors.length > 0) {
+
+      const hasDefaultVendor = vendors.find(item => item.is_default);
+
+      if (hasDefaultVendor?.id) {
+    
+        const filteredGroups = groups?.application_groups && groups.application_groups.filter(item => item.vendor === hasDefaultVendor?.id)
+        setSelectedVendor(hasDefaultVendor?.id);
+        if(filteredGroups && filteredGroups[0]) {
+          setSelectedGroupbyVendor(isVendorMode ? '' : filteredGroups[0].app_grp_id)
+        }
+
+        setSelectedGroupbyVendorOptions(filteredGroups);
+
+        dispatch(requestParentByVendor({
+          vendor: hasDefaultVendor?.id,
+          app_group_id: filteredGroups && filteredGroups[0] && filteredGroups[0].app_grp_id
+        }))
+      }
+
+    }
+
+  
+
+  }, [vendors, groups]);
+
+
+
 
   // if(groups.status == "success") {
   //   window.location.reload();
@@ -192,9 +261,8 @@ export default function index() {
   const [appGroupDetails, setAppGroupDetails] = useState();
 
   useEffect(() => {
-    console.log("groups.application_groups", groups.application_groups);
 
-    if(groups && groups.application_groups && groups.application_groups.length > 0) {
+    if (groups && groups.application_groups && groups.application_groups.length > 0) {
       let ap = [];
       let oAp = [];
 
@@ -205,12 +273,12 @@ export default function index() {
 
       console.log("ap1", ap);
       console.log("oAp", oAp);
-      
-      ap = ap.filter((elem, index) => 
-            ap.findIndex(obj => obj.pool_id === elem.pool_id) === index);
+
+      ap = ap.filter((elem, index) =>
+        ap.findIndex(obj => obj.pool_id === elem.pool_id) === index);
 
 
-      for(const [i, gr] of ap.entries()) {
+      for (const [i, gr] of ap.entries()) {
         const members = oAp.filter((x) => {
 
           //if(x.members) delete x.members;
@@ -235,7 +303,7 @@ export default function index() {
     const formList = vendorForms.formList;
 
     console.log("vendors.formList", vendorForms.formList);
-    console.log('formList',formList)
+    console.log('formList', formList)
     const formattedVendors = getFormattedVendors(formList);
 
     setFormattedVendors(formattedVendors);
@@ -243,7 +311,7 @@ export default function index() {
   }, [vendorForms.formList])
 
   const getFormattedVendors = (formList) => {
-    let updatedForms =  uniqBy(formList, 'id');
+    let updatedForms = uniqBy(formList, 'id');
 
     const formattedVendors = updatedForms.map(item => {
       return {
@@ -284,15 +352,15 @@ export default function index() {
   const getDuplicateContacts = () => {
     return contacts && contacts.length > 0
       ? contacts.filter(item => {
-          const currentItem = contacts.find(
-            subItem =>
-              subItem.phone_number === item.phone_number &&
-              subItem.id !== item.id
-          );
-          if (currentItem) {
-            return item;
-          }
-        })
+        const currentItem = contacts.find(
+          subItem =>
+            subItem.phone_number === item.phone_number &&
+            subItem.id !== item.id
+        );
+        if (currentItem) {
+          return item;
+        }
+      })
       : [];
   };
 
@@ -313,26 +381,26 @@ export default function index() {
     setSelectedGroup(group);
     setJoinedGroupModalVisible(true);
   };
-  const editGroupSubmit = data => {};
+  const editGroupSubmit = data => { };
 
   const getSelectedForms = (currentAppGroup) => {
 
     let selectedForms = [];
-    if(currentAppGroup && (currentAppGroup.vendor || currentAppGroup.form)) {
+    if (currentAppGroup && (currentAppGroup.vendor || currentAppGroup.form)) {
 
-      if(currentAppGroup.vendor) {
+      if (currentAppGroup.vendor) {
         selectedForms = [...selectedForms, currentAppGroup.vendor];
-      } else if(currentAppGroup.form) {
+      } else if (currentAppGroup.form) {
         selectedForms = [...selectedForms, currentAppGroup.form];
       }
-  
-      if(currentAppGroup.members && currentAppGroup.members.length > 0) {
+
+      if (currentAppGroup.members && currentAppGroup.members.length > 0) {
         const members = currentAppGroup.members;
-  
-        for(const member of members) {
-          if(member.vendor) {
+
+        for (const member of members) {
+          if (member.vendor) {
             selectedForms = [...selectedForms, member.vendor];
-          } else if(member.form) {
+          } else if (member.form) {
             selectedForms = [...selectedForms, member.form];
           }
         }
@@ -343,31 +411,31 @@ export default function index() {
   }
 
   const handleAppGroupDetails = () => {
-    
+
   }
-  console.log('vendorForms',vendorForms)
+  console.log('vendorForms', vendorForms)
   const handleAppGroupModal = group => {
     // if(vendorForms.formList.length > 0) {
-      setCurrentAppGroup(group);
-      setIsAppGroupEditMode(true);
-      let sForms = getSelectedForms(group);
+    setCurrentAppGroup(group);
+    setIsAppGroupEditMode(true);
+    let sForms = getSelectedForms(group);
 
-      console.log('vendorForms',vendorForms)
-      const formattedVendors = getFormattedVendors(vendorForms.formList);
-      sForms = formattedVendors.filter((form) => {
-        return sForms.includes(form.id)
-      });
-      console.log("group group", group);
-      console.log("formattedVendors", formattedVendors);
-      console.log("sForms", sForms);
+    console.log('vendorForms', vendorForms)
+    const formattedVendors = getFormattedVendors(vendorForms.formList);
+    sForms = formattedVendors.filter((form) => {
+      return sForms.includes(form.id)
+    });
+    console.log("group group", group);
+    console.log("formattedVendors", formattedVendors);
+    console.log("sForms", sForms);
 
-      setSelectedForms(sForms);
-      setAppGroupDetails({...appGroupDetails, ["vendors"]: sForms}); 
-      setApiStatus("");
-      setIsNewAppGroupModalVisible(true);
-      // setTimeout(() => {
-      //   setIsNewAppGroupModalVisible(true);
-      // }, 500);
+    setSelectedForms(sForms);
+    setAppGroupDetails({ ...appGroupDetails, ["vendors"]: sForms });
+    setApiStatus("");
+    setIsNewAppGroupModalVisible(true);
+    // setTimeout(() => {
+    //   setIsNewAppGroupModalVisible(true);
+    // }, 500);
 
     // }
   };
@@ -389,8 +457,8 @@ export default function index() {
     return true;
   };
 
-  console.log('loadinggggggggggg',loading)
-  console.log('currentAppGroupsssssssss selectedForms',selectedForms)
+  const isVendorMode = isVendor();
+
   return (
     <MyContactsStyled>
       <NewContactModal
@@ -435,7 +503,7 @@ export default function index() {
         auth={auth}
         errorMessage={groups.message}
         status={apiStatus}
-        handleCloseModal ={handleCloseModal}
+        handleCloseModal={handleCloseModal}
         selectedForms={selectedForms}
         formattedVendors={formattedVendors}
       />
@@ -443,81 +511,28 @@ export default function index() {
       <h2>Contacts </h2>
       <div id="contacts">
         <div>
-          {/* <div id="labels">
-            <h3>Labels</h3>
-            <div
-              className={`${selectedLabel === "Contacts" ? "selected" : ""}`}
-              onClick={() => {
-                handleSelectedGroup(null);
-                handleSelectedLabel("Contacts");
-              }}>
-              <FontAwesomeIcon icon={faUserTie} />
-              <span>Contacts({filteredContacts.length})</span>
-            </div>
-            <div
-              className={`${
-                selectedLabel === "Fequently Contacted" ? "selected" : ""
-              }`}
-              onClick={() => {
-                handleSelectedGroup(null);
-                handleSelectedLabel("Fequently Contacted");
-              }}>
-              <FontAwesomeIcon icon={faHistory} />
-              <span>Frequently Contacted</span>
-            </div>
-            <div
-              className={`${selectedLabel === "Duplicates" ? "selected" : ""}`}
-              onClick={() => {
-                handleSelectedGroup(null);
-                handleSelectedLabel("Duplicates");
-              }}>
-              <FontAwesomeIcon icon={faUserFriends} />
-              <span>Duplicates {getDuplicateContacts().length || 0}</span>
-            </div>
-          </div> */}
-          {/* <div className="groups">
-            <Collapsible trigger={<h3>Groups</h3>} open lazyRender>
-              <hr />
-              {groups &&
-                groups.created_groups &&
-                groups.created_groups.map(group => (
-                  <div
-                    className={`${
-                      group.id === selectedGroupId ? "selected" : ""
-                    }`}
-                    key={group.id}
-                    onClick={() => {
-                      handleSelectedGroup(group);
-                    }}>
-                    <FontAwesomeIcon icon={faUsers} />
-                    <span>{group.name}</span>
-                  </div>
-                ))}
-            </Collapsible>
-            <hr />
-            <button
-              onClick={() => {
-                setIsNewGroupModalVisible(true);
-              }}>
-              <FontAwesomeIcon icon={faPlus} />
-              <span> ADD NEW GROUP</span>
-            </button>
-          </div> */}
 
-          {/* <div className="groups">
-            {groups && groups.joined_groups && groups.joined_groups.length > 0 && (
-              <>
-                <Collapsible trigger={<h3>Joined Groups</h3>} open lazyRender>
+
+          {isVendorMode && (
+            loading.groupMembers ? <Loading /> :
+              <div className="groups">
+                <Collapsible
+                  trigger={<h3>Application Groups</h3>}
+                  open
+                  lazyRender>
                   <hr />
-                  {groups &&
-                    groups.joined_groups.map(group => (
+                  {appGroups &&
+                    appGroups.map(group => (
                       <div
-                        className={`${
-                          group.id === selectedGroupId ? "selected" : ""
-                        }`}
-                        key={group.id}
+                        // style={{"color": vendorForms.formList.length > 0 ? "rgb(68, 68, 68)" : "darkgrey"}}
+                        className={`${group.id === selectedGroupId ? "selected" : ""
+                          }`}
+                        key={group.app_grp_id}
                         onClick={() => {
-                          handleJoinedGroupModal(group);
+                          // if(vendorForms.formList.length > 0) {
+                          //   handleAppGroupModal(group);
+                          // }
+                          handleAppGroupModal(group);
                         }}>
                         <FontAwesomeIcon icon={faUsers} />
                         <span>{group.name}</span>
@@ -525,72 +540,121 @@ export default function index() {
                     ))}
                 </Collapsible>
                 <hr />
-              </>
-            )}
-          </div> */}
-
-          {isVendor() && (
-            loading.groupMembers ? <Loading/>  : 
-            <div className="groups">
-              <Collapsible
-                trigger={<h3>Application Groups</h3>}
-                open
-                lazyRender>
-                <hr />
-                {appGroups &&
-                  appGroups &&
-                  appGroups.map(group => (
-                    <div
-                      // style={{"color": vendorForms.formList.length > 0 ? "rgb(68, 68, 68)" : "darkgrey"}}
-                      className={`${
-                        group.id === selectedGroupId ? "selected" : ""
-                      }`}
-                      key={group.app_grp_id}
-                      onClick={() => {
-                        // if(vendorForms.formList.length > 0) {
-                        //   handleAppGroupModal(group);
-                        // }
-                        handleAppGroupModal(group);
-                      }}>
-                      <FontAwesomeIcon icon={faUsers} />
-                      <span>{group.name}</span>
-                    </div>
-                  ))}
-              </Collapsible>
-              <hr />
-              <button
-                disabled={!vendorForms.formList.length > 0}
-                onClick={() => {
-                  if(vendorForms.formList.length > 0) {
-                    setIsAppGroupEditMode(false);
-                    setSelectedForms([]);
-                    setTimeout(() => {
-                      setIsNewAppGroupModalVisible(true);
-                    }, 500);
-                  }
-                }}>
-                <FontAwesomeIcon icon={faPlus} />
-                <span> ADD NEW GROUP</span>
-              </button>
-            </div>
+                <button
+                  disabled={!vendorForms.formList.length > 0}
+                  onClick={() => {
+                    if (vendorForms.formList.length > 0) {
+                      setIsAppGroupEditMode(false);
+                      setSelectedForms([]);
+                      setTimeout(() => {
+                        setIsNewAppGroupModalVisible(true);
+                      }, 500);
+                    }
+                  }}>
+                  <FontAwesomeIcon icon={faPlus} />
+                  <span> ADD NEW GROUP</span>
+                </button>
+              </div>
           )}
         </div>
         <div>
-          {loading.contacts ? (
-            <Loading />
-          ) : (
-            <ContactList
-              auth={auth}
-              headerText={selectedLabel}
-              contacts={currentContacts}
-              groups={(groups && groups.created_groups) || []}
-              setNewContactModalVisible={setNewContactModalVisible}
-              EditContactModal={EditContactModal}
-              ProfileModal={ProfileModal}
-              SendMessageModal={SendMessageModal}
-            />
-          )}
+          <div>
+
+            <div className="field">
+
+            </div>
+            {loading.contacts ? (
+              <Loading />
+            ) : (
+              <ContactList
+                auth={auth}
+                headerText={selectedLabel}
+                contacts={currentContacts}
+                groups={(groups && groups.created_groups) || []}
+                setNewContactModalVisible={setNewContactModalVisible}
+                EditContactModal={EditContactModal}
+                ProfileModal={ProfileModal}
+                SendMessageModal={SendMessageModal}
+              />
+            )}
+          </div>
+
+
+
+          <div style={{ padding: 12 }}>
+            <h3>Parents </h3>
+
+
+            <div style={{ paddingTop: 12, paddingBottom: 12 }}>
+              <select
+                id="vendor-list"
+                className="field-input"
+                value={selectedVendor}
+                onChange={(e) => {
+
+                  const filteredGroups = groups?.application_groups && groups.application_groups.filter(item => item.vendor === e.target.value)
+
+                  dispatch(requestParentByVendor({
+                    vendor: e.target.value,
+                    app_group_id: null
+                  }))
+                  setSelectedVendor(e.target.value);
+                  setSelectedGroupbyVendorOptions(filteredGroups);
+
+                }}
+              >
+                {Array.isArray(vendors) && vendors.map(item => {
+                  return <option value={item.id}>{item.name}</option>
+                })}
+
+              </select>
+            </div>
+
+
+            <div style={{ paddingTop: 12, paddingBottom: 12 }}>
+              <select
+                id="vendor-group-list"
+                className="field-input"
+                value={selectedGroupByVendor}
+                onChange={(e) => {
+
+                  dispatch(requestParentByVendor({
+                    vendor: selectedVendor,
+                    app_group_id: e.target.value
+                  }))
+                  setSelectedGroupbyVendor(e.target.value);
+                }}
+              >
+                 {isVendorMode && <option value="">All</option>}
+                {Array.isArray(selectedGroupByVendorOptions) && selectedGroupByVendorOptions.map(item => {
+                  return <option value={item.app_grp_id}>{item.name}</option>
+                })}
+
+              </select>
+            </div>
+            {parents.isParentContactLoading ? (
+              <Loading />
+            ) :
+
+              // parents.contacts.map(parent => {
+              //   return <ParentContacts
+              //     contactDetails={parent}
+              //   />
+              // })
+              <div tyle={{ padding: 12 }}>
+
+                <ParentContacts
+                  parents={parents}
+                  selectedVendor={selectedVendor}
+                />
+              </div>
+
+
+            }
+          </div>
         </div>
+
+
       </div>
     </MyContactsStyled>
   );

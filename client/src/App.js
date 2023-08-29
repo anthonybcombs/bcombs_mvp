@@ -167,6 +167,11 @@ const AsyncDisplayCalendar = Loadable({
   loading: Loading
 });
 
+const AsyncParentContacts = Loadable({
+  loader: () => import("./components/Dashboard/ParentContactList"),
+  loading: Loading
+});
+
 const AsyncLandingPage = Loadable({
   loader: () => {
 
@@ -211,6 +216,7 @@ export default function App() {
               <AsyncArchivedApplication path="archived" />
               <AsyncClassListInformationView path="class/:form_type/:form_id" />
               <AsyncMyApplication path="myapplication" />
+                <AsyncParentContacts path="parentcontacts" />
               <AsyncAuditTrail path="audittrail" />
               <AsyncBCCalendar path="bccalendar" />
               <AsyncManageAdmin path="admin" />

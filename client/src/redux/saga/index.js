@@ -125,6 +125,8 @@ import {
 
 import { requestUpdateAttendance, updateAttendance,getAttendance,getEventAttendance } from "../actions/Attendance";
 
+import { getParentByVendor, updateParentPermissionByVendor } from '../actions/Parents';
+
 import reducer from "../reducers";
 function* rootSaga() {
   //STATUS
@@ -333,6 +335,11 @@ function* rootSaga() {
 
   yield takeLatest(actionType.REQUEST_CREATE_VENDOR, createVendor)
   yield takeLatest(actionType.REQUEST_SELECTED_VENDOR, setSelectedVendor)
+  
+  yield takeLatest(actionType.REQUEST_PARENT_BY_VENDOR, getParentByVendor)
+  yield takeLatest(actionType.REQUEST_PARENT_PERMISSION_BY_VENDOR, updateParentPermissionByVendor)
+
+  
 }
 const sagaMiddleware = createSagaMiddleware();
 

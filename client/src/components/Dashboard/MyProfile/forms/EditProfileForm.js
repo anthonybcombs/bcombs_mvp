@@ -793,6 +793,26 @@ export default function index({
               />
             </div>
           </div>
+
+          
+            <div className="form-group">
+              <div >
+              <span htmlFor="is_parent_allow_shared" className="field-label">Share Information  </span>
+                <input
+                  id="is_parent_allow_shared"
+                  name="is_parent_allow_shared"
+                  onChange={({ target }) => {
+                    console.log('target.checked', target.checked)
+                    handleInputChange("is_parent_allow_shared", target.checked ? 1 : 0);
+                  }}
+                  type="checkbox"
+                  checked={data.is_parent_allow_shared}
+                />
+          
+              </div>
+             
+            </div>
+
           {/* <input
             data-testid="app-profile-input-firstname"
             name="firstname"

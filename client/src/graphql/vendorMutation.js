@@ -509,3 +509,87 @@ export const UPDATE_DEFAULT_VENDOR = gql`
 
 
 
+
+
+export const PARENT_BY_VENDOR_QUERY = gql`
+  query getParentByVendor($vendor_id: String, $app_group_id: String, $form_type: String) {
+    getParentByVendor(vendor_id: $vendor_id,app_group_id: $app_group_id,form_type: $form_type) {
+        parent_id
+        new_parentId
+        firstname
+        lastname
+        image
+        phone_type
+        phone_number
+        email_type
+        email_address
+        occupation
+        employers_name
+        parent_goals
+        parent_child_goals
+        live_area
+        level_of_education
+        child_hs_grad
+        child_col_grad
+        emergency_contacts
+        phone_type2
+        phone_number2
+        email_type2
+        email_address2
+        person_recommend
+        address
+        city
+        state
+        zip_code
+        age
+        birthdate
+        gender
+        ethnicities
+        is_parent_allow_shared
+    		is_vendor_allow_shared
+        is_profile_filled
+  }
+}
+`;
+
+
+
+export const UPDATE_PARENT_VENDOR_PERMISSION = gql`
+  mutation updateParentVendorShare($parents: [ParentShareByVendorInput], $vendor_id: String) {
+    updateParentVendorShare(parents: $parents, vendor_id: $vendor_id) {
+        parent_id
+        new_parentId
+        firstname
+        lastname
+        image
+        phone_type
+        phone_number
+        email_type
+        email_address
+        occupation
+        employers_name
+        parent_goals
+        parent_child_goals
+        live_area
+        level_of_education
+        child_hs_grad
+        child_col_grad
+        emergency_contacts
+        phone_type2
+        phone_number2
+        email_type2
+        email_address2
+        person_recommend
+        address
+        city
+        state
+        zip_code
+        age
+        birthdate
+        gender
+        ethnicities
+        is_parent_allow_shared
+    		is_vendor_allow_shared
+    }
+  }
+`;

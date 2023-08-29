@@ -473,6 +473,15 @@ export default function Layout({ children }) {
                             to="/dashboard/myapplication">
                             <span>My Application</span>
                           </Link>
+                          <Link
+                            className={`${context.location.pathname ===
+                              "/dashboard/parentcontacts"
+                              ? "selected"
+                              : ""
+                              }`}
+                            to="/dashboard/parentcontacts">
+                            <span>Contacts</span>
+                          </Link>
                         </>
                       )}
                       {currentUserType === "VENDOR" && (
