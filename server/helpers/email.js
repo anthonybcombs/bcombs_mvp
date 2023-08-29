@@ -367,3 +367,13 @@ export const sendAdminInvite = async ({
     console.log("invite error", error);
   }
 };
+
+export const maskEmail = (mail) => {
+  let mailUsername = mail.split("@")[0];
+  mailUsername = mailUsername[0] + mailUsername.substring(1).replace(/./gi, '*')
+  let mailDomain = mail.split("@")[1].split(".")[0].replace(/./gi, '*');
+  let mailTld = mail.split("@")[1].split(".")[1].replace(/./gi, '*')
+
+  return `${mailUsername}@${mailDomain}.${mailTld}`
+}
+

@@ -1,4 +1,5 @@
 import { makeDb } from "../../helpers/database";
+import { maskEmail } from '../../helpers/email';
 
 export const getParentByApplication = async (id) => {
   const db = makeDb();
