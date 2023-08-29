@@ -635,8 +635,28 @@ const ImportExportApplication = props => {
                         <br />
                         <div>
                             <label style={{ color: 'orange' }}>Note:</label>
-                            <div>For date field, the format should be <i>"YYYY-MM-DD"</i></div>
+                           
                         </div>
+                        {formType === 'mentoring' && <div style={{ paddingTop: 12 }}>
+
+                            <div>
+                                The mentoring CSV requires the following information:
+                            </div>
+                            <div style={{ paddingTop: 5 }}>
+                                For both parents and children:
+                            </div>
+                            <ul>
+                                <li>First Name</li>
+                                <li>Last Name</li>
+                                <li>Birthdate</li>
+                                <li>Gender</li>
+                                <li>Email</li>
+                                <li>Additionally, parents need to provide a password.</li>
+                            </ul>
+                        </div>}
+
+                        <div style={{ paddingTop: 5 }}>For date field, the format should be <i>"YYYY-MM-DD"</i></div>
+
                         <br />
                         {createProfileFeature &&
                             <div>
