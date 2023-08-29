@@ -82,6 +82,10 @@ export default function index({
         is_vendor_allow_shared: isSharedByVendor ? 1 : 0
       }]
     }))
+
+    setTimeout(() => {
+      setIsSharedByVendor(false);
+    }, 1500);
   }
   if (!isVisible) {
     return <></>;
@@ -111,9 +115,10 @@ export default function index({
             <h3>
               {parent?.firstname || ''} {parent?.lastname || ''}
             </h3>
-            <p><label>Email:</label> {parent.email_address}</p>
+           
 
             {parent.is_parent_allow_shared && <>
+              <p><label>Email:</label> {parent.email_address}</p>
               <p><label>Phone Number:</label> {parent.phone_number}</p>
               <p><label>Live Area:</label> {parent.live_area}</p>
               <p><label>Address:</label> {parent.address}</p>
