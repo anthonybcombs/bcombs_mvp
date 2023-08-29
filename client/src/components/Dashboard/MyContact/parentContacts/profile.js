@@ -117,7 +117,7 @@ export default function index({
             </h3>
            
 
-            {parent.is_parent_allow_shared && <>
+            {parent?.is_parent_allow_shared && <>
               <p><label>Email:</label> {parent.email_address}</p>
               <p><label>Phone Number:</label> {parent.phone_number}</p>
               <p><label>Live Area:</label> {parent.live_area}</p>
@@ -139,10 +139,10 @@ export default function index({
               <p><label>Ethnicities:</label> {parent.ethnicities}</p>
 
             </>}
-            <p><label>Parent Share Information:</label> {parent.is_parent_allow_shared ? 'Yes' : 'No'}</p>
+            <p><label>Parent Share Information:</label> {parent?.is_parent_allow_shared ? 'Yes' : 'No'}</p>
             <p><label>Vendor Share Information:</label>
 
-              {isUserMode ? <span>{parent.is_vendor_allow_shared ? 'Yes' : 'No'}</span> : parent.is_parent_allow_shared && <input onChange={() => {
+              {isUserMode ? <span>{parent.is_vendor_allow_shared ? 'Yes' : 'No'}</span> : parent?.is_parent_allow_shared && <input onChange={() => {
                 setIsSharedByVendor(!isSharedByVendor)
               }} type="checkbox" checked={isSharedByVendor} />}
 
@@ -151,7 +151,7 @@ export default function index({
             </p>
 
 
-            {!isUserMode && parent.is_parent_allow_shared && <div style={{ display: 'flex', flexDirection: 'flex-end' }}>
+            {!isUserMode && parent?.is_parent_allow_shared && <div style={{ display: 'flex', flexDirection: 'flex-end' }}>
               <button  onClick={handleSubmit} type="button" style={{ margin: '0 auto' }}>Update Permission</button>
             </div>}
 

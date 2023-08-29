@@ -96,7 +96,7 @@ export default function index({
                                     {parent.phone_number}
                                 </td>
                                 <td>
-                                    {parent.is_parent_allow_shared ? 'Yes' : 'No'}
+                                    {parent?.is_parent_allow_shared ? 'Yes' : 'No'}
                                 </td>
                                 {!isUserMode && <td>
                                     {parent.is_vendor_allow_shared ? 'Yes' : 'No'}
