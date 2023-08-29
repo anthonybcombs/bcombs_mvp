@@ -59,6 +59,15 @@ const parentFields = {
     // create_profile: 'Create Profile'
 }
 
+
+const customFormParentField = {
+    'Parent Title': 'title',
+    'Parent First Name': 'first name',
+    'Parent Middle Name': 'middle name',
+    'Parent Last Name': 'last name'
+
+}
+
 const childFields = {
     firstname: 'Child Firstname',
     lastname: 'Child Lastname',
@@ -166,7 +175,7 @@ const ImportExportApplicationModal = styled.div`
   }`;
 
 
-  //      max-width: 200px;
+//      max-width: 200px;
 const ImportExportApplicationStyled = styled.div`
     padding-bottom: 12px !important;
 
@@ -251,17 +260,25 @@ const ImportExportApplication = props => {
             const currentFormContents = form?.form_contents?.formData.reduce((accum, item, index) => {
 
                 if (item.type !== 'terms') {
+                    let fields  = [];
+                    const title = item.label.toLowerCase();
+                    if(title === 'parent') {
+                        fields = item.fields.map(item2 =>  `${item.label} ${item2.label}`)
+                    }
+                    else {
+                        fields = item.type === 'date' ||
+                        item.type === 'dropDown' ||
+                        item.type === 'paragraphText' ||
+                        item.type === 'singleLineText' ||
+                        item.type === 'ranking' ? [item?.label] : item.fields.map(item2 =>
+                            (item2.type === 'multipleChoice') ? item.label : item2.label || '')
+                    }
                     return {
                         ...accum,
                         [index]: {
                             id: item.id,
                             title: item.label,
-                            fields: item.type === 'date' ||
-                                item.type === 'dropDown' ||
-                                item.type === 'paragraphText' ||
-                                item.type === 'singleLineText' ||
-                                item.type === 'ranking' ? [item?.label] : item.fields.map(item2 =>
-                                    (item2.type === 'multipleChoice') ? item.label : item2.label || '')
+                            fields: fields
                         }
                     }
                 }
@@ -270,6 +287,7 @@ const ImportExportApplication = props => {
                     ...accum
                 }
             }, {});
+            console.log('currentFormContents', currentFormContents)
 
             let currentColumns = Object.keys(currentFormContents).map((key) => {
                 return currentFormContents[key].fields
@@ -304,7 +322,6 @@ const ImportExportApplication = props => {
             return;
         }
 
-        console.log('handleUpload formType', formType)
 
         let reader = new FileReader()
         reader.onloadend = function (e) {
@@ -339,6 +356,9 @@ const ImportExportApplication = props => {
                     });
 
 
+                    console.log('formattedRows formattedImportData', formattedImportData)
+                    console.log('formattedRows currentFormData', currentFormData)
+
                     const getCurrentData = (data, field) => {
                         return Object.keys(data).find(key => key && key.includes(field.label))
                     }
@@ -364,22 +384,17 @@ const ImportExportApplication = props => {
                                             return key && key.includes(formData.label)
                                         }
                                         return key && key.includes(field.label)
-                                    })
+                                    });
+
+
 
                                     let value = item && item[currentKey]
 
-                                    // if(field.tag === 'select') {
-                                    //     console.log('field.type === select', field)
-                                    //     console.log('field.type === select value', value)
-                                    //     console.log('field.type === select currentKey', currentKey)
-                                    //     console.log('field.type === select item', item)
+                                    if(formData.type === 'name') {
+                                        value = convertToQuotedString(item[formData.label === 'Parent' ? `Parent ${field.label}` : field.label]);
+                                    }
 
-                                    // }
-
-
-
-
-                                    if ((field.tag.includes('multipleChoice')) && value) {
+                                    else if ((field.tag.includes('multipleChoice')) && value) {
 
                                         value = field.options.find(opt => opt.label.includes(removeCarriageReturn(value)));
 
@@ -404,10 +419,10 @@ const ImportExportApplication = props => {
 
                                     }
 
-
                                     else {
                                         value = convertToQuotedString(value);
                                     }
+
                                     return {
                                         ...field,
                                         value
@@ -437,7 +452,7 @@ const ImportExportApplication = props => {
                             }
                         }
                     });
-
+                    console.log('formWithValues', formWithValues)
 
                     setCurrentFormPayload(formWithValues);
                 }
@@ -506,17 +521,48 @@ const ImportExportApplication = props => {
     const handleUploadCustomForm = async () => {
         try {
 
-            console.log('handleUploadCustomForm currentFormPayloaddd', currentFormPayload)
-            console.log('handleUploadCustomForm isCreateProfilezzzzzzz', isCreateProfile)
-
-
             if (currentFormPayload) {
                 let updatedPayload = [...(currentFormPayload || [])];
 
                 if (createProfileFeature) {
                     updatedPayload = formType === 'custom' ? currentFormPayload.map(item => {
+
+                        let parentAccountPayload = {};
+
+                        if (isCreateProfile) {
+
+                            const loginForms = item.form_contents.formData.find(frm => frm.type === 'login');
+                            const nameForms = item.form_contents.formData.find(frm => frm.label.toLowerCase() === 'parent' || frm.type === 'name'  );
+                            console.log('nameForms', nameForms)
+                            if (loginForms && nameForms) {
+                                const loginDetails = loginForms?.fields?.reduce((accum, field) => {
+                                    return {
+                                        ...accum,
+                                        [field.type]: field.value && field.value.replace(/\\|"|"/g, '')
+                                    }
+                                }, {});
+
+                                const nameDetails = nameForms?.fields?.reduce((accum, field) => {
+                                    const fieldName = field.label.replace(/\s+/g, '').toLowerCase();
+                                    return {
+                                        ...accum,
+                                        [fieldName]: field.value && field.value.replace(/\\|"|"/g, '')
+                                    }
+                                }, {});
+
+                                parentAccountPayload = {
+                                    ...loginDetails,
+                                    ...nameDetails
+                                }
+
+                            }
+
+
+
+                        }
                         return {
                             ...item,
+                            account_details: isCreateProfile ? parentAccountPayload : null,
                             create_profile: isCreateProfile
                         }
                     }) : currentFormPayload.map(item => {
@@ -536,8 +582,9 @@ const ImportExportApplication = props => {
                     });
                 }
 
-                console.log('updatedPayloaddddddddd',updatedPayload)
-                // console.log('updatedPayloaddddddddd', JSON.stringify(updatedPayload))
+                
+                console.log('updatedPayload', updatedPayload)
+
                 setIsUploadLoading(true);
                 await importCustomForm(updatedPayload, formType);
                 setIsUploadLoading(false);
