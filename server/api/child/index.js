@@ -449,7 +449,7 @@ export const addChild = async ({
       [
         firstname,
         lastname,
-        age ? age : 0,
+        currentAge,
         birthdate ? birthdate : null,
         gender,
         phone_type,
