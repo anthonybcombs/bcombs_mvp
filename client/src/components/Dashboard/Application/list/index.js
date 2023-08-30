@@ -583,12 +583,21 @@ export default function index({
       sortable: true,
       cell: row => getAgeBdate(row.child)
     },
+    // {
+    //   name: "Verified Account",
+    //   selector: "is_profile_filled",
+    //   sortable: true,
+    //   cell: row =>{
+    //     return <div>{row?.parents && row.parents[0] && row?.parents[0]?.is_profile_filled ? 'Yes' : 'No'}</div>
+    //   }
+    // },
     {
       name: "Application Date",
       selector: "applicationDate",
       sortable: true,
       cell: row => format(new Date(row.application_date), DATE_FORMAT)
     }
+    
     // {
     //   name: "Attachment 1",
     //   selector: "attachment1",
