@@ -260,18 +260,18 @@ const ImportExportApplication = props => {
             const currentFormContents = form?.form_contents?.formData.reduce((accum, item, index) => {
 
                 if (item.type !== 'terms') {
-                    let fields  = [];
+                    let fields = [];
                     const title = item.label.toLowerCase();
-                    if(title === 'parent') {
-                        fields = item.fields.map(item2 =>  `${item.label} ${item2.label}`)
+                    if (title === 'parent') {
+                        fields = item.fields.map(item2 => `${item.label} ${item2.label}`)
                     }
                     else {
                         fields = item.type === 'date' ||
-                        item.type === 'dropDown' ||
-                        item.type === 'paragraphText' ||
-                        item.type === 'singleLineText' ||
-                        item.type === 'ranking' ? [item?.label] : item.fields.map(item2 =>
-                            (item2.type === 'multipleChoice') ? item.label : item2.label || '')
+                            item.type === 'dropDown' ||
+                            item.type === 'paragraphText' ||
+                            item.type === 'singleLineText' ||
+                            item.type === 'ranking' ? [item?.label] : item.fields.map(item2 =>
+                                (item2.type === 'multipleChoice') ? item.label : item2.label || '')
                     }
                     return {
                         ...accum,
@@ -390,7 +390,7 @@ const ImportExportApplication = props => {
 
                                     let value = item && item[currentKey]
 
-                                    if(formData.type === 'name') {
+                                    if (formData.type === 'name') {
                                         value = convertToQuotedString(item[formData.label === 'Parent' ? `Parent ${field.label}` : field.label]);
                                     }
 
@@ -532,8 +532,8 @@ const ImportExportApplication = props => {
                         if (isCreateProfile) {
 
                             const loginForms = item.form_contents.formData.find(frm => frm.type === 'login');
-                            const nameForms = item.form_contents.formData.find(frm => frm.label.toLowerCase() === 'parent' || frm.type === 'name'  );
-                            console.log('nameForms', nameForms)
+                            const nameForms = item.form_contents.formData.find(frm => frm.label.toLowerCase() === 'parent' || frm.type === 'name');
+    
                             if (loginForms && nameForms) {
                                 const loginDetails = loginForms?.fields?.reduce((accum, field) => {
                                     return {
@@ -582,7 +582,7 @@ const ImportExportApplication = props => {
                     });
                 }
 
-                
+
                 console.log('updatedPayload', updatedPayload)
 
                 setIsUploadLoading(true);
