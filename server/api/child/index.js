@@ -357,6 +357,14 @@ export const addChild = async ({
   let lastId = "";
   let child;
 
+  let currentAge = age || 0;
+
+  if(birthdate) {
+    let today = new Date();
+    let birthDate = new Date(birthdate);
+    currentAge = today.getFullYear() - birthDate.getFullYear();
+  }
+
   try {
     result = await db.query(
       `INSERT INTO child(
