@@ -305,7 +305,7 @@ export const addParent = async ({
         child_hs_grad,
         child_col_grad,
         person_recommend,
-        age,
+        age ? age : 0,
         birthdate === '' ? null : birthdate,
         gender,
         ethnicities,

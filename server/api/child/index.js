@@ -284,7 +284,7 @@ export const addDaycareChild = async ({
 export const addChild = async ({
   firstname,
   lastname,
-  age,
+  age = 0,
   birthdate,
   gender,
   phone_type,
@@ -441,8 +441,8 @@ export const addChild = async ({
       [
         firstname,
         lastname,
-        age,
-        birthdate,
+        age ? age : 0,
+        birthdate ? birthdate : null,
         gender,
         phone_type,
         phone_number,
@@ -461,7 +461,7 @@ export const addChild = async ({
         programs,
         school_name,
         school_phone,
-        has_suspended,
+        has_suspended ? has_suspended : 0,
         reason_suspended,
         year_taken,
         hobbies,
