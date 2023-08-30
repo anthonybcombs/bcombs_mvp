@@ -129,7 +129,7 @@ const FormBuilder = ({ form_id, type, history }) => {
           formType="custom"
           vendor={vendor?.id}
           isLot={false}
-          createProfileFeature={false}
+          createProfileFeature={true}
           refreshData={() => {
             // handleGetForms(selectedForm)
           }}
