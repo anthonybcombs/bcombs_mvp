@@ -574,6 +574,7 @@ const ImportExportApplication = props => {
                             },
                             parents: {
                                 ...item.parents,
+                                age: removeCarriageReturn(item.parents.age), // LAST FIELD FROM CSV
                                 create_profile: isCreateProfile
                             },
                             vendor,
