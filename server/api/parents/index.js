@@ -590,7 +590,7 @@ export const getParentByVendorId = async({
 
         LEFT JOIN users u ON u.email=p.email_address
 
-        WHERE v.id=UUID_TO_BIN(?)
+        WHERE v.id=UUID_TO_BIN(?) AND p.is_parent_allow_shared=1
       
         ${appGroupId ? ` AND a.class_teacher  LIKE '%${appGroupId}%'` : ''}
       `,
