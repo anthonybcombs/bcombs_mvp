@@ -649,9 +649,9 @@ const ImportExportApplication = props => {
                             <ul>
                                 <li>First Name</li>
                                 <li>Last Name</li>
-                                <li>Birthdate</li>
-                                <li>Gender</li>
-                                <li>Email</li>
+                                {/* <li>Birthdate</li>
+                                <li>Gender</li> */}
+                                <li>Email (Optional for children)</li>
                                 <li>Additionally, parents need to provide a password.</li>
                             </ul>
                         </div>}
