@@ -404,8 +404,8 @@ const ImportExportApplication = props => {
 
                                     }
                                     else if (field.type === 'text' && formData.type === 'date') {
-                                        const dateValue = item[parentKey].split('-');
-                                        if (dateValue.length > 0) {
+                                        const dateValue = item[parentKey] && item[parentKey].split('-');
+                                        if (Array.isArray(dateValue) && dateValue.length > 0) {
                                             if (field.label === 'YYYY') {
                                                 value = dateValue[2]
                                             }
