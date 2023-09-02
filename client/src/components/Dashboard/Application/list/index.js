@@ -483,7 +483,7 @@ export default function index({
   };
 
   const DATE_FORMAT = "LLL dd, yyyy";
-  const DATE_TIME_FORMAT = "LLL dd, yyyy HH:mm a";
+  const DATE_TIME_FORMAT = "LLL dd, yyyy hh:mm a";
 
   const getAgeBdate = child => {
 
@@ -589,6 +589,10 @@ export default function index({
       selector: "is_profile_filled",
       sortable: true,
       cell: row =>{
+    
+        if(row.hasOwnProperty('is_profile_filled')) {
+          return <div>{row?.is_profile_filled ? 'Yes' : 'No'}</div>
+        }
         return <div>{row?.parents && row.parents[0] && row?.parents[0]?.is_profile_filled ? 'Yes' : 'No'}</div>
       }
     },
@@ -604,6 +608,10 @@ export default function index({
       selector: "last_login",
       sortable: true,
       cell: row =>{
+        if(row.hasOwnProperty('last_login')) {
+          return <div>{row.last_login ? format(new Date(row.last_login),DATE_TIME_FORMAT) : 'Never'}</div>
+        }
+
         return <div>{row?.parents && row.parents[0] && row?.parents[0]?.last_login ? format(new Date(row?.parents[0]?.last_login),DATE_TIME_FORMAT) : 'Never'}</div>
       }
     },
