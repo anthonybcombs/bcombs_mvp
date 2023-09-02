@@ -1026,6 +1026,8 @@ export const GET_CUSTOM_APPLICATION_BY_VENDOR = gql`
       form
       class_teacher
       form_contents
+      last_login
+      is_profile_filled
     }
   }
 `;

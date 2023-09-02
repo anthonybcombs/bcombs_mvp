@@ -548,6 +548,7 @@ export const PARENT_BY_VENDOR_QUERY = gql`
         is_parent_allow_shared
     		is_vendor_allow_shared
         is_profile_filled
+        last_login
   }
 }
 `;
