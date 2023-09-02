@@ -69,6 +69,26 @@ export const getUserFromDatabase = async email => {
   }
 };
 
+export const updateLastLogin = async userId => {
+  const db = makeDb();
+  let result;
+
+  try {
+    const rows = await db.query(
+      `UPDATE users SET last_login=now()   where id=UUID_TO_BIN(?)`,
+      [userId]
+    );
+    console.log('updateLastLogin rows', rows)
+    result = rows;
+  } catch (error) {
+    console.log('error updateLastLogin',error)
+  } finally {
+    await db.close();
+    return result;
+  }
+};
+
+
 export const getUserProfileFromDatabase = async userId => {
   const db = makeDb();
   let result;

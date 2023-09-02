@@ -1269,6 +1269,7 @@ const queryTypes = `
         is_parent_allow_shared: Int
         is_vendor_allow_shared: Int
         is_profile_filled: Int
+        last_login: Date
     }
 
     type Application {

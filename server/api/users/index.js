@@ -9,7 +9,7 @@ import {
 import client, { getRedisKey } from "../../services/redis";
 import { getUserFromDatabase } from "../index";
 import { addVendor } from "../vendor"
-import { getUserProfileFromDatabase } from "../index.js";
+import { getUserProfileFromDatabase, updateLastLogin } from "../index.js";
 
 export const getUsers = async () => {
   const db = makeDb();
@@ -148,6 +148,8 @@ export const executeSignIn = async user => {
           }
         };
       }
+
+      await updateLastLogin(u.id);
       return {
         user: {
           ...authData,
