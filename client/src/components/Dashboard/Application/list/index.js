@@ -483,6 +483,7 @@ export default function index({
   };
 
   const DATE_FORMAT = "LLL dd, yyyy";
+  const DATE_TIME_FORMAT = "LLL dd, yyyy HH:mm a";
 
   const getAgeBdate = child => {
 
@@ -583,20 +584,29 @@ export default function index({
       sortable: true,
       cell: row => getAgeBdate(row.child)
     },
-    // {
-    //   name: "Verified Account",
-    //   selector: "is_profile_filled",
-    //   sortable: true,
-    //   cell: row =>{
-    //     return <div>{row?.parents && row.parents[0] && row?.parents[0]?.is_profile_filled ? 'Yes' : 'No'}</div>
-    //   }
-    // },
+    {
+      name: "Verified Account",
+      selector: "is_profile_filled",
+      sortable: true,
+      cell: row =>{
+        return <div>{row?.parents && row.parents[0] && row?.parents[0]?.is_profile_filled ? 'Yes' : 'No'}</div>
+      }
+    },
+
     {
       name: "Application Date",
       selector: "applicationDate",
       sortable: true,
       cell: row => format(new Date(row.application_date), DATE_FORMAT)
-    }
+    },
+    {
+      name: "Last Login",
+      selector: "last_login",
+      sortable: true,
+      cell: row =>{
+        return <div>{row?.parents && row.parents[0] && row?.parents[0]?.last_login ? format(new Date(row?.parents[0]?.last_login),DATE_TIME_FORMAT) : 'Never'}</div>
+      }
+    },
     
     // {
     //   name: "Attachment 1",

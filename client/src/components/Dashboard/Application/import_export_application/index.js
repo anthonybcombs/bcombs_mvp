@@ -334,8 +334,11 @@ const ImportExportApplication = props => {
 
                 const formattedRows = rows.map(row => row.split(','))
                 const importedColumns = formattedRows[0]; // columns
-                const importedData = formattedRows.slice(1); // data from csv
-
+                let importedData = formattedRows.slice(1); // data from csv
+                importedData = importedData.filter(item => {
+                    return !item.every(val => !val)
+                })
+  
                 console.log('formattedRows', formattedRows)
                 console.log('formattedRows importedColumns', importedColumns)
                 console.log('formattedRows importedData', importedData)
