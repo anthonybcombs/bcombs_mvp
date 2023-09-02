@@ -1333,11 +1333,11 @@ export const getCustomFormApplicants = async ({ form_id, is_archived = 0 }) => {
         CONVERT(ca.form_contents USING utf8) as form_contents,
         ca.application_date,
         ca.archived_date,
-        ca.class_teacher,g
+        ca.class_teacher,
         ca.color_designation,
         ca.verification,
         ca.student_status,
-        ca.notes
+        ca.notes,
         u.last_login,
         u.is_profile_filled
       FROM custom_application ca
