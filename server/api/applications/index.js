@@ -1326,10 +1326,18 @@ export const getCustomFormApplicants = async ({ form_id, is_archived = 0 }) => {
       `
       SELECT
         ca.id,
-        BIN_TO_UUID(ca.app_id) as app_id,
         BIN_TO_UUID(ca.form) as form,
+        BIN_TO_UUID(ca.vendor) as vendor,
+        BIN_TO_UUID(ca.app_id) as app_id,
+        BIN_TO_UUID(ca.child) as child,
         CONVERT(ca.form_contents USING utf8) as form_contents,
-        ca.class_teacher,
+        ca.application_date,
+        ca.archived_date,
+        ca.class_teacher,g
+        ca.color_designation,
+        ca.verification,
+        ca.student_status,
+        ca.notes
         u.last_login,
         u.is_profile_filled
       FROM custom_application ca
