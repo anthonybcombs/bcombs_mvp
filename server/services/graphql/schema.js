@@ -1438,6 +1438,8 @@ const queryTypes = `
         notes: String
         received_reminder: Boolean
         received_update: Boolean
+        is_profile_filled: Int
+        last_login: Date
     }
 
     type CustomApplicationByVendor {
@@ -1446,6 +1448,8 @@ const queryTypes = `
         form: String
         class_teacher: String
         form_contents: String
+        is_profile_filled: Int
+        last_login: Date
     }
 
     type CustomForm {

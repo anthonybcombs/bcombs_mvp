@@ -1324,23 +1324,19 @@ export const getCustomFormApplicants = async ({ form_id, is_archived = 0 }) => {
 
     applications = await db.query(
       `
-        SELECT
-        id,
-        BIN_TO_UUID(form) as form,
-        BIN_TO_UUID(vendor) as vendor,
-        BIN_TO_UUID(app_id) as app_id,
-        BIN_TO_UUID(child) as child,
-        CONVERT(form_contents USING utf8) as form_contents,
-        application_date,
-        archived_date,
-        class_teacher,
-        color_designation,
-        verification,
-        student_status,
-        notes
-        FROM custom_application
-        WHERE form=UUID_TO_BIN(?) AND is_archived=?
-        ORDER BY application_date DESC
+      SELECT
+        ca.id,
+        BIN_TO_UUID(ca.app_id) as app_id,
+        BIN_TO_UUID(ca.form) as form,
+        CONVERT(ca.form_contents USING utf8) as form_contents,
+        ca.class_teacher,
+        u.last_login,
+        u.is_profile_filled
+      FROM custom_application ca
+      LEFT JOIN application_user au ON au.custom_app_id=ca.app_id
+      LEFT JOIN users u ON u.id=au.user_id
+      WHERE ca.form=UUID_TO_BIN(?) AND ca.is_archived=?
+      ORDER BY ca.application_date DESC
       `,
       [
         form_id,
@@ -1489,13 +1485,17 @@ export const getCustomApplicationByVendorId = async (vendor) => {
   try {
     applications = await db.query(
       `SELECT
-        id,
-        BIN_TO_UUID(app_id) as app_id,
-        BIN_TO_UUID(form) as form,
-        CONVERT(form_contents USING utf8) as form_contents,
-        class_teacher
-        FROM custom_application
-        WHERE vendor=UUID_TO_BIN(?)
+          ca.id,
+          BIN_TO_UUID(ca.app_id) as app_id,
+          BIN_TO_UUID(ca.form) as form,
+          CONVERT(ca.form_contents USING utf8) as form_contents,
+          ca.class_teacher,
+          u.last_login,
+          u.is_profile_filled
+        FROM custom_application ca
+        LEFT JOIN application_user au ON au.custom_app_id=ca.app_id
+        LEFT JOIN users u ON u.id=au.user_id
+        WHERE ca.vendor=UUID_TO_BIN(?)
       `,
       [
         vendor
