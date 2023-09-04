@@ -591,6 +591,10 @@ export function* getVendor(action) {
         is_lot: item.name.includes('LOT')
       }
     })
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .sort((a,b) => b.is_default - a.is_default)
+
+    console.log('formattedVendors',formattedVendors)
     yield put({
       type: actionType.REQUEST_VENDOR_COMPLETED,
       payload: formattedVendors
