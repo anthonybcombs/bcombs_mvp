@@ -573,6 +573,7 @@ const ImportExportApplication = props => {
                             ...item,
                             child: {
                                 ...item.child,
+                                has_suspended: item.child.has_suspended && item.child.has_suspended.toLowerCase() === 'yes' ? 1 : 0,
                                 create_profile: isCreateProfile
                             },
                             parents: {
