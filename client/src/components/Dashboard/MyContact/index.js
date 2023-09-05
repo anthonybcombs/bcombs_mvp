@@ -237,7 +237,8 @@ export default function index() {
 
         dispatch(requestParentByVendor({
           vendor: hasDefaultVendor?.id,
-          app_group_id: filteredGroups && filteredGroups[0] && filteredGroups[0].app_grp_id
+          app_group_id:  '',//filteredGroups && filteredGroups[0] && filteredGroups[0].app_grp_id,
+          vendor_mode: true
         }))
       }
 
@@ -596,7 +597,8 @@ export default function index() {
 
                   dispatch(requestParentByVendor({
                     vendor: e.target.value,
-                    app_group_id: null
+                    app_group_id: null,
+                    vendor_mode: true
                   }))
                   setSelectedVendor(e.target.value);
                   setSelectedGroupbyVendorOptions(filteredGroups);
@@ -620,7 +622,8 @@ export default function index() {
 
                   dispatch(requestParentByVendor({
                     vendor: selectedVendor,
-                    app_group_id: e.target.value
+                    app_group_id: e.target.value || '',
+                    vendor_mode: true
                   }))
                   setSelectedGroupbyVendor(e.target.value);
                 }}

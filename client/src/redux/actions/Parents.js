@@ -23,22 +23,24 @@ export const requestUpdateParentPermissionByVendor = ({
 export const requestParentByVendor = ({
   vendor,
   app_group_id = null,
-  form_type = 'mentoring'
+  form_type = 'mentoring',
+  vendor_mode = false
 }) => {
   return {
     type: actionType.REQUEST_PARENT_BY_VENDOR,
     vendor,
     app_group_id,
-    form_type
+    form_type,
+    vendor_mode
   };
 };
 
 
-export function* getParentByVendor({ vendor, app_group_id, form_type = 'mentoring' }) {
+export function* getParentByVendor({ vendor, app_group_id, form_type = 'mentoring', vendor_mode = false }) {
   try {
 
     const response = yield call(getParentByVendorFromDatabase, {
-      vendor_id: vendor, app_group_id, form_type
+      vendor_id: vendor, app_group_id, form_type, vendor_mode
     });
 
    
@@ -71,14 +73,14 @@ export function* updateParentPermissionByVendor({ parents = [], vendor_id }) {
 }
 
 const getParentByVendorFromDatabase = ({
-  vendor_id, app_group_id, form_type
+  vendor_id, app_group_id, form_type, vendor_mode
 }) => {
   return new Promise(async (resolve, reject) => {
     try {
 
       const { data } = await graphqlClient.query({
         query: PARENT_BY_VENDOR_QUERY,
-        variables: { vendor_id, app_group_id, form_type }
+        variables: { vendor_id, app_group_id, form_type, vendor_mode }
       });
       return resolve(data.getParentByVendor);
     } catch (error) {

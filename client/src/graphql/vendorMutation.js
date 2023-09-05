@@ -512,8 +512,8 @@ export const UPDATE_DEFAULT_VENDOR = gql`
 
 
 export const PARENT_BY_VENDOR_QUERY = gql`
-  query getParentByVendor($vendor_id: String, $app_group_id: String, $form_type: String) {
-    getParentByVendor(vendor_id: $vendor_id,app_group_id: $app_group_id,form_type: $form_type) {
+  query getParentByVendor($vendor_id: String, $app_group_id: String, $form_type: String, $vendor_mode: Boolean) {
+    getParentByVendor(vendor_id: $vendor_id,app_group_id: $app_group_id,form_type: $form_type, vendor_mode: $vendor_mode) {
         parent_id
         new_parentId
         firstname
