@@ -1938,7 +1938,7 @@ const queries = `
         getArchivedGroup(vendor_id: String): [ArchivedGroup]
         getVendorApplicationReminder(vendor_id: String): [ApplicationReminder]
         triggerCronSetReminder: String
-        getParentByVendor(vendor_id: String, app_group_id: String, form_type: String): [Parent]
+        getParentByVendor(vendor_id: String, app_group_id: String, form_type: String, vendor_mode: Boolean): [Parent]
       }
 `;
 

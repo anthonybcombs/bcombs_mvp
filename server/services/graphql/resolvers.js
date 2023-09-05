@@ -576,11 +576,12 @@ const resolvers = {
     async getVendorApplicationReminder(root, { vendor_id }, context) {
       return await getVendorApplicationReminder(vendor_id);
     },
-    async getParentByVendor(root, { vendor_id, app_group_id = null , form_type = 'mentoring' }, context) {
+    async getParentByVendor(root, { vendor_id, app_group_id = null , form_type = 'mentoring', vendor_mode = false }, context) {
       const vendors = await getParentByVendorId({
         vendorId: vendor_id,
         appGroupId: app_group_id,
-        formType: form_type
+        formType: form_type,
+        isVendorMode: vendor_mode
       });
       return vendors;
     },

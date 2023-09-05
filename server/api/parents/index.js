@@ -541,7 +541,8 @@ export const getParentChildRelationship = async({
 export const getParentByVendorId = async({
   vendorId, 
   appGroupId = null,
-  formType = 'mentoring'
+  formType = 'mentoring',
+  isVendorMode = false
 }) => {
   const db = makeDb();
   let applications = [];
@@ -591,7 +592,7 @@ export const getParentByVendorId = async({
 
         LEFT JOIN users u ON u.email=p.email_address
 
-        WHERE v.id=UUID_TO_BIN(?) AND p.is_parent_allow_shared=1
+        WHERE v.id=UUID_TO_BIN(?) ${!isVendorMode ? ` AND p.is_parent_allow_shared=1` : ' '}
       
         ${appGroupId ? ` AND a.class_teacher  LIKE '%${appGroupId}%'` : ''}
       `,
@@ -631,7 +632,7 @@ export const getParentByVendorId = async({
             parent_id: applications[x].parent_id, 
             firstname:  applications[x].firstname, 
             lastname: applications[x].lastname, 
-            email_address:  maskEmail(applications[x].email_address),
+            email_address: applications[x].email_address ? maskEmail(applications[x].email_address) : '',
             is_profile_filled: applications[x].is_profile_filled
           }
         }
