@@ -1001,6 +1001,92 @@ router.get("/invitation/calendar/:id/:status", async (req, res) => {
 });
 
 
+
+router.post("/child/attendance/search", async (req, res) => {
+  const db = makeDb();
+  const { firstname, lastname, childId, eventId } = req.body;
+  let child = null;
+  let childAttendance = null;
+  try {
+
+    child = await db.query(
+      `SELECT BIN_TO_UUID(c.ch_id) as ch_id, c.firstname, c.lastname, c.new_childId
+      FROM child c
+      WHERE c.new_childId=? AND c.firstname=? AND c.lastname=?
+     `,
+      [childId, firstname, lastname]
+    );
+    child = child && child[0];
+
+    if (child) {
+      childAttendance = await db.query(
+        `SELECT a.*, 
+          BIN_TO_UUID(a.app_group_id) as app_group_id, 
+          BIN_TO_UUID(a.child_id) as child_id,
+          BIN_TO_UUID(a.event_id) as event_id
+          FROM attendance a
+          WHERE a.child_id=UUID_TO_BIN(?) AND a.event_id=UUID_TO_BIN(?)
+       `,
+        [child.ch_id, eventId]
+      );
+      childAttendance = childAttendance ? childAttendance[0] : null
+      console.log('attendanceeee', childAttendance)
+    }
+  } catch (error) {
+    console.log("Search Child Error", error);
+  } finally {
+    db.close();
+
+    return res.json({
+      child: child,
+      attendance: childAttendance
+    })
+  }
+});
+
+
+router.get("/attendance/events", async (req, res) => {
+  const db = makeDb();
+  const { vendorId } = req.query;
+
+  let events = null;
+
+  try {
+
+    events = await db.query(
+      `SELECT 
+        id,
+        event_type,
+        title, 
+        start, 
+        end, 
+        is_full_day, 
+        vendor_app_group, 
+        tags, 
+        description, 
+        qr_code_url, 
+        location
+      FROM bc_calendar_event
+      WHERE vendor_id2=? AND event_type='attendance'
+     `,
+      [vendorId]
+    );
+
+
+
+
+  } catch (error) {
+    console.log("Search Child Error", error);
+  } finally {
+    db.close();
+
+    return res.json({
+      events
+    });
+  }
+});
+
+
 router.get("/parentvendor", async (req, res) => {
   const db = makeDb();
   const { email } = req.query;

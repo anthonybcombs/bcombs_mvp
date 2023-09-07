@@ -737,6 +737,10 @@ const inputs = `
         event_name: String
         location: String
         description: String
+        create_event: Boolean
+        vendorId2: Int
+        user_id: String   
+        event_id: String
     }
 
     input UserAttendanceFilterConfigInput{
@@ -876,8 +880,8 @@ const inputs = `
         child_id: String!
         event_id: String!
         attendance_date: String!
-        attendance_start_time: String!
-        attendance_end_time: String!
+        attendance_start_time: String
+        attendance_end_time: String
 
     }
 
@@ -1618,7 +1622,7 @@ const queryTypes = `
         event_name: String
         description: String
         location: String
-        
+        event_id: String
     }
 
     type AttendanceList {
