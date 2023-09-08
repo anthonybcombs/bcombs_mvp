@@ -208,7 +208,7 @@ export const updateChildAttendance = async (attendance) => {
         if (eventResponse) {
           attendanceWhereValues = [
             ...attendanceWhereValues,
-            eventResponse.id
+            eventResponse.event_id
           ]
         }
         else if (attendance.event_id) {
