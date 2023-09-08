@@ -260,7 +260,7 @@ export const updateChildAttendance = async (attendance) => {
             ]
           }
 
-          console.log('test 111111')
+          console.log('test 111111', eventId)
 
           await db.query(
             `
