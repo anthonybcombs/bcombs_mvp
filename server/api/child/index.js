@@ -992,7 +992,7 @@ export const getChildByChildId = async childId => {
 
 export const getGroupByChildId = async (childId) => {
   const db = makeDb();
-
+  let results  = {};
   try {
     const rows = await db.query(
       `select BIN_TO_UUID(app_grp_id) as app_grp_id  from vendor_app_groups_to_student where child_id=UUID_TO_BIN(?)`,
@@ -1000,19 +1000,21 @@ export const getGroupByChildId = async (childId) => {
     );
 
     if (rows.length > 0) {
-      return {
+      results =  {
         app_groups: rows
       };
     }
 
-    return {
-
-      app_groups: []
-    };
+    else {
+      return {
+        app_groups: []
+      };
+    }
   } catch (err) {
     console.log("Child User", err);
   } finally {
     await db.close();
+    return results
   }
 };
 

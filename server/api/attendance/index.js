@@ -408,7 +408,7 @@ export const updateAttendanceByChild = async (user) => {
   }
 
   finally {
-    await db.close();
+ 
     return results;
   }
 }
