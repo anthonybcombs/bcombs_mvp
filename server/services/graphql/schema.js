@@ -720,6 +720,8 @@ const inputs = `
         app_id: String   
         app_group_id: String   
         attendance_status: String   
+        attendance_start_time: String
+        attendance_end_time: String
         volunteer_hours: Float
         mentoring_hours: Float
         child_id: String   

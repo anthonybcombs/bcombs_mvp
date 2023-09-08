@@ -234,8 +234,8 @@ export const updateChildAttendance = async (attendance) => {
             attendance.attendance_type,
             att.is_excused || 0,
             attendance.attendance_date,
-            attendance.attendance_start_time,
-            attendance.attendance_end_time,
+            att.attendance_start_time || attendance.attendance_start_time,
+            att.attendance_start_time || attendance.attendance_end_time,
             att.volunteer_hours || 0,
             att.mentoring_hours || 0,
             attendance.event_name,
@@ -304,8 +304,8 @@ export const updateChildAttendance = async (attendance) => {
 
           let queryValues = [
             att.attendance_status,
-            attendance.attendance_start_time,
-            attendance.attendance_end_time,
+            att.attendance_start_time || attendance.attendance_start_time,
+            att.attendance_start_time || attendance.attendance_end_time,
             attendance.event_name,
             attendance.location,
             attendance.description || '',
