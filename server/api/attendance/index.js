@@ -368,9 +368,10 @@ export const updateAttendanceByChild = async (user) => {
   try {
     let currentGroupId = null;
     const groups = await getGroupByChildId( user.child_id);
-
+    
     if (groups  && groups.app_groups) {
-      currentGroupId =  groups && groups.app_groups &&  groups.app_groups[0] && groups.app_groups[0].app_grp_id;
+      currentGroupId =  groups && groups.app_groups  &&  groups && groups.app_groups.find(item => item.app_grp_id);
+      currentGroupId =  currentGroupId && currentGroupId.app_grp_id;
       await updateChildAttendance({
         attendance_list: [
           {
