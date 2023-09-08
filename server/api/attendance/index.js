@@ -429,7 +429,7 @@ export const getAttendanceByEventId = async (eventId, applicationGroupId = null,
         ch.firstname,
         ch.lastname,
         ch.gender,
-        ch.image
+        ch.image,
         att.attendance_date,
         att.attendance_start_time,
         att.attendance_end_time,
@@ -463,7 +463,12 @@ export const getAttendanceByEventId = async (eventId, applicationGroupId = null,
         att.location,
         att.description,
         att.is_excused,
-        bce.title as event_title
+        bce.title as event_title,
+        ch.firstname,
+        ch.lastname,
+        ch.gender,
+        ch.image
+
       FROM  attendance att
       INNER JOIN child ch 
       ON ch.ch_id=att.child_id
