@@ -4,10 +4,10 @@ import { makeDb } from "../../../helpers/database";
 const createUpdateEvent = async data => {
     const { vendorId, userId, eventData } = data;
     let qrResp = null;
+    const db = makeDb();
     try {
         console.log('calendar add activity 1');
 
-        const db = makeDb();
 
 
         const eventPath = `${process.env.APP_URL}/event/${eventData.id}/attendance`;
