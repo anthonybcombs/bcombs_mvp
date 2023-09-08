@@ -452,6 +452,7 @@ export const getAttendanceByEventId = async (eventId, applicationGroupId = null,
     ` : ` SELECT 
         BIN_TO_UUID(att.event_id) as event_id,
         BIN_TO_UUID(att.child_id) as child_id,
+        BIN_TO_UUID(att.app_group_id) as app_group_id,
         att.attendance_type,
         att.attendance_date,
         att.attendance_start_time,
