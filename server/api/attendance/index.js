@@ -491,6 +491,21 @@ export const getAttendanceByEventId = async (eventId, applicationGroupId = null,
 
     let response = await db.query(currentQuery, values);
 
+    if(attendanceType === 'forms') {
+  
+      for(let x = 0; x < response.length; x++) {
+
+        response[x].form_contents = response[x].form_contents ? Buffer.from(response[x].form_contents, "base64").toString("utf-8") : "{}";
+        response[x].form_contents = JSON.parse(response[x].form_contents);
+
+        if(response[x].form_contents && response[x].form_contents.formData) {
+          response[x].form_contents.formData = response[x].form_contents.formData.filter(item => item.type === 'name')
+        }
+   
+      }
+
+    }
+  
     results = response
   }
   catch (err) {
