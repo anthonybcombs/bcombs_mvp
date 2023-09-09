@@ -1108,6 +1108,7 @@ router.get("/attendance/events", async (req, res) => {
         location
       FROM bc_calendar_event
       WHERE vendor_id2=? AND event_type='attendance'
+      ORDER BY start DESC
      `,
       [vendorId]
     );
