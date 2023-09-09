@@ -1044,6 +1044,46 @@ router.post("/child/attendance/search", async (req, res) => {
   }
 });
 
+router.get("/event/:eventId", async (req, res) => {
+
+  const db = makeDb();
+  const { eventId } = req.params;
+  let event = null;
+  try {
+    event = await db.query(
+      `SELECT 
+        id,
+        event_type,
+        title, 
+        start, 
+        end, 
+        is_full_day, 
+        vendor_app_group, 
+        tags, 
+        description, 
+        qr_code_url, 
+        location
+      FROM bc_calendar_event
+      WHERE id=?
+     `,
+      [eventId]
+    );
+    event = event && event[0]
+  }catch(error) {
+
+    console.log('error',error)
+    return res.json({
+      event: null,
+      message: 'Something went wrong'
+    });
+  } finally {
+    db.close();
+    return res.json({
+      event
+    });
+  }
+
+})
 
 router.get("/attendance/events", async (req, res) => {
   const db = makeDb();
