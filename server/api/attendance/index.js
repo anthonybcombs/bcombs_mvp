@@ -184,7 +184,7 @@ export const updateChildAttendance = async (attendance) => {
             event_type: 'attendance'
           },
           userId: /* '85b63aed-e795-11ea-8212-dafd2d0ae3ff' */ attendance.user_id,
-          vendorId: /* 289 */ attendance.attendance_list[0].vendor,
+          vendorId: /* 289 */ attendance.vendorId2
         };
 
         eventResponse = await createUpdateEvent(eventPayload)
@@ -259,8 +259,6 @@ export const updateChildAttendance = async (attendance) => {
               attendance.event_id
             ]
           }
-
-          console.log('test 111111', eventId)
 
           await db.query(
             `
