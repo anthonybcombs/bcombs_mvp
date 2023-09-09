@@ -425,10 +425,7 @@ export const getAttendanceByEventId = async (eventId, applicationGroupId = null,
       `SELECT BIN_TO_UUID(att.app_group_id) as app_group_id,
         BIN_TO_UUID(att.child_id) as child_id,
         BIN_TO_UUID(att.app_group_id) as app_group_id,
-        ch.firstname,
-        ch.lastname,
-        ch.gender,
-        ch.image,
+        CONVERT(ca.form_contents USING utf8) as form_contents,
         att.attendance_date,
         att.attendance_start_time,
         att.attendance_end_time,
@@ -442,8 +439,8 @@ export const getAttendanceByEventId = async (eventId, applicationGroupId = null,
         att.is_excused,
         bce.title as event_title
       FROM  attendance att
-      INNER JOIN custom_application ch 
-      ON ch.app_id=att.child_id
+      INNER JOIN custom_application ca 
+      ON ca.app_id=att.child_id
       INNER JOIN bc_calendar_event bce 
       ON bce.id=BIN_TO_UUID(att.event_id)
       WHERE  att.attendance_type = 'forms' AND att.event_id=UUID_TO_BIN(?)

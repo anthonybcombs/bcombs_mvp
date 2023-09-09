@@ -1648,6 +1648,7 @@ const queryTypes = `
         app_group_name: String
         event_id: String
         event_title: String
+        form_contents: String
     }
 
     type EventAttendanceList {
