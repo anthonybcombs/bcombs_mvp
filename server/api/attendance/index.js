@@ -183,8 +183,8 @@ export const updateChildAttendance = async (attendance) => {
             location: attendance.location,
             event_type: 'attendance'
           },
-          userId: '85b63aed-e795-11ea-8212-dafd2d0ae3ff', // attendance.user_id,
-          vendorId: 289, // attendance.vendor,
+          userId: /* '85b63aed-e795-11ea-8212-dafd2d0ae3ff' */ attendance.user_id,
+          vendorId: /* 289 */ attendance.attendance_list[0].vendor,
         };
 
         eventResponse = await createUpdateEvent(eventPayload)
@@ -195,7 +195,7 @@ export const updateChildAttendance = async (attendance) => {
       for (const att of attendance.attendance_list) {
         let groupId = att.app_group_id || attendance.app_group_id;
         groupId = groupId && groupId.split(',');
-        groupId = groupId[0];
+        groupId = groupId && groupId[0];
 
         let attendanceWhereValues = [
           att.app_group_id || attendance.app_group_id,
@@ -234,8 +234,8 @@ export const updateChildAttendance = async (attendance) => {
             attendance.attendance_type,
             att.is_excused || 0,
             attendance.attendance_date,
-            att.attendance_start_time || attendance.attendance_start_time,
-            att.attendance_start_time || attendance.attendance_end_time,
+            attendance.create_event ? null :  attendance.attendance_start_time,
+            attendance.create_event ? null :  attendance.attendance_end_time,
             att.volunteer_hours || 0,
             att.mentoring_hours || 0,
             attendance.event_name,
@@ -249,7 +249,7 @@ export const updateChildAttendance = async (attendance) => {
             eventId = eventResponse.event_id
             queryValues = [
               ...queryValues,
-              eventResponse.event_id
+              eventId
             ]
           }
           else if (attendance.event_id) {
