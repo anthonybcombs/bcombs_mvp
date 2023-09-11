@@ -28,7 +28,7 @@ const createUpdateEvent = async data => {
             eventData.tags, 
             qrResp.Key, 
             eventData.attendance_type,
-            eventData.attendance_app_group
+            eventData.attendance_app_group !== 'all' ? eventData.attendance_app_group : null
         
         ];
 
