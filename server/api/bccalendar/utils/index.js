@@ -35,7 +35,7 @@ const createUpdateEvent = async data => {
             qrResp.Key, 
             eventData.attendance_type,
             appGroup
-    
+        
         ];
 
 
