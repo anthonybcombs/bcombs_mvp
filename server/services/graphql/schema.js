@@ -743,6 +743,7 @@ const inputs = `
         vendorId2: Int
         user_id: String   
         event_id: String
+        form_id: String
     }
 
     input UserAttendanceFilterConfigInput{
