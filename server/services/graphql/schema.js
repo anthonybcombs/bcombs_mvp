@@ -884,6 +884,7 @@ const inputs = `
         attendance_date: String!
         attendance_start_time: String
         attendance_end_time: String
+        attendance_type: String
 
     }
 
