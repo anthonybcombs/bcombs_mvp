@@ -231,7 +231,7 @@ export const updateChildAttendance = async (attendance) => {
         FROM attendance 
         WHERE child_id=UUID_TO_BIN(?) 
         AND attendance_date=?  ${(attendance.event_id || eventResponse) ? ` AND event_id=UUID_TO_BIN(?) ` : ' '}
-        ${att.app_group_id || attendance.app_group_id ? `app_group_id=UUID_TO_BIN(?) ` : ' '}
+        ${att.app_group_id || attendance.app_group_id ? ` AND app_group_id=UUID_TO_BIN(?) ` : ' '}
         `, attendanceWhereValues);
 
         if (response.length === 0) {
