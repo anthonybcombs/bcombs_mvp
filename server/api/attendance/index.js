@@ -183,11 +183,11 @@ export const updateChildAttendance = async (attendance) => {
             location: attendance.location,
             event_type: 'attendance',
             attendance_type: attendance.attendance_type,
-            attendance_app_group: attendance.app_group_id
+            attendance_app_group: attendance.app_group_id,
+            formId: attendance.form_id
           },
           userId: /* '85b63aed-e795-11ea-8212-dafd2d0ae3ff' */ attendance.user_id,
-          vendorId: /* 289 */ attendance.vendorId2,
-          formId: attendance.form_id
+          vendorId: /* 289 */ attendance.vendorId2
         };
 
         eventResponse = await createUpdateEvent(eventPayload)
