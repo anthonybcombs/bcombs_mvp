@@ -10,7 +10,7 @@ const createUpdateEvent = async data => {
 
 
 
-        const eventPath = `${process.env.APP_URL}/event/${eventData.id}/attendance`;
+        const eventPath = `${process.env.APP_CLIENT_URL}/event/${eventData.id}/attendance`;
         qrResp = await generateAndUploadQRCodeToS3(eventPath, `${eventData.id}`, 'events');
 
 
