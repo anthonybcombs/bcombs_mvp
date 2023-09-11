@@ -181,7 +181,8 @@ export const updateChildAttendance = async (attendance) => {
             title: attendance.event_name,
             description: attendance.description,
             location: attendance.location,
-            event_type: 'attendance'
+            event_type: 'attendance',
+            attendance_type: attendance.attendance_type
           },
           userId: /* '85b63aed-e795-11ea-8212-dafd2d0ae3ff' */ attendance.user_id,
           vendorId: /* 289 */ attendance.vendorId2
@@ -406,7 +407,7 @@ export const updateAttendanceByChild = async (user) => {
             description: ''
           }
         ],
-        attendance_type: 'bcombs',
+        attendance_type: user.attendance_type,
         attendance_date:  moment(user.attendance_date).format("yyyy-MM-DD 00:00:00"),
         attendance_start_time: user.attendance_start_time,
         attendance_end_time: user.attendance_end_time,

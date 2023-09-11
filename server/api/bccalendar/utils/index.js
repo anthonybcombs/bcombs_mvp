@@ -16,13 +16,13 @@ const createUpdateEvent = async data => {
 
         let queryParam = [eventData.id, vendorId, eventData.event_type, userId, eventData.title,
         new Date(eventData.start), new Date(eventData.end), eventData.isFullDay, eventData.idClass,
-        eventData.description, eventData.tags, qrResp.Key];
+        eventData.description, eventData.tags, qrResp.Key, eventData.attendance_type];
 
 
         let query = "INSERT INTO bc_calendar_event " +
             "(id, vendor_id2, event_type, creator_auth_id, title, " +
-            "start, end, is_full_day, vendor_app_group, description, tags, qr_code_url) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "start, end, is_full_day, vendor_app_group, description, tags, qr_code_url, attendance_type) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         await db.query(query, queryParam);
 
