@@ -198,7 +198,6 @@ export const updateChildAttendance = async (attendance) => {
         groupId = groupId && groupId[0];
 
         let attendanceWhereValues = [
-          att.app_group_id || attendance.app_group_id,
           att.child_id,
           attendance.attendance_date,
         ];
@@ -218,11 +217,27 @@ export const updateChildAttendance = async (attendance) => {
           ]
         }
 
+        if(att.app_group_id || attendance.app_group_id) {
+          attendanceWhereValues = [
+            ...attendanceWhereValues,
+            att.app_group_id || attendance.app_group_id
+          ]
+
+        }
+
 
         const response = await db.query(`SELECT attendance_id 
-        FROM attendance WHERE app_group_id=UUID_TO_BIN(?) 
-        AND child_id=UUID_TO_BIN(?) 
-        AND attendance_date=?  ${(attendance.event_id || eventResponse) ? ` AND event_id=UUID_TO_BIN(?) ` : ' '}`, attendanceWhereValues);
+        FROM attendance 
+        WHERE child_id=UUID_TO_BIN(?) 
+        AND attendance_date=?  ${(attendance.event_id || eventResponse) ? ` AND event_id=UUID_TO_BIN(?) ` : ' '}
+        ${att.app_group_id || attendance.app_group_id ? `app_group_id=UUID_TO_BIN(?) ` : ' '}
+        `, attendanceWhereValues);
+
+      
+
+        console.log('Queryyyyy values', attendanceWhereValues)
+        
+        console.log('Responseeeee', response)
 
         if (response.length === 0) {
 
@@ -310,7 +325,6 @@ export const updateChildAttendance = async (attendance) => {
             att.volunteer_hours || 0,
             att.mentoring_hours || 0,
             att.is_excused || 0,
-            groupId,
             att.child_id,
             attendance.attendance_date,
           ]
@@ -321,6 +335,13 @@ export const updateChildAttendance = async (attendance) => {
             queryValues = [
               ...queryValues,
               eventId
+            ]
+          }
+
+          if (groupId) {
+            queryValues = [
+              ...queryValues,
+              groupId
             ]
           }
 
@@ -335,10 +356,10 @@ export const updateChildAttendance = async (attendance) => {
               volunteer_hours=?,
               mentoring_hours=?,
               is_excused=?
-            WHERE app_group_id=UUID_TO_BIN(?) 
-              AND child_id=UUID_TO_BIN(?) 
+            WHERE child_id=UUID_TO_BIN(?) 
               AND attendance_date=?
               ${eventId ? ` AND event_id=UUID_TO_BIN(?)` : ''}
+              ${groupId ? ` AND app_group_id=UUID_TO_BIN(?)` : ''}
               
           `,
             queryValues
