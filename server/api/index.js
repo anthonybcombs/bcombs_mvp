@@ -1109,7 +1109,7 @@ router.get("/event/:eventId", async (req, res) => {
 
 router.get("/attendance/events", async (req, res) => {
   const db = makeDb();
-  const { vendorId } = req.query;
+  const { vendorId, groupId = null } = req.query;
 
   let events = null;
 
@@ -1117,24 +1117,48 @@ router.get("/attendance/events", async (req, res) => {
 
     events = await db.query(
       `SELECT 
-        id,
-        event_type,
-        title, 
-        start, 
-        end, 
-        is_full_day, 
-        vendor_app_group, 
-        tags, 
-        description, 
-        qr_code_url, 
-        location,
-        attendance_type
-      FROM bc_calendar_event
-      WHERE vendor_id2=? AND event_type='attendance'
-      ORDER BY start DESC
+        bce.id,
+        bce.event_type,
+        bce.title, 
+        bce.start, 
+        bce.end, 
+        bce.is_full_day, 
+        bce.vendor_app_group, 
+        bce.tags, 
+        bce.description, 
+        bce.qr_code_url, 
+        bce.location,
+        bce.attendance_type,
+        v.name as app_group_name,
+        CONVERT( vca.form_contents  USING utf8) as form_contents
+
+      FROM bc_calendar_event bce
+      LEFT JOIN vendor_app_groups v ON v.app_grp_id=UUID_TO_BIN(bce.attendance_app_group)
+      LEFT JOIN vendor_custom_application vca ON vca.form_id=UUID_TO_BIN(bce.attendance_app_group)
+      WHERE bce.vendor_id2=? AND bce.event_type='attendance'
+      ORDER BY bce.start DESC
      `,
       [vendorId]
     );
+
+      
+  
+      for(let x = 0; x < events.length; x++) {
+
+        if(events[x].attendance_type === 'forms' && events[x].form_contents) {
+
+          events[x].form_contents = events[x].form_contents ? Buffer.from(events[x].form_contents, "base64").toString("utf-8") : "{}";
+          events[x].form_contents = JSON.parse(events[x].form_contents);
+  
+          if(events[x].form_contents && events[x].form_contents.formData) {
+            events[x].form_name = events[x].form_contents.formTitle;
+            delete events[x].form_contents;
+          }
+        }
+
+   
+      }
+
 
 
 
