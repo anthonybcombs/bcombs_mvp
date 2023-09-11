@@ -14,15 +14,29 @@ const createUpdateEvent = async data => {
         qrResp = await generateAndUploadQRCodeToS3(eventPath, `${eventData.id}`, 'events');
 
 
-        let queryParam = [eventData.id, vendorId, eventData.event_type, userId, eventData.title,
-        new Date(eventData.start), new Date(eventData.end), eventData.isFullDay, eventData.idClass,
-        eventData.description, eventData.tags, qrResp.Key, eventData.attendance_type];
+        let queryParam = [
+            eventData.id, 
+            vendorId,
+            eventData.event_type, 
+            userId, 
+            eventData.title,
+            new Date(eventData.start), 
+            new Date(eventData.end), 
+            eventData.isFullDay, 
+            eventData.idClass,
+            eventData.description, 
+            eventData.tags, 
+            qrResp.Key, 
+            eventData.attendance_type,
+            eventData.attendance_app_group
+        
+        ];
 
 
         let query = "INSERT INTO bc_calendar_event " +
             "(id, vendor_id2, event_type, creator_auth_id, title, " +
-            "start, end, is_full_day, vendor_app_group, description, tags, qr_code_url, attendance_type) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "start, end, is_full_day, vendor_app_group, description, tags, qr_code_url, attendance_type, attendance_app_group) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         await db.query(query, queryParam);
 

@@ -182,7 +182,8 @@ export const updateChildAttendance = async (attendance) => {
             description: attendance.description,
             location: attendance.location,
             event_type: 'attendance',
-            attendance_type: attendance.attendance_type
+            attendance_type: attendance.attendance_type,
+            attendance_app_group: attendance.app_group_id
           },
           userId: /* '85b63aed-e795-11ea-8212-dafd2d0ae3ff' */ attendance.user_id,
           vendorId: /* 289 */ attendance.vendorId2
