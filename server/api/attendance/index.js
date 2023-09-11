@@ -234,12 +234,6 @@ export const updateChildAttendance = async (attendance) => {
         ${att.app_group_id || attendance.app_group_id ? `app_group_id=UUID_TO_BIN(?) ` : ' '}
         `, attendanceWhereValues);
 
-      
-
-        console.log('Queryyyyy values', attendanceWhereValues)
-        
-        console.log('Responseeeee', response)
-
         if (response.length === 0) {
 
 
@@ -388,8 +382,7 @@ export const updateAttendanceByChild = async (user) => {
   try {
     let currentGroupId = null;
     const groups = await getGroupByChildId( user.child_id);
-    
-    if (groups  && groups.app_groups) {
+
       currentGroupId =  groups && groups.app_groups  &&  groups && groups.app_groups.find(item => item.app_grp_id);
       currentGroupId =  currentGroupId && currentGroupId.app_grp_id;
       await updateChildAttendance({
@@ -408,7 +401,7 @@ export const updateAttendanceByChild = async (user) => {
           }
         ],
         attendance_type: user.attendance_type,
-        attendance_date:  moment(user.attendance_date).format("yyyy-MM-DD 00:00:00"),
+        attendance_date:  moment.utc(user.attendance_date).format("yyyy-MM-DD 00:00:00"),
         attendance_start_time: user.attendance_start_time,
         attendance_end_time: user.attendance_end_time,
         event_id: user.event_id,
@@ -417,7 +410,7 @@ export const updateAttendanceByChild = async (user) => {
       results = {
         status: 'Success',
       }
-    }
+
 
 
   } catch (err) {

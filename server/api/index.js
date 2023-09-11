@@ -1004,7 +1004,7 @@ router.get("/invitation/calendar/:id/:status", async (req, res) => {
 
 router.post("/child/attendance/search", async (req, res) => {
   const db = makeDb();
-  const { firstname, lastname, childId, eventId } = req.body;
+  const { firstname, lastname, childId, eventId, attendanceType } = req.body;
   let child = null;
   let childAttendance = null;
   try {
@@ -1016,7 +1016,29 @@ router.post("/child/attendance/search", async (req, res) => {
      `,
       [childId, firstname, lastname]
     );
-    child = child && child[0];
+
+    child =  child && child[0] && {
+      ...child[0],
+      ch_id: child[0].ch_id
+    };
+
+    if(child && attendanceType === 'forms') {
+      const customApplication = await db.query(
+        `SELECT BIN_TO_UUID(c.app_id) as ch_id
+        FROM custom_application c
+        WHERE c.child=UUID_TO_BIN(?)
+       `,
+        [child.ch_id]
+      );
+
+      console.log('customApplication',customApplication)
+      if(customApplication && customApplication[0]) {
+        child.ch_id = customApplication[0].ch_id;
+      }
+
+    }
+ 
+
 
     if (child) {
       childAttendance = await db.query(
