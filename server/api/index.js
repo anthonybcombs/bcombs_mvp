@@ -1109,11 +1109,29 @@ router.get("/event/:eventId", async (req, res) => {
 
 router.get("/attendance/events", async (req, res) => {
   const db = makeDb();
-  const { vendorId, groupId = null } = req.query;
+  const { vendorId, appGroup } = req.query;
+  let { attendanceType } = req.query;
 
   let events = null;
 
   try {
+
+    let whereValues = [vendorId];
+
+    if(attendanceType) {
+      attendanceType = attendanceType === 'mentoring' ? 'bcombs' : 'forms'; 
+      whereValues = [
+        ...whereValues,
+        attendanceType
+      ]
+    }
+
+    if(appGroup  && attendanceType) {
+      whereValues = [
+        ...whereValues,
+        appGroup
+      ]
+    }
 
     events = await db.query(
       `SELECT 
@@ -1136,9 +1154,11 @@ router.get("/attendance/events", async (req, res) => {
       LEFT JOIN vendor_app_groups v ON v.app_grp_id=UUID_TO_BIN(bce.attendance_app_group)
       LEFT JOIN vendor_custom_application vca ON vca.form_id=UUID_TO_BIN(bce.attendance_app_group)
       WHERE bce.vendor_id2=? AND bce.event_type='attendance'
+      ${attendanceType ? ' AND bce.attendance_type=? ' : ''}
+      ${appGroup ? ' AND bce.attendance_app_group=? ' : ''}
       ORDER BY bce.start DESC
      `,
-      [vendorId]
+     whereValues
     );
 
       
