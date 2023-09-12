@@ -1651,6 +1651,7 @@ const queryTypes = `
         event_id: String
         event_title: String
         form_contents: CustomForm
+        new_childId: String
     }
 
     type EventAttendanceList {

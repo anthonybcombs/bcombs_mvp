@@ -443,6 +443,7 @@ export const getAttendanceByEventId = async (eventId, applicationGroupId = null,
         BIN_TO_UUID(att.child_id) as child_id,
         BIN_TO_UUID(att.app_group_id) as app_group_id,
         CONVERT(ca.form_contents USING utf8) as form_contents,
+        ch.new_childId,
         att.attendance_date,
         att.attendance_start_time,
         att.attendance_end_time,
@@ -460,11 +461,16 @@ export const getAttendanceByEventId = async (eventId, applicationGroupId = null,
       ON ca.app_id=att.child_id
       INNER JOIN bc_calendar_event bce 
       ON bce.id=BIN_TO_UUID(att.event_id)
+
+      LEFT JOIN child ch
+      ON ch.ch_id=ca.child
+
       WHERE  att.attendance_type = 'forms' AND att.event_id=UUID_TO_BIN(?)
     ${applicationGroupId ? ` AND ${field}=UUID_TO_BIN(?) ` : ''}
     ` : ` SELECT 
         BIN_TO_UUID(att.event_id) as event_id,
         BIN_TO_UUID(att.child_id) as child_id,
+        ch.new_childId as new_childId,
         BIN_TO_UUID(att.app_group_id) as app_group_id,
         att.attendance_type,
         att.attendance_date,
