@@ -1195,6 +1195,54 @@ router.get("/attendance/events", async (req, res) => {
 });
 
 
+router.delete("/attendance/event", async (req, res) => {
+
+  const db = makeDb();
+  const { eventId, vendorId } = req.body;
+  let event = null;
+  try {
+
+
+    const currentEvent = await db.query(
+      `SELECT qr_code_url FROM bc_calendar_event WHERE id=? AND vendor_id2=?`,
+      [eventId, vendorId]
+    );
+
+    if (currentEvent && currentEvent[0]) {
+
+      if (currentEvent[0].qr_code_url) {
+        await deleteFile(currentEvent[0].qr_code_url);
+      }
+
+      await db.query(
+        `DELETE  FROM attendance WHERE event_id=UUID_TO_BIN(?)`,
+        [eventId]
+      );
+      await db.query(
+        `DELETE  FROM bc_calendar_event WHERE id=? AND vendor_id2=?`,
+        [eventId, vendorId]
+      );
+  
+    }
+
+
+    event = event && event[0]
+  } catch (error) {
+
+    console.log('error', error)
+    return res.json({
+      event: null,
+      message: 'Something went wrong'
+    });
+  } finally {
+    db.close();
+    return res.json({
+      message: 'Event has been deleted successfully!'
+    });
+  }
+
+})
+
 router.get("/parentvendor", async (req, res) => {
   const db = makeDb();
   const { email } = req.query;
