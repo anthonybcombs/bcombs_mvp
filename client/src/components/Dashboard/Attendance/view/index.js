@@ -478,7 +478,6 @@ const getChildFromFormData = formData => {
     });
 
     const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
-    console.log('parentFields',parentFields)
     return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"',"")} ${parentFields[1].value.replaceAll('"',"")}` : ''
   }
 
@@ -800,11 +799,7 @@ export default function index(props) {
 
 				// if(formApplication?.form_contents) {
 				// 	const contents = JSON.parse(formApplication?.form_contents);
-				// 	// console.log('contents',contents)
-				// 	console.log('contentszxczxc2222222',formApplication)
-				// 	console.log('contentszxczxc',contents)
-				// 	const dataaa = getChildFromFormData(contents.formData);
-				// 	console.log('zzzzzzzzzxxz',dataaa)
+
 
 				// 	// getChildFromFormData
 				// }

@@ -8,7 +8,9 @@ import { GET_EVENT_QUERY } from "../../graphql/eventQuery";
 import {
   EVENT_CREATE_MUTATION,
   EVENT_UPDATE_MUTATION,
-  EVENT_DELETE_MUTATION
+  EVENT_DELETE_MUTATION,
+  EVENT_ATTENDANCE_UPDATE_MUTATION
+
 } from "../../graphql/eventMutation";
 
 const getEventsToDatabase = async email => {
@@ -38,7 +40,6 @@ const addEventInDatabase = async event => {
       }
     });
 
-    console.log("addEventInDatabase data", data);
     return data.createEvent;
   } catch (error) {
     console.log("addEventInDatabase error", error);
@@ -46,7 +47,7 @@ const addEventInDatabase = async event => {
 };
 const deleteEventInDatabase = async event => {
   try {
-    console.log("Eventtttt", event);
+  
     const { data } = await graphqlClient.mutate({
       mutation: EVENT_DELETE_MUTATION,
       variables: {
@@ -61,7 +62,7 @@ const deleteEventInDatabase = async event => {
 };
 const updateEventInDatabase = async event => {
   try {
-    console.log("Update Event Database", event);
+
     const { data } = await graphqlClient.mutate({
       mutation: EVENT_UPDATE_MUTATION,
       variables: {
@@ -77,6 +78,25 @@ const updateEventInDatabase = async event => {
     console.log("updateEventInDatabase error", error);
   }
 };
+
+const updateUserEventAttendanceToDatabase = async attendance => {
+  try {
+
+    const { data } = await graphqlClient.mutate({
+      mutation: EVENT_ATTENDANCE_UPDATE_MUTATION,
+      variables: {
+        user: {
+          ...attendance
+        }
+      }
+    });
+
+    return data.createEvent;
+  } catch (error) {
+    console.log("updateUserEventAttendanceToDatabase error", error);
+  }
+};
+
 export const addEvent = event => {
   return {
     type: actionType.REQUEST_ADD_EVENT,
@@ -108,6 +128,17 @@ export const getEvents = email => {
     email
   };
 };
+
+
+
+export const requestUserEventAttendance = data => {
+  return {
+    type: actionType.REQUEST_USER_EVENT_ATTENDANCE,
+    data
+  };
+};
+
+
 
 export const setEventList = data => {
   return {
@@ -218,6 +249,27 @@ export function* searchedEvents({ searchDetails }) {
   } catch (err) {
     yield put({
       type: actionType.REQUEST_SEARCH_EVENTS_COMPLETED,
+      payload: []
+    });
+    yield put(setEventLoading(false));
+  }
+}
+
+
+export function* updateUserEventAttendance(action) {
+  try {
+  
+    console.log('updateUserEventAttendance action.data', action.data)
+    const response = yield call(updateUserEventAttendanceToDatabase, action.data);
+    yield put({
+      type: actionType.REQUEST_USER_EVENT_ATTENDANCE_COMPLETED,
+      payload: response
+    });
+
+  } catch (err) {
+    console.log("error updateUserEventAttendance", err);
+    yield put({
+      type: actionType.REQUEST_USER_EVENT_ATTENDANCE_COMPLETED,
       payload: []
     });
     yield put(setEventLoading(false));

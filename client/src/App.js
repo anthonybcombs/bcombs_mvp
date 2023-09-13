@@ -137,6 +137,16 @@ const AsyncAttendanceSummary = Loadable({
   loading: Loading
 });
 
+const AsyncAttendanceEvents = Loadable({
+  loader: () => import("./components/Dashboard/Attendance/events"),
+  loading: Loading
+});
+
+const AsyncEventAttendee = Loadable({
+  loader: () => import("./components/Dashboard/Attendance/eventattendee"),
+  loading: Loading
+});
+
 const AsyncGradesList = Loadable({
   loader: () => import("./components/Dashboard/Grades/List"),
   loading: Loading
@@ -184,6 +194,14 @@ const AsyncLandingPage = Loadable({
   loading: Loading
 });
 
+const AsyncUserattendance = Loadable({
+  loader: () => import("./components/UserAttendance"),
+  loading: Loading
+});
+
+
+
+
 export default function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -194,53 +212,58 @@ export default function App() {
 
       <Layout>
         <div data-testid="app">
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <Router>
-            <AyncDashboardMyContactsPublic path="/mycalendars/public/:id" />
-            <AsyncAuth path="/">
-            <AsyncLandingPage path="/"  default />
-              <AsyncLogin  path="login"  />
-              <AsyncCreateUser path="auth/create" />
-              <AsyncForgotPassword path="auth/forgot-password" />
-            </AsyncAuth>
-            <AsycDashboard path="/dashboard">
-              <AsyncDashBoardHome default />
-              <AsyncDashboardMyCalendars path="mycalendars" />
-              <AsyncDashboardMyEvents path="myevents" />
-              <AsyncDashboardMyProfle path="myprofile" />
-              <AyncDashboardMyContacts path="mycontacts" />
-              <AsyncProfile path="createprofile" />
-              <AsyncApplicationStatus path="application" />
-              <AsyncChildInformationView path="menteeprofile/:id" />
-              <AsyncParentInformationView path="parentprofile/:id" />
-              <AsyncArchivedApplication path="archived" />
-              <AsyncClassListInformationView path="class/:form_type/:form_id" />
-              <AsyncMyApplication path="myapplication" />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Router>
+              <AsyncUserattendance path="/event/:event_id/attendance" />
+              <AyncDashboardMyContactsPublic path="/mycalendars/public/:id" />
+              <AsyncAuth path="/">
+                <AsyncLandingPage path="/" default />
+                <AsyncLogin path="login" />
+                <AsyncCreateUser path="auth/create" />
+                <AsyncForgotPassword path="auth/forgot-password" />
+              </AsyncAuth>
+              <AsycDashboard path="/dashboard">
+                <AsyncDashBoardHome default />
+                <AsyncDashboardMyCalendars path="mycalendars" />
+                <AsyncDashboardMyEvents path="myevents" />
+                <AsyncDashboardMyProfle path="myprofile" />
+                <AyncDashboardMyContacts path="mycontacts" />
+                <AsyncProfile path="createprofile" />
+                <AsyncApplicationStatus path="application" />
+                <AsyncChildInformationView path="menteeprofile/:id" />
+                <AsyncParentInformationView path="parentprofile/:id" />
+                <AsyncArchivedApplication path="archived" />
+                <AsyncClassListInformationView path="class/:form_type/:form_id" />
+                <AsyncMyApplication path="myapplication" />
                 <AsyncParentContacts path="parentcontacts" />
-              <AsyncAuditTrail path="audittrail" />
-              <AsyncBCCalendar path="bccalendar" />
-              <AsyncManageAdmin path="admin" />
-              <AsynBuilder path="builder/:form_id/:type" />
-              <AsynBuilder path="builder" />
-              <AsyncForms path="forms" />
-              <AsyncAttendance path="studentdata" />
-              <AsyncAttendanceList path="attendance/:vendor_id/:name" />
-              <AsyncAttendanceSummary path="attendance/view/:app_group_id" />
-              <AsyncGradeIndividualProfile path="grades/profile/:child_id" />
-              <AsyncGradeIndividual path="grades/individual/:child_id" />
-              <AsyncGradeTestInput path="grades/input/:child_id" />
-              <AsyncGradeTestInput path="grades/input" />
-              <AsyncGradesList path="grades" />
-              <AsyncMyMetrics path="metrics" />
-              <AsyncDisplayCalendar path="bcdisplaycalendar" />
-            </AsycDashboard>
-           
-            <SocialLoginLanding path="sociallanding" />
-            <AsyncApplicationForm path="application/:vendor_id" />
-            <AsyncForm path="form/:form_id" />
-            <AsyncDaycareApplicationForm path="application/:vendor_id/daycare" />
-            <AsyncApplicationForm path="application/:vendor_id/lot" />
-          </Router>
+                <AsyncAuditTrail path="audittrail" />
+                <AsyncBCCalendar path="bccalendar" />
+                <AsyncManageAdmin path="admin" />
+                <AsynBuilder path="builder/:form_id/:type" />
+                <AsynBuilder path="builder" />
+                <AsyncForms path="forms" />
+                <AsyncAttendance path="studentdata" />
+                <AsyncAttendanceList path="attendance/:vendor_id/:name" />
+                <AsyncAttendanceEvents path="attendance/events" />
+                <AsyncEventAttendee path="eventattendance/:event_id" />
+                <AsyncAttendanceSummary path="attendance/view/:app_group_id" />
+                <AsyncGradeIndividualProfile path="grades/profile/:child_id" />
+                <AsyncGradeIndividual path="grades/individual/:child_id" />
+                <AsyncGradeTestInput path="grades/input/:child_id" />
+                <AsyncGradeTestInput path="grades/input" />
+                <AsyncGradesList path="grades" />
+                <AsyncMyMetrics path="metrics" />
+                <AsyncDisplayCalendar path="bcdisplaycalendar" />
+              </AsycDashboard>
+
+              <SocialLoginLanding path="sociallanding" />
+              <AsyncApplicationForm path="application/:vendor_id" />
+              <AsyncApplicationForm path="application/:vendor_id/lot" />
+              <AsyncDaycareApplicationForm path="application/:vendor_id/daycare" />
+              <AsyncForm path="form/:form_id" />
+
+         
+            </Router>
           </MuiPickersUtilsProvider>
         </div>
       </Layout>

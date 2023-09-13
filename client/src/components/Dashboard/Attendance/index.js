@@ -230,12 +230,11 @@ export default function index(props) {
 	// appGroups = appGroups.filter((group) => {
 	//   return group.vendor == vendor.id;
 	// })
-	
+
 	const vendorIds = Array.isArray(vendors) && vendors.map(item => item.id);
-		console.log('appGroups',appGroups)
+	console.log('appGroups', appGroups)
 	//  ( /*formIds.includes(appGroup.form) || */ /* vendorIds.includes(appGroup.vendor) */)
-	const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && (formIds.includes(appGroup.form)) ) || appGroup.form === null);
-			console.log('filteredGroups form.formAppGroups',form.formAppGroups)
+	const filteredGroups = form.formAppGroups && form.formAppGroups.filter(appGroup => (appGroup.form && (formIds.includes(appGroup.form))) || appGroup.form === null);
 	const filteredFormList = form.formList
 	const isShow = !!selected.find(s => archivedGroups.find(a => a.app_group_id === s.app_group_id))
 
@@ -248,13 +247,13 @@ export default function index(props) {
 	}, []);
 
 	useEffect(() => {
-	
-		if(queryParams.vendor && Array.isArray(vendors)) {
-			const vendorId =  parseInt(queryParams.vendor);
+
+		if (queryParams.vendor && Array.isArray(vendors)) {
+			const vendorId = parseInt(queryParams.vendor);
 			const currentVendor = vendors.find(item => item.id2 === vendorId);
-	
-			if(currentVendor) {
-		
+
+			if (currentVendor) {
+
 				setSelectedVendor(currentVendor);
 				setIsLot(currentVendor.name.includes('LOT') ? true : false);
 				setAppGroups(currentVendor.app_groups);
@@ -263,22 +262,22 @@ export default function index(props) {
 				dispatch(requestVendorAppGroups(currentVendor.id));
 				dispatch(requestGetForms({ vendor: currentVendor.id, currentUser: auth.user_id, isOwner: !!(auth.user_id == currentVendor.user), categories: [] }));
 			}
-		
+
 		}
 		else if (vendors && vendors[0]) {
 			let defaultVendor = vendors.find(item => item.is_default);
 			defaultVendor = defaultVendor ? defaultVendor : vendors[0];
-			
-			if(defaultVendor) {
+
+			if (defaultVendor) {
 				setSelectedVendor(defaultVendor);
-				setIsLot( defaultVendor.name.includes('LOT') ? true : false);
+				setIsLot(defaultVendor.name.includes('LOT') ? true : false);
 				setAppGroups(defaultVendor.app_groups);
 				dispatch(requestGetCustomApplicationByVendor(defaultVendor.id));
 				dispatch(requestGetApplications(defaultVendor.id));
 				dispatch(requestVendorAppGroups(defaultVendor.id))
 				dispatch(requestGetForms({ vendor: defaultVendor.id, currentUser: auth.user_id, isOwner: !!(auth.user_id == defaultVendor.user), categories: [] }));
 			}
-		
+
 
 		}
 
@@ -320,11 +319,11 @@ export default function index(props) {
 	};
 	///let testArray = [];
 	const getFormClassCount = group => {
-		
+
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
 			if (app.class_teacher && app.class_teacher !== '' && group.form === app.form) {
 				const classTeacher = app.class_teacher.split(',');
-				return  classTeacher.includes(group.app_grp_id);
+				return classTeacher.includes(group.app_grp_id);
 			}
 		});
 		// if(group.form === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
@@ -339,21 +338,18 @@ export default function index(props) {
 		// 		return (item.form === group.form ) && classTeacher.some(id => defaultIds.includes(id));
 		// 	});
 		// }
-	
+
 		return size ? size.length : 0
 	};
-
-	console.log('applicationsssssssssssss',applications)
-
 
 
 	const getDefaultClassCount = () => {
 		const appGroupIds = appGroups ? appGroups.map(item => item.app_grp_id) : [];
-		
+
 		const size = applications.activeapplications.filter(app => {
 			if (app.class_teacher) {
 				const classTeacher = app.class_teacher.split(',');
-				return classTeacher.some(id => appGroupIds.includes(id) );
+				return classTeacher.some(id => appGroupIds.includes(id));
 			}
 		});
 		return size.length;
@@ -397,7 +393,7 @@ export default function index(props) {
 		} else {
 			newFilteredGroups = newFilteredGroups.filter(g => !archivedGroups.find(e => e.app_group_id === g?.app_grp_id))
 		}
-		console.log('newFilteredGroups',newFilteredGroups)
+
 		return newFilteredGroups
 			.map((group, index) => {
 				let count = group.size;
@@ -405,10 +401,10 @@ export default function index(props) {
 				let classCount = formGroup && formGroup.form_contents ? getFormClassCount(group) : getClassCount(group);
 				let availableCount = count - classCount;
 				availableCount = availableCount < 0 ? 0 : availableCount;
-				
-        const vendorDetails = vendors.filter(v => v.id == group.vendor)[0];
+				const isCustomForm = formGroup && formGroup.form_contents;
 
-        console.log('vendorDetails', vendorDetails);
+				const vendorDetails = vendors.filter(v => v.id == group.vendor)[0];
+
 				return searched([
 					formGroup && formGroup.form_contents ? formGroup.form_contents?.formTitle : isLot ? 'LOT Form' : auth && auth.nickname === 'lot' ? 'LOT Form' : 'Mentoring Application',
 					classCount.toString(), count.toString()
@@ -429,7 +425,7 @@ export default function index(props) {
 						<td>
 							{formGroup && formGroup.form_contents
 								? formGroup.form_contents?.formTitle
-								: isLot ? 'LOT Form' :   auth && auth.nickname === 'lot' ? 'LOT Form' : 'Mentoring Application'}
+								: isLot ? 'LOT Form' : auth && auth.nickname === 'lot' ? 'LOT Form' : 'Mentoring Application'}
 						</td>
 						<td>
 							{group.name}
@@ -443,7 +439,8 @@ export default function index(props) {
 							{formGroup && formGroup.form_contents
 								? <Link to={'/dashboard/attendance/view/' + group?.app_grp_id + '?type=custom&formId=' + formGroup.form_id + `&appGroupId=${group.app_grp_id}`}>View</Link>
 								: <Link to={'/dashboard/attendance/view/' + group?.app_grp_id}>View</Link>
-							}
+							}/
+							<Link to={`/dashboard/attendance/events?vendorId=${selectedVendor?.id2}&attendanceType=${isCustomForm ? 'forms' : 'mentoring'}&formId=${isCustomForm ? formGroup.form_id  : group.app_grp_id}`}>Events</Link>
 						</td>
 						<td>
 							{formGroup && formGroup.form_contents
@@ -575,20 +572,19 @@ export default function index(props) {
 	const getTotalClassCountByForm = id => {
 
 		const formGroups = form && form.formAppGroups && form.formAppGroups.filter(appGroup => appGroup.form === id);
-	
+
 		//let totalClassCount = 0;
 		// if(id === '6838fda0-5407-11eb-8212-dafd2d0ae3ff'){
 
 		// }
 		const appGrpIds = formGroups.map(item => item.app_grp_id).filter(item => item)
 
-			
+
 		const size = applications && applications.customActiveApplications && applications.customActiveApplications.filter(app => {
-			if ((app.class_teacher && app.class_teacher !== ''  )) {
+			if ((app.class_teacher && app.class_teacher !== '')) {
 				const classTeacher = app.class_teacher.split(',');
-				// console.log('formGroupppppppppp classTeacherrrrrr',classTeacher)
-				return classTeacher.some(id => appGrpIds.includes(id) ) //classTeacher.includes(group.app_grp_id)
-			} 
+				return classTeacher.some(id => appGrpIds.includes(id)) //classTeacher.includes(group.app_grp_id)
+			}
 			return id === app.form;
 		});
 
@@ -599,7 +595,7 @@ export default function index(props) {
 		// 		//6838fda0-5407-11eb-8212-dafd2d0ae3ff
 
 		// 	}
-		
+
 		// }
 		// console.log('getTotalClassCountByForm', totalClassCount)
 		//return totalClassCount;
@@ -622,8 +618,6 @@ export default function index(props) {
 			dispatch(requestAddArchiveGroup(selected))
 		}
 	}
-	console.log('filteredFormList', filteredFormList);
-  console.log('filteredGroups', filteredGroups);
 	return (
 		<AttendanceSummaryStyled>
 			<h2>Data</h2>
@@ -657,6 +651,11 @@ export default function index(props) {
 									<span>{isShow ? 'Show' : 'Hide'}</span>
 								</button>
 							</div>
+							<div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 12, paddingBottom: 12, textDecoration: 'none' }}>
+								<Link to={`/dashboard/attendance/events?vendorId=${queryParams?.vendor || selectedVendor?.id2}`}>
+									Attendance Events (All)
+								</Link>
+							</div>
 							<table id="groups">
 								<tbody>
 									<tr>
@@ -685,7 +684,7 @@ export default function index(props) {
 									</tr> */}
 
 									{
-										searched([isLot ? 'LOT Form' :   auth && auth.nickname === 'lot' ? 'LOT Form' :  'Mentoring Application', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
+										searched([isLot ? 'LOT Form' : auth && auth.nickname === 'lot' ? 'LOT Form' : 'Mentoring Application', getDefaultClassCount().toString(), getDefaultTotalCount().toString(), 'All']) && (
 											<tr>
 												<td />
 												<td>{isLot ? 'LOT Form' : auth && auth.nickname === 'lot' ? 'LOT Form' : 'Mentoring Application'}</td>
@@ -696,7 +695,8 @@ export default function index(props) {
 												{/* <td>{getDefaultTotalAvailable()}</td> */}
 												<td>
 													<Link to={'/dashboard/attendance/' + selectedVendor?.id2 + '/all'}>Input</Link> /
-													<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link>
+													<Link to={`/dashboard/attendance/view/${selectedVendor?.id2}?type=all`}>View</Link> /
+													<Link to={`/dashboard/attendance/events?vendorId=${selectedVendor?.id2}&attendanceType=mentoring`}>Events</Link>
 												</td>
 												<td>
 													<Link to={`/dashboard/grades/input?group_id=${selectedVendor?.id}&group_type=bcombs&request_type=vendor&type=all&vendor=${selectedVendor?.id2}`}>Input</Link> /
@@ -735,7 +735,8 @@ export default function index(props) {
 													</td>
 													<td>
 														<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}&type=all&appGroupIds=${appGroupIdList}&vendor=${selectedVendor?.id2}`}>Input</Link> /
-														<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}&appGroupIds=${appGroupIdList}`}>View</Link>
+														<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}&appGroupIds=${appGroupIdList}`}>View</Link> /
+														<Link to={`/dashboard/attendance/events?vendorId=${selectedVendor?.id2}&attendanceType=forms&formId=${item.form_id}`}>Events</Link>
 													</td>
 													<td>
 														<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms&type=all' + `&appGroupIds=${appGroupIdList}&vendor=${selectedVendor?.id2}`}>Input</Link>/
@@ -749,7 +750,7 @@ export default function index(props) {
 										})}
 									{renderTableData()}
 									{filteredFormList
-									///	.filter(g => archivedGroups.find(e => e.app_group_id === g?.form_id))
+										///	.filter(g => archivedGroups.find(e => e.app_group_id === g?.form_id))
 										.map(item => {
 											return searched([
 												item.form_contents?.formTitle || '',
@@ -777,6 +778,7 @@ export default function index(props) {
 													<td>
 														<Link to={`/dashboard/attendance/${item.vendor}/custom?formId=${item.form_id}`}>Input</Link> /
 														<Link to={`/dashboard/attendance/view/${item.vendor}?type=custom&formId=${item.form_id}`}>View</Link>
+														<Link to={`/dashboard/attendance/events?vendorId=${selectedVendor?.id2}&attendanceType=forms&formId=${item.form_id}`}>Events</Link>
 													</td>
 													<td>
 														<Link to={'/dashboard/grades/input?group_id=' + item?.form_id + '&group_type=forms'}>Input</Link>/
