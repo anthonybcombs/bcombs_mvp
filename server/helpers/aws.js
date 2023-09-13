@@ -29,4 +29,27 @@ export const uploadFile = (data) => {
     });
   });
 };
+
+
+export const deleteFile = (key) => {
+
+  const deleteParams = {
+    Bucket: currentS3BucketName,
+    Key: key
+  };
+
+  return new Promise((resolve, reject) => {
+    s3Bucket.deleteObject(deleteParams, function (err, data) {
+      if (err) {
+        console.log("Error delete data: ", data);
+        reject("Error uploading data: ", data);
+      } else {
+        console.log("succesfully delete the data!");
+        resolve("succesfully delete the data!");
+      }
+    });
+  });
+}
+
+
 export { currentS3BucketName, s3Bucket, s3BucketRootPath };
