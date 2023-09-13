@@ -3,7 +3,8 @@ import {
   currentS3BucketName,
   s3Bucket,
   s3BucketRootPath,
-  uploadFile
+  uploadFile,
+  deleteFile
 } from "../helpers/aws";
 import { customConnection, makeDb } from "../helpers/database";
 import fetch from "node-fetch";
