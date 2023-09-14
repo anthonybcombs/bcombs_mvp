@@ -32,6 +32,13 @@ import {
 import { requestVendor, requestUserVendorForms } from "../../../redux/actions/Vendors";
 import { requestParentByVendor } from "../../../redux/actions/Parents";
 
+import {
+  requestGetForms,
+  // requestUpdateSubmittedForm,
+  // requestGetCustomApplicationHistory,
+  // requestAddForm
+} from '../../../redux/actions/FormBuilder'
+
 const MyContactsStyled = styled.div`
   // padding: 1em;
   width: auto;
@@ -173,9 +180,10 @@ export default function index() {
     vendors,
     userTypes,
     vendorForms,
-    parents
+    parents,
+    form: { formList = [], updateSubmittedForm, customApplicationHistory, formAppGroups, addForm },
   } = useSelector(
-    ({ auth, groups, groupMembers, contacts, loading, vendors, userTypes, vendorForms, parents }) => {
+    ({ auth, groups, groupMembers, contacts, loading, vendors, userTypes, vendorForms, parents, form }) => {
       return {
         auth,
         groups,
@@ -185,10 +193,16 @@ export default function index() {
         vendors,
         userTypes,
         vendorForms,
-        parents
+        parents,
+        form
       };
     }
   );
+
+
+  console.log('formListzzzzzzzz', formList)
+
+  console.log('vendorForms', vendorForms)
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -218,6 +232,7 @@ export default function index() {
     setCurrentContacts(contacts);
   }, []);
 
+  console.log('formListtttttttttt',formList)
 
 
   useEffect(() => {
@@ -226,27 +241,62 @@ export default function index() {
       const hasDefaultVendor = vendors.find(item => item.is_default);
 
       if (hasDefaultVendor?.id) {
-    
-        const filteredGroups = groups?.application_groups && groups.application_groups.filter(item => item.vendor === hasDefaultVendor?.id)
+
+        let filteredGroups = groups?.application_groups && groups.application_groups.filter(item => item.vendor === hasDefaultVendor?.id)
         setSelectedVendor(hasDefaultVendor?.id);
-        if(filteredGroups && filteredGroups[0]) {
+        if (filteredGroups && filteredGroups[0]) {
           setSelectedGroupbyVendor(isVendorMode ? '' : filteredGroups[0].app_grp_id)
         }
+
+        filteredGroups = filteredGroups.map(item => {
+          return {
+            ...item,
+            value: item.app_grp_id
+          }
+        })
+
+
 
         setSelectedGroupbyVendorOptions(filteredGroups);
 
         dispatch(requestParentByVendor({
           vendor: hasDefaultVendor?.id,
-          app_group_id:  '',//filteredGroups && filteredGroups[0] && filteredGroups[0].app_grp_id,
+          app_group_id: '',//filteredGroups && filteredGroups[0] && filteredGroups[0].app_grp_id,
           vendor_mode: true
         }))
+
+        if (formList.length === 0) {
+          dispatch(requestGetForms({
+            vendor: hasDefaultVendor?.id,
+            currentUser: auth.user_id,
+            isOwner: !!(auth.user_id == hasDefaultVendor?.user),
+            categories: []
+          }))
+        }
       }
 
     }
 
-  
+
 
   }, [vendors, groups]);
+
+
+  useEffect(() => {
+    console.log('formList',formList)
+    if (formList.length > 0) {
+      const updatedForms = formList.map(item => {
+        return {
+          ...item,
+          name: item?.form_contents?.formTitle,
+          value: item.form_id,
+          is_form: true
+        }
+      });
+
+      setSelectedGroupbyVendorOptions([...selectedGroupByVendorOptions, ...updatedForms])
+    }
+  }, [formList])
 
 
 
@@ -441,6 +491,8 @@ export default function index() {
     // }
   };
 
+  console.log('formLissssssst  selectedGroupByVendorOptions2222',selectedGroupByVendorOptions)
+
   const handleCloseModal = () => {
     setCurrentAppGroup();
     setApiStatus("");
@@ -619,18 +671,21 @@ export default function index() {
                 className="field-input"
                 value={selectedGroupByVendor}
                 onChange={(e) => {
-
+                  
+                  const isForm = selectedGroupByVendorOptions.find(item => item.value === e.target.value && item.is_form)
+                  console.log('isForm',isForm)
                   dispatch(requestParentByVendor({
                     vendor: selectedVendor,
                     app_group_id: e.target.value || '',
+                    form_type: isForm ? 'forms' : 'mentoring',
                     vendor_mode: true
                   }))
                   setSelectedGroupbyVendor(e.target.value);
                 }}
               >
-                 {isVendorMode && <option value="">All</option>}
+                {isVendorMode && <option value="">All</option>}
                 {Array.isArray(selectedGroupByVendorOptions) && selectedGroupByVendorOptions.map(item => {
-                  return <option value={item.app_grp_id}>{item.name}</option>
+                  return <option value={item.value}>{item.name}</option>
                 })}
 
               </select>
