@@ -315,7 +315,7 @@ export const updateChildAttendance = async (attendance) => {
           let queryValues = [
             att.attendance_status,
             att.attendance_start_time || attendance.attendance_start_time,
-            att.attendance_start_time || attendance.attendance_end_time,
+            att.attendance_end_time || attendance.attendance_end_time,
             attendance.event_name,
             attendance.location,
             attendance.description || '',
