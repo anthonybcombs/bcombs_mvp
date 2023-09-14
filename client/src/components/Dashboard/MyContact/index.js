@@ -232,7 +232,7 @@ export default function index() {
     setCurrentContacts(contacts);
   }, []);
 
-  console.log('formListtttttttttt',formList)
+
 
 
   useEffect(() => {
@@ -257,8 +257,6 @@ export default function index() {
 
 
 
-        setSelectedGroupbyVendorOptions(filteredGroups);
-
         dispatch(requestParentByVendor({
           vendor: hasDefaultVendor?.id,
           app_group_id: '',//filteredGroups && filteredGroups[0] && filteredGroups[0].app_grp_id,
@@ -273,6 +271,22 @@ export default function index() {
             categories: []
           }))
         }
+        else if(formList.length > 0){
+          const updatedForms = formList.map(item => {
+            return {
+              ...item,
+              name: item?.form_contents?.formTitle,
+              value: item.form_id,
+              is_form: true
+            }
+          });
+    
+          filteredGroups = [...filteredGroups, ...updatedForms ];
+
+  
+        }
+
+        setSelectedGroupbyVendorOptions([...filteredGroups ]);
       }
 
     }
