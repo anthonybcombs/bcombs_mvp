@@ -1134,6 +1134,7 @@ export default function index() {
 
 	const renderTableData = () => {
 		return filteredApplicationList.map((app, index) => {
+			console.log('ap222p',app)
 			const currentChild = app.form_contents ? getNameFromCustomForm(app.form_contents) : {
 				lastname: app.child?.lastname,
 				firstname: app.child?.firstname
@@ -1537,7 +1538,8 @@ export default function index() {
 					{viewMode === 'grid' ? (
 						<div className="gridView">
 							{filteredApplicationList.map(app => {
-								const currentChild = app.form_contents ? getNameFromCustomForm(app.form_contents) : {
+								console.log('ap222p',app)
+								const currentChild = app && app.form_contents ? getNameFromCustomForm(app.form_contents) : {
 									lastname: app.child?.lastname,
 									firstname: app.child?.firstname
 								}

@@ -376,6 +376,27 @@ const EventAttendee = props => {
 
     };
 
+    const handleCheckOutAll = () => { 
+
+        let updatedAttendance = [...(currentAttendance || [])];
+
+        updatedAttendance = updatedAttendance.map(att => {
+            if(!att.attendance_start_time && !att.attendance_status) {
+                return  {
+                    ...att,
+                    attendance_end_time: getCurrentTime(),
+                }
+            }
+
+            return  {
+                ...att,
+            
+            }
+        });
+
+        setCurrentAttendance(updatedAttendance);
+    }
+
     const handleSubmit = () => {
 
         setIsConfirmationVisible(true);
@@ -470,6 +491,22 @@ const EventAttendee = props => {
                 </div>
             </div>
         </div> : <span />}
+
+        <div>
+
+            <div style={{ padding: 12 }}>
+                <div className="field" style={{ padding: 12 }}>
+                    <button
+                        className="timeoutBtn"
+                        onClick={handleCheckOutAll}
+                        type="button"
+                        style={{ width: '100%', backgroundColor: '#ff0e0e', color: 'white' }}
+                    >
+                        End Session for Unchecked Attendees
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <div className="attendee">
             <div className="gridView">
