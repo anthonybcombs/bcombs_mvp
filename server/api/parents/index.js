@@ -608,6 +608,7 @@ export const getParentByVendorId = async ({
       //     ${appGroupId ? ` AND c.class_teacher  LIKE '%${appGroupId}%'` : ''}
       applications = await db.query(`
       SELECT
+        BIN_TO_UUID(ch.ch_id) as parent_id,
         BIN_TO_UUID(c.app_id) as application,
         ch.firstname as firstname, 
         ch.lastname as lastname,
@@ -617,9 +618,9 @@ export const getParentByVendorId = async ({
         ch.address as address,
         ch.city as city,
         ch.state as state,
-        u.is_profile_filled,
-        up.is_parent_allow_shared
-
+        ch.is_parent_allow_shared,
+        ch.is_vendor_allow_shared,
+        u.is_profile_filled
       FROM custom_application c,child ch, application_user a, user_profiles up, users u
       WHERE c.vendor=UUID_TO_BIN(?) 
       AND c.form=UUID_TO_BIN(?) 
@@ -627,6 +628,7 @@ export const getParentByVendorId = async ({
       AND a.custom_app_id=c.app_id
       AND u.id=up.user_id
       AND a.user_id=up.user_id
+      ${!isVendorMode ? ` AND ch.is_parent_allow_shared=1` : ' '}
       `,
         [
           ...whereValues,
@@ -667,28 +669,39 @@ export const getParentByVendorId = async ({
 
 export const updateParentSharingByVendor = async ({
   vendor_id,
-  parents = []
+  parents = [],
+  app_group_id = null,
+  form_type = 'mentoring'
 }) => {
   const db = makeDb();
   let result = [];
   try {
     for (let parent of parents) {
 
-      await db.query(
-        `  
-          UPDATE parent SET
-            is_vendor_allow_shared=?
-          WHERE parent_id=UUID_TO_BIN(?)
-        `,
+      const query = form_type === 'forms' ? `  
+      UPDATE child SET
+        is_vendor_allow_shared=?
+      WHERE ch_id=UUID_TO_BIN(?)` : `  
+      UPDATE parent SET
+        is_vendor_allow_shared=?
+      WHERE parent_id=UUID_TO_BIN(?)
+  `;
+
+
+      await db.query(query,
         [
           parent.is_vendor_allow_shared,
           parent.parent_id
         ]
       )
+
+
     }
 
     result = await getParentByVendorId({
-      vendorId: vendor_id
+      vendorId: vendor_id,
+      appGroupId: app_group_id,
+      formType: form_type
     });
     console.log('result', result)
   } catch (err) {

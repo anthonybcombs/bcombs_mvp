@@ -1239,6 +1239,8 @@ const queryTypes = `
         other_allergies: String
         current_medications: String
         health_insurance_information: String
+        is_parent_allow_shared: Int
+        is_vendor_allow_shared: Int
     }
 
     type Parent {
@@ -1887,7 +1889,7 @@ const mutations = `
         createGroupReminder(groupReminder: SetReminderInput): [ApplicationReminder]
         updateVendorLogo(vendorLogo: VendorLogoInput): Vendor
         createUpdateChildAttendance(user: UserAttendanceInput): UserAttendance
-        updateParentVendorShare(parents: [ParentShareByVendorInput], vendor_id: String): [Parent]
+        updateParentVendorShare(parents: [ParentShareByVendorInput], vendor_id: String, app_group_id: String ,form_type: String): [Parent]
         updateDefaultVendor(user_id: String!, vendor_id:String): DefaultVendorResponse
     }
 `;

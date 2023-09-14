@@ -1826,7 +1826,9 @@ const resolvers = {
           let addUser = await executeSignUp(user);
           console.log("addUser:", user);
           let userInfo = {
-            email: email.value
+            email: email.value,
+            firstname: firstname.value,
+            lastname: lastname.value,
           };
 
           await executeAddUserProfile(userInfo);

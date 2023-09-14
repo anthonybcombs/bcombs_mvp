@@ -82,7 +82,7 @@ export const updateLastLogin = async userId => {
     console.log('updateLastLogin rows', rows)
     result = rows;
   } catch (error) {
-    console.log('error updateLastLogin',error)
+    console.log('error updateLastLogin', error)
   } finally {
     await db.close();
     return result;
@@ -1018,12 +1018,12 @@ router.post("/child/attendance/search", async (req, res) => {
       [childId, firstname, lastname]
     );
 
-    child =  child && child[0] && {
+    child = child && child[0] && {
       ...child[0],
       ch_id: child[0].ch_id
     };
 
-    if(child && attendanceType === 'forms') {
+    if (child && attendanceType === 'forms') {
       const customApplication = await db.query(
         `SELECT BIN_TO_UUID(c.app_id) as ch_id
         FROM custom_application c
@@ -1032,13 +1032,13 @@ router.post("/child/attendance/search", async (req, res) => {
         [child.ch_id]
       );
 
-      console.log('customApplication',customApplication)
-      if(customApplication && customApplication[0]) {
+      console.log('customApplication', customApplication)
+      if (customApplication && customApplication[0]) {
         child.ch_id = customApplication[0].ch_id;
       }
 
     }
- 
+
 
 
     if (child) {
@@ -1092,9 +1092,9 @@ router.get("/event/:eventId", async (req, res) => {
       [eventId]
     );
     event = event && event[0]
-  }catch(error) {
+  } catch (error) {
 
-    console.log('error',error)
+    console.log('error', error)
     return res.json({
       event: null,
       message: 'Something went wrong'
@@ -1119,15 +1119,15 @@ router.get("/attendance/events", async (req, res) => {
 
     let whereValues = [vendorId];
 
-    if(attendanceType) {
-      attendanceType = attendanceType === 'mentoring' ? 'bcombs' : 'forms'; 
+    if (attendanceType) {
+      attendanceType = attendanceType === 'mentoring' ? 'bcombs' : 'forms';
       whereValues = [
         ...whereValues,
         attendanceType
       ]
     }
 
-    if(appGroup  && attendanceType) {
+    if (appGroup && attendanceType) {
       whereValues = [
         ...whereValues,
         appGroup
@@ -1159,26 +1159,26 @@ router.get("/attendance/events", async (req, res) => {
       ${appGroup ? ' AND bce.attendance_app_group=? ' : ''}
       ORDER BY bce.start DESC
      `,
-     whereValues
+      whereValues
     );
 
-      
-  
-      for(let x = 0; x < events.length; x++) {
 
-        if(events[x].attendance_type === 'forms' && events[x].form_contents) {
 
-          events[x].form_contents = events[x].form_contents ? Buffer.from(events[x].form_contents, "base64").toString("utf-8") : "{}";
-          events[x].form_contents = JSON.parse(events[x].form_contents);
-  
-          if(events[x].form_contents && events[x].form_contents.formData) {
-            events[x].form_name = events[x].form_contents.formTitle;
-            delete events[x].form_contents;
-          }
+    for (let x = 0; x < events.length; x++) {
+
+      if (events[x].attendance_type === 'forms' && events[x].form_contents) {
+
+        events[x].form_contents = events[x].form_contents ? Buffer.from(events[x].form_contents, "base64").toString("utf-8") : "{}";
+        events[x].form_contents = JSON.parse(events[x].form_contents);
+
+        if (events[x].form_contents && events[x].form_contents.formData) {
+          events[x].form_name = events[x].form_contents.formTitle;
+          delete events[x].form_contents;
         }
-
-   
       }
+
+
+    }
 
 
 
@@ -1294,14 +1294,12 @@ router.post("/application/import", async (req, res) => {
     const { type } = req.query;
     const { data } = req.body;
 
-    
     let userType = await getUserTypes();
 
     userType = userType.filter(type => {
       return type.name === "USER";
     })[0];
 
-    console.log('userType',userType)
 
     if (type === 'custom') {
 
@@ -1364,33 +1362,32 @@ router.post("/application/import", async (req, res) => {
             middlename: middlenameValue
           }
 
-          
+
 
           const child = await addChild(childObj);
 
-
-          application.child = child.ch_id;
+          application.child = child && child.ch_id;
 
           const customApplication = await submitCustomApplication(application);
 
-          if(application.account_details) {
- 
-            if(application.create_profile) {
+          if (application.account_details) {
+
+            if (application.create_profile) {
               let parent = {
                 username: application.account_details.firstname + "" + application.account_details.lastname,
                 email: application.account_details.email,
                 password: application.account_details.password,
                 type: userType
               };
-    
+
               const resp = await executeSignUp(parent);
-  
+
               let parentInfo = {
                 ...parent,
                 email: parent.email,
                 dateofbirth: new Date()
               };
-  
+
               await executeAddUserProfile(parentInfo);
               const parentUser = await getUserFromDatabase(parent.email);
 
@@ -1401,13 +1398,9 @@ router.post("/application/import", async (req, res) => {
                 });
               }
 
-              
-  
-  
               console.log('Execute Signup on custom form', resp)
             }
           }
-    
 
 
         } else {
@@ -1428,10 +1421,10 @@ router.post("/application/import", async (req, res) => {
       let newParents = [];
 
       for (let application of data) {
-      
+
         const tempChildId = null;
 
-        console.log('application.child',application.child)
+        console.log('application.child', application.child)
 
         const child = await addChild({ ...application.child });
         const parents = application.parents;
@@ -1455,7 +1448,7 @@ router.post("/application/import", async (req, res) => {
         if (checkEmail && checkEmail.is_exist && checkEmail.status !== 'Email is available to use') {
           console.log("Parent Status: ", checkEmail.status);
         } else {
-       
+
           let user = {
             username: parents.firstname + "" + parents.lastname,
             email: parents.email_address,
@@ -1535,7 +1528,7 @@ router.post("/application/import", async (req, res) => {
 //     const { user_id, vendor_id } = req.body;
 //     console.log('user_id', user_id)
 //     console.log('vendor_id', vendor_id)
-    
+
 //     if (vendor_id) {
 //       await db.query(`UPDATE vendor
 //         SET is_default = CASE
