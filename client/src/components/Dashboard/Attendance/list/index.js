@@ -1134,8 +1134,8 @@ export default function index() {
 
 	const renderTableData = () => {
 		return filteredApplicationList.map((app, index) => {
-			console.log('ap222p',app)
-			const currentChild = app.form_contents ? getNameFromCustomForm(app.form_contents) : {
+
+			const currentChild = app && app.form_contents ? getNameFromCustomForm(app.form_contents) : {
 				lastname: app.child?.lastname,
 				firstname: app.child?.firstname
 			}
@@ -1288,7 +1288,7 @@ export default function index() {
 								name={'mentoring_hours'}
 								className={'field-input'}
 								placeholder="Mentoring Hours"
-								value={app?.mentoring_hours || ''}
+								value={app ? app?.mentoring_hours : 0}
 								style={{ textAlign: 'center', maxWidth: '200px' }}
 							/>
 						</div>
@@ -1538,7 +1538,7 @@ export default function index() {
 					{viewMode === 'grid' ? (
 						<div className="gridView">
 							{filteredApplicationList.map(app => {
-								console.log('ap222p',app)
+					
 								const currentChild = app && app.form_contents ? getNameFromCustomForm(app.form_contents) : {
 									lastname: app.child?.lastname,
 									firstname: app.child?.firstname
