@@ -11,12 +11,16 @@ import * as actionType from "./Constant";
 
 export const requestUpdateParentPermissionByVendor = ({
   parents = [],
-  vendor_id
+  vendor_id,
+  app_group_id,
+  form_type = 'mentoring'
 }) => {
   return {
     type: actionType.REQUEST_PARENT_PERMISSION_BY_VENDOR,
     parents,
-    vendor_id
+    vendor_id,
+    app_group_id,
+    form_type
   };
 };
 
@@ -43,8 +47,8 @@ export function* getParentByVendor({ vendor, app_group_id, form_type = 'mentorin
       vendor_id: vendor, app_group_id, form_type, vendor_mode
     });
 
-   
-    const updatedResponse = response.sort((a,b) => b.is_profile_filled - a.is_profile_filled)
+
+    const updatedResponse = response.sort((a, b) => b.is_profile_filled - a.is_profile_filled)
     console.log('responsezzzzzzzzzzzzzzzzzzzz', updatedResponse)
 
     yield put({
@@ -57,10 +61,11 @@ export function* getParentByVendor({ vendor, app_group_id, form_type = 'mentorin
   }
 }
 
-export function* updateParentPermissionByVendor({ parents = [], vendor_id }) {
+export function* updateParentPermissionByVendor({ parents = [], vendor_id, app_group_id, form_type }) {
   try {
     const response = yield call(updateParentPermissionByVendorFromDatabase, {
-      parents, vendor_id
+      parents, vendor_id,
+      app_group_id, form_type
     });
     yield put({
       type: actionType.SET_PARENT_LIST_BY_VENDOR,
@@ -90,19 +95,27 @@ const getParentByVendorFromDatabase = ({
   });
 }
 
-const updateParentPermissionByVendorFromDatabase = ({
-  parents = [], vendor_id
-}) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const { data } = await graphqlClient.query({
-        query: UPDATE_PARENT_VENDOR_PERMISSION,
-        variables: { parents, vendor_id }
-      });
-      return resolve(data?.updateParentVendorShare || []);
-    } catch (error) {
-      console.log("updateParentPermissionByVendorFromDatabase error", error);
-      reject(error);
-    }
-  });
-}
+const
+  updateParentPermissionByVendorFromDatabase = ({
+    parents = [], vendor_id,
+    app_group_id = null,
+    form_type = 'mentoring'
+  }) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await graphqlClient.query({
+          query: UPDATE_PARENT_VENDOR_PERMISSION,
+          variables: { 
+            parents, 
+            vendor_id,
+            app_group_id, 
+            form_type  
+          }
+        });
+        return resolve(data?.updateParentVendorShare || []);
+      } catch (error) {
+        console.log("updateParentPermissionByVendorFromDatabase error", error);
+        reject(error);
+      }
+    });
+  }

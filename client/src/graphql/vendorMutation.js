@@ -556,8 +556,8 @@ export const PARENT_BY_VENDOR_QUERY = gql`
 
 
 export const UPDATE_PARENT_VENDOR_PERMISSION = gql`
-  mutation updateParentVendorShare($parents: [ParentShareByVendorInput], $vendor_id: String) {
-    updateParentVendorShare(parents: $parents, vendor_id: $vendor_id) {
+  mutation updateParentVendorShare($parents: [ParentShareByVendorInput], $vendor_id: String, $app_group_id: String, $form_type: String) {
+    updateParentVendorShare(parents: $parents, vendor_id: $vendor_id,  app_group_id: $app_group_id,  form_type: $form_type) {
         parent_id
         new_parentId
         firstname
