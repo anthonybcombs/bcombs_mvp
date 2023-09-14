@@ -60,3 +60,22 @@ export async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
     }, "image/jpeg");
   });
 }
+
+
+export const printImage = (imageUrl, title) => {
+  const printWindow = window.open('', '', 'width="100%",height="auto"');
+  printWindow.document.open();
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>${title}</title>
+      </head>
+      <body>
+        <img src="${imageUrl}" alt="Image Preview" style="max-width: 100%; max-height: 100%;" />
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+  printWindow.close();
+};

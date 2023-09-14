@@ -12,10 +12,14 @@ import { requestAttendanceByEvent, requestUpdateAttendance } from '../../../../r
 
 import ProfileImg from '../../../../images/defaultprofile.png';
 
+import ImagePreviewModal from '../modal/imagePreview';
+
+
 import { getNameFromCustomForm } from '../../Grades/utils'
 
 import { s3BucketRootPath } from '../../../../constants/aws';
 
+import Confirmation from "../../../../helpers/Confirmation";
 
 
 import { militaryToRegularTime } from '../../../../helpers/Date';
@@ -227,7 +231,34 @@ const EventAttendeeStyled = styled.div`
 		background: #e87828;
 	}
 
+
+   
+     .timeOutBtn {
+        color: ${({ theme }) => theme.button.textColor.primary};
+        font-size: ${({ theme }) => theme.button.fontSize} !important;
+        border: none;
+        box-shadow: 0px 3px 6px #908e8e;
+        padding-top: 1em;
+        padding-bottom: 1em;
+        border-radius: 10px !important;
+
+        padding: 10px;
+        display: block;
+        margin: 1em auto;
+        background-color: red !important;
+        border: none;
+        width: 100% !important;
+    }
+
+
 `;
+
+function getCurrentTime() {
+    const currentDate = new Date();
+    const currentTime = format(currentDate, "HH:mm");
+    return currentTime;
+}
+
 
 
 const getEventById = async eventId => {
@@ -259,8 +290,13 @@ const EventAttendee = props => {
     const queryParams = parse(location.search);
 
     const [currentAttendance, setCurrentAttendance] = useState([]);
+    // const [defaultAttendance, setDefaultAttendance] = useState([]);
     const [currentEvent, setCurrentEvent] = useState(null);
+    const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
+    const [markedAsAbsent, setMarkedAsAbsent] = useState(false);
 
+    const [isImagePreviewModalVisible, setIsImagePreviewModalVisible] = useState(false);
+    const [currentQrCodeUrl, setCurrentQrCodeUrl] = useState('');
 
 
     useEffect(() => {
@@ -296,7 +332,7 @@ const EventAttendee = props => {
 
 
     const handleAttendance = (payload, attendanceType = '') => {
-        console.log('payloaddd', payload)
+
 
         let currentIndex = currentAttendance.findIndex(app => app.child_id === payload.child_id);
         let updatedAttendance = [...currentAttendance];
@@ -325,15 +361,36 @@ const EventAttendee = props => {
 
     };
 
+
+    const handleCheckOut = payload => {
+        let updatedAttendance = [...(currentAttendance || [])];
+        let currentIndex = updatedAttendance.findIndex(app => app.child_id === payload.child_id);
+
+        if (currentIndex > -1) {
+            updatedAttendance[currentIndex] = {
+                ...updatedAttendance[currentIndex],
+                attendance_end_time: getCurrentTime(),
+            };
+            setCurrentAttendance(updatedAttendance);
+        }
+
+    };
+
     const handleSubmit = () => {
 
+        setIsConfirmationVisible(true);
+
+    };
+
+    const handleUpdateAttendance = () => {
         const payload = {
             attendance_list: currentAttendance.map(att => {
                 return {
                     app_group_id: att.app_group_id,
-                    attendance_status: att.attendance_status,
+
                     attendance_start_time: att.attendance_start_time,
                     attendance_end_time: att.attendance_end_time,
+                    attendance_status: !att.attendance_status ? markedAsAbsent ? 'Absent' : '' : att.attendance_status,
                     mentoring_hours: parseInt(att.mentoring_hours),
                     volunteer_hours: parseInt(att.volunteer_hours),
                     child_id: att.child_id
@@ -341,7 +398,7 @@ const EventAttendee = props => {
                 }
             }),
             app_group_id: currentAttendance[0]?.app_group_id,
-            attendance_type: 'forms',
+            attendance_type: currentAttendance[0]?.attendance_type,
             attendance_date: `${format(new Date(parseInt(currentAttendance[0]?.attendance_date)), 'yyyy-MM-dd')} 00:00:00`,
             event_name: currentAttendance[0].event_name,
             location: currentAttendance[0].location,
@@ -353,8 +410,9 @@ const EventAttendee = props => {
 
         console.log('Attendance Payload', payload)
         dispatch(requestUpdateAttendance(payload));
-
     }
+
+
 
     console.log('currentAttendance', currentAttendance)
 
@@ -398,6 +456,18 @@ const EventAttendee = props => {
             </div>
             <div>
                 <img src={`${s3BucketRootPath}/${currentEvent.qr_code_url}`} style={{ width: 100, height: 100 }} />
+
+                <div>
+                    <span
+                        style={style.preview}
+                        onClick={() => {
+                            // printImage(qrCodeUrl,event.title)
+                            setCurrentQrCodeUrl(`${s3BucketRootPath}/${currentEvent.qr_code_url}`);
+                            setIsImagePreviewModalVisible(!isImagePreviewModalVisible)
+                        }}
+                        src={`${s3BucketRootPath}/${currentEvent.qr_code_url}`}
+                    >Preview</span>
+                </div>
             </div>
         </div> : <span />}
 
@@ -573,6 +643,19 @@ const EventAttendee = props => {
                                     </div>
                                 </div>
 
+                                <div className="field" style={{ padding: 12 }}>
+                                    <button
+                                        className="timeoutBtn"
+                                        onClick={() => {
+                                            handleCheckOut(app);
+                                        }}
+                                        type="button"
+                                    // style={{ width: '100%' }}
+                                    >
+                                        Time Out
+                                    </button>
+                                </div>
+
 
 
                             </div>
@@ -589,6 +672,35 @@ const EventAttendee = props => {
 
         </div>
 
+
+        <Confirmation
+            isVisible={isConfirmationVisible}
+            message={<div>
+
+                <div style={{ padding: 12 }}>
+                    <input
+                        checked={markedAsAbsent}
+                        type="checkbox"
+                        onChange={e => {
+                            setMarkedAsAbsent(e.target.checked)
+                        }} /> {` `} Would you like to label students without a <b>Time In</b> as <b>Absent</b>?
+
+                </div>
+            </div>}
+            toggleConfirmationVisible={setIsConfirmationVisible}
+            onSubmit={() => {
+                handleUpdateAttendance();
+            }}
+            submitButtonLabel="Submit"
+        />
+
+
+        {isImagePreviewModalVisible && <ImagePreviewModal
+            isImagePreviewModalVisible={isImagePreviewModalVisible}
+            setIsImagePreviewModalVisible={setIsImagePreviewModalVisible}
+            qrCodeUrl={currentQrCodeUrl}
+
+        />}
     </EventAttendeeStyled>
 };
 
@@ -615,5 +727,10 @@ const style = {
         marginRight: '3px',
         marginLeft: '0',
     },
+    preview: {
+        cursor: 'pointer',
+        color: 'blue',
+        width: '100%'
+    }
 };
 export default EventAttendee;

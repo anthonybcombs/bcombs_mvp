@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { parse } from 'query-string';
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleLeft, faCopy, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faAngleLeft, faCopy, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 
 import { s3BucketRootPath } from '../../../../constants/aws';
@@ -12,7 +12,11 @@ import { s3BucketRootPath } from '../../../../constants/aws';
 import Confirmation from "../../../../helpers/Confirmation";
 import Loading from "../../../../helpers/Loading.js";
 
+import ImagePreviewModal from '../modal/imagePreview';
+
 // import { militaryToRegularTime } from '../../../../helpers/Date';
+
+
 
 const AttendanceEventStyled = styled.div`
 
@@ -116,7 +120,8 @@ const AttendanceEvents = props => {
     const [currentEvent, setCurrentEvent] = useState(null);
     const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
+    const [isImagePreviewModalVisible, setIsImagePreviewModalVisible] = useState(false);
+    const [currentQrCodeUrl, setCurrentQrCodeUrl] = useState('');
 
     useEffect(() => {
         if (queryParams?.vendorId) {
@@ -219,6 +224,8 @@ const AttendanceEvents = props => {
                     // else if(event?.attendance_type === 'forms' && !event?.attendance_app_group && !event.app_group_name ) {
                     //     currentAppGroupName =  ''
                     // }
+
+                    const qrCodeUrl = `${s3BucketRootPath}/${event.qr_code_url}`;
                     return <tr style={{ backgroundColor: 'white' }}>
                         <td><Link to={`/dashboard/eventattendance/${event.id}?vendorId=${queryParams?.vendorId}&type=${event?.attendance_type === 'bcombs' ? 'mentoring' : 'forms'}`}>{event.title}</Link></td>
                         <td>{currentAppGroupName}</td>
@@ -226,7 +233,20 @@ const AttendanceEvents = props => {
                         <td>{format(new Date(event.start), 'hh:mm a')}</td>
                         <td>{format(new Date(event.end), 'hh:mm a')}</td>
                         <td>
-                            <img src={`${s3BucketRootPath}/${event.qr_code_url}`} style={{ width: 100, height: 100 }} />
+                            <img src={qrCodeUrl} style={{ width: 100, height: 100 }} />
+
+                            <div>
+                                <span
+                                    style={style.preview}
+                                    onClick={() => {
+                                        // printImage(qrCodeUrl,event.title)
+                                        setCurrentQrCodeUrl(qrCodeUrl);
+                                        setIsImagePreviewModalVisible(!isImagePreviewModalVisible)
+                                    }}
+                                    src={qrCodeUrl}
+                                >Preview</span>
+                            </div>
+
                         </td>
                         <td>
                             <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => {
@@ -267,7 +287,23 @@ const AttendanceEvents = props => {
             submitButtonLabel="Submit"
         />
 
+
+        {isImagePreviewModalVisible && <ImagePreviewModal
+            isImagePreviewModalVisible={isImagePreviewModalVisible}
+            setIsImagePreviewModalVisible={setIsImagePreviewModalVisible}
+            qrCodeUrl={currentQrCodeUrl}
+
+        />}
+       
     </AttendanceEventStyled>
 };
 
+
+const style = {
+    preview: {
+        cursor: 'pointer',
+        color: 'blue',
+        width: '100%'
+    }
+}
 export default AttendanceEvents;
