@@ -9,6 +9,7 @@ import {
 import { customConnection, makeDb } from "../helpers/database";
 import fetch from "node-fetch";
 import { v4 as uuidv4 } from "uuid";
+import { removeDuplicatesByKey } from '../helpers/array';
 import { sendMigratedAccount, bookDemoSchedule } from "../helpers/email";
 
 import { submitCustomApplication, addApplicationUser, createApplication } from '../api/applications';
@@ -1249,70 +1250,103 @@ router.get("/parentvendor", async (req, res) => {
   const { email, form_type = 'mentoring' } = req.query;
 
   try {
-    let vendors = [];
+    // let vendors = [];
 
-    if (form_type === 'mentoring') {
-      vendors = await db.query(
-        `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name, a.class_teacher from parent p, application a, vendor v 
-      WHERE p.email_address=? AND
-      p.application=a.app_id AND v.id=a.vendor;
- `,
-        [email]
-      );
+    let mentoringApplicationsVendor = vendors = await db.query(
+      `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name, a.class_teacher from parent p, application a, vendor v 
+    WHERE p.email_address=? AND
+    p.application=a.app_id AND v.id=a.vendor;
+`,
+      [email]
+    );
 
-    }
-    else {
-      vendors = await db.query(
-        `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name, BIN_TO_UUID(a.form) as class_teacher 
-        from users u, custom_application a, vendor v , application_user au
-        WHERE u.email=? AND v.id=a.vendor
-        AND au.custom_app_id=a.app_id AND au.user_id=u.id 
-        AND a.vendor=v.id;
- `,
-        [email]
-      );
-    }
+    let customApplicationsVendor = await db.query(
+      `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name, BIN_TO_UUID(a.form) as class_teacher 
+      from users u, custom_application a, vendor v , application_user au
+      WHERE u.email=? AND v.id=a.vendor
+      AND au.custom_app_id=a.app_id AND au.user_id=u.id 
+      AND a.vendor=v.id;
+    `,
+      [email]
+    );
 
 
-
-
-    const applicationGroups = vendors.map(item => {
+    const applicationGroups = mentoringApplicationsVendor.map(item => {
       return item.class_teacher ? item.class_teacher.split(',') : []
     }).flat()
 
+    const customApplicationGroups = customApplicationsVendor.map(item => {
+      return item.class_teacher
+    }).flat();
 
-    let vendorAppGroups = [];
-    let vendorsIds = vendors.map(item => `UUID_TO_BIN('${item.vendor_id}')`).join(',');
-    const vendorAppGroupIds = applicationGroups.map(id => `UUID_TO_BIN('${id}')`).join(',');
 
-    if (vendorsIds.length > 0) {
+    let mentoringVendorAppGroups = [];
+    let customVendorAppGroups = [];
 
-      if(form_type === 'mentoring') {
-        vendorAppGroups = await db.query(
-          `SELECT form_name as name, BIN_TO_UUID(app_grp_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_app_groups
-           WHERE app_grp_id IN (${vendorAppGroupIds});
-        `
-          // [email]
-        );
-      }
-      else {
-        vendorAppGroups = await db.query(
-          `SELECT form_name as name, BIN_TO_UUID(form_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_custom_application
-           WHERE form_id IN (${vendorAppGroupIds});
-        `
-          // [email]
-        );
-      }
+    // let mentoringVendorIds = mentoringApplicationsVendor.map(item => `UUID_TO_BIN('${item.vendor_id}')`).join(',');
+    let mentoringAppGroupIds = applicationGroups.map(id => `UUID_TO_BIN('${id}')`).join(',');
+    let customAppGroupIds = customApplicationGroups.map(id => `UUID_TO_BIN('${id}')`).join(',');
+    // const vendorAppGroupIds = applicationGroups.map(id => `UUID_TO_BIN('${id}')`).join(',');
 
-      vendorAppGroups = vendorAppGroups.map(item => {
+    if (mentoringAppGroupIds.length > 0) {
+      mentoringVendorAppGroups = await db.query(
+        `SELECT name, BIN_TO_UUID(app_grp_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_app_groups
+         WHERE app_grp_id IN (${mentoringAppGroupIds});
+      `
+        // [email]
+      );
+
+    }
+
+    if (customAppGroupIds.length > 0) {
+
+      customVendorAppGroups = await db.query(
+        `SELECT form_name as name, BIN_TO_UUID(form_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_custom_application
+         WHERE form_id IN (${customAppGroupIds});
+      `
+        // [email]
+      );
+
+      customVendorAppGroups = customVendorAppGroups.map(item => {
         return {
           ...item,
           name: item.name || 'Untitled',
-          is_custom_form: form_type !== 'mentoring' ? true : false
+          is_custom_form: true
         }
       })
-  
     }
+
+
+    let vendors = [...mentoringApplicationsVendor, ...customApplicationsVendor]
+    vendors = removeDuplicatesByKey(vendors, 'vendor_id')
+    let vendorAppGroups = [...mentoringVendorAppGroups, ...customVendorAppGroups]
+    vendorAppGroups = removeDuplicatesByKey(vendorAppGroups, 'app_grp_id')
+
+
+
+    // if (vendorsIds.length > 0) {
+
+    //   if(form_type === 'mentoring') {
+
+    //   }
+    //   else {
+    //     vendorAppGroups = await db.query(
+    //       `SELECT form_name as name, BIN_TO_UUID(form_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_custom_application
+    //        WHERE form_id IN (${vendorAppGroupIds});
+    //     `
+    //       // [email]
+    //     );
+    //   }
+
+    //   vendorAppGroups = vendorAppGroups.map(item => {
+    //     return {
+    //       ...item,
+    //       name: item.name || 'Untitled',
+    //       is_custom_form: form_type !== 'mentoring' ? true : false
+    //     }
+    //   })
+
+    // }
 
     return res.json({
       vendors,
