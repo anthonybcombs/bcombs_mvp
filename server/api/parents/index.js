@@ -618,7 +618,7 @@ export const getParentByVendorId = async ({
         ch.address as address,
         ch.city as city,
         ch.state as state,
-        ch.is_parent_allow_shared,
+        up.is_parent_allow_shared,
         ch.is_vendor_allow_shared,
         u.is_profile_filled
       FROM custom_application c,child ch, application_user a, user_profiles up, users u
