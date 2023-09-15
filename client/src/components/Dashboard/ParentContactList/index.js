@@ -56,8 +56,8 @@ const ParentContactStyled = styled.form`
     }
   `;
 
-const getParentVendorByParentEmail = async parentEmail => {
-    const response = await fetch(`${process.env.API_HOST}/api/parentvendor?email=${parentEmail}`, {
+const getParentVendorByParentEmail = async (parentEmail, formType = 'mentoring') => {
+    const response = await fetch(`${process.env.API_HOST}/api/parentvendor?email=${parentEmail}&form_type=${formType}`, {
         method: 'GET',
         mode: 'cors',
         cache: 'no-cache',
@@ -91,9 +91,13 @@ const ParentContactList = props => {
         }
     });
 
+    console.log('authhhh', auth)
+
+
+
     const triggerApi = async email => {
         try {
-            const response = await getParentVendorByParentEmail(email);
+            const response = await getParentVendorByParentEmail(email, auth?.is_custom_form_user ? 'forms' : 'mentoring');
     
             if (response?.vendors) {
                 const vendorId = response?.vendors[0]?.vendor_id;
@@ -131,9 +135,13 @@ const ParentContactList = props => {
 
     useEffect(() => {
         if (parentVendors.length > 0 && selectedVendor ) {
+            console.log('selectedGroup',selectedGroup)
+
+            const formType = filteredParentVendorsGroups.find(item => item.app_grp_id === selectedGroup);
             dispatch(requestParentByVendor({
                 vendor: selectedVendor,
-                app_group_id: selectedGroup
+                app_group_id: selectedGroup,
+                form_type: formType?.is_custom_form ? 'forms' : 'mentoring'
             }))
         }
 
@@ -151,6 +159,7 @@ const ParentContactList = props => {
     // }
 
 
+    console.log('filteredParentVendorsGroups',filteredParentVendorsGroups)
     return <ParentContactStyled>
         <div style={{ padding: 15, fontSize: 15 }}>
             {/* <select className="form-control" value={selectedVendor} onChange={(value) => {
