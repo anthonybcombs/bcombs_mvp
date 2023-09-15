@@ -505,8 +505,6 @@ export default function index() {
     // }
   };
 
-  console.log('formLissssssst  selectedGroupByVendorOptions2222',selectedGroupByVendorOptions)
-
   const handleCloseModal = () => {
     setCurrentAppGroup();
     setApiStatus("");
@@ -525,6 +523,9 @@ export default function index() {
   };
 
   const isVendorMode = isVendor();
+
+  const isForm = selectedGroupByVendor && selectedGroupByVendorOptions &&  selectedGroupByVendorOptions.find(item => (item.value === selectedGroupByVendor) && item.is_form);
+        
 
   return (
     <MyContactsStyled>
@@ -686,8 +687,7 @@ export default function index() {
                 value={selectedGroupByVendor}
                 onChange={(e) => {
                   
-                  const isForm = selectedGroupByVendorOptions.find(item => item.value === e.target.value && item.is_form)
-                  console.log('isForm',isForm)
+            
                   dispatch(requestParentByVendor({
                     vendor: selectedVendor,
                     app_group_id: e.target.value || '',
@@ -718,6 +718,7 @@ export default function index() {
                 <ParentContacts
                   parents={parents}
                   selectedVendor={selectedVendor}
+                  isForm={isForm}
                 />
               </div>
 

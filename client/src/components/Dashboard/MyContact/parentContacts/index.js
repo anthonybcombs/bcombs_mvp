@@ -47,7 +47,8 @@ const ParentContactStyled = styled.div`
 export default function index({
     parents,
     isUserMode = false,
-    selectedVendor
+    selectedVendor,
+    isForm
 }) {
 
 
@@ -129,6 +130,7 @@ export default function index({
                 toggleProfileModal={handleModalChange}
                 isUserMode={isUserMode}
                 selectedVendor={selectedVendor}
+                isForm={isForm}
             />
         </ParentContactStyled>
     );

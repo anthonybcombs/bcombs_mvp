@@ -50,7 +50,8 @@ export default function index({
   isUserMode = false,
   toggleProfileModal,
   parent,
-  selectedVendor
+  selectedVendor,
+  isForm
 }) {
 
   const dispatch = useDispatch();
@@ -77,6 +78,7 @@ export default function index({
 
     dispatch(requestUpdateParentPermissionByVendor({
       vendor_id: selectedVendor,
+      form_type: isForm ? 'forms' : 'mentoring',
       parents: [{
         parent_id: parent.parent_id,
         is_vendor_allow_shared: isSharedByVendor ? 1 : 0
