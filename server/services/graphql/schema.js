@@ -971,6 +971,7 @@ const queryTypes = `
         last_name: String
         school: String
         zip_code: String
+        is_custom_form_user: Boolean
         
     }
     type UserType {

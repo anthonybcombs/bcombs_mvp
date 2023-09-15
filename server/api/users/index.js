@@ -85,6 +85,8 @@ export const getUserInfo = async creds => {
         userInfo.user_id = id;
         userInfo.type = type;
         userInfo.attendance_filter_config = attendance_filter_config;
+
+        userInfo.is_custom_form_user = await checkApplicationUserType(id);
         
         client.set(creds.access_token, JSON.stringify(userInfo));
         client.EXPIRE([creds.access_token, "5"]);
@@ -98,6 +100,23 @@ export const getUserInfo = async creds => {
     return error;
   }
 };
+
+const checkApplicationUserType = async id => {
+  const db = makeDb();
+  try {
+    const row = await db.query(
+      `SELECT id as id FROM application_user WHERE user_id=UUID_TO_BIN(?)`,
+      [
+        id
+      ]
+    );
+
+    return row.length > 0 ? true : false;
+  } catch (error) {
+  } finally {
+    await db.close();
+  }
+}
 
 export const executeSignInApplication = async user => {
   

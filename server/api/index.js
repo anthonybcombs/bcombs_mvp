@@ -1223,7 +1223,7 @@ router.delete("/attendance/event", async (req, res) => {
         `DELETE  FROM bc_calendar_event WHERE id=? AND vendor_id2=?`,
         [eventId, vendorId]
       );
-  
+
     }
 
 
@@ -1246,16 +1246,35 @@ router.delete("/attendance/event", async (req, res) => {
 
 router.get("/parentvendor", async (req, res) => {
   const db = makeDb();
-  const { email } = req.query;
+  const { email, form_type = 'mentoring' } = req.query;
 
   try {
-    const vendors = await db.query(
-      `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name, a.class_teacher from parent p, application a, vendor v 
+    let vendors = [];
+
+    if (form_type === 'mentoring') {
+      vendors = await db.query(
+        `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name, a.class_teacher from parent p, application a, vendor v 
       WHERE p.email_address=? AND
       p.application=a.app_id AND v.id=a.vendor;
  `,
-      [email]
-    );
+        [email]
+      );
+
+    }
+    else {
+      vendors = await db.query(
+        `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name, BIN_TO_UUID(a.form) as class_teacher 
+        from users u, custom_application a, vendor v , application_user au
+        WHERE u.email=? AND v.id=a.vendor
+        AND au.custom_app_id=a.app_id AND au.user_id=u.id 
+        AND a.vendor=v.id;
+ `,
+        [email]
+      );
+    }
+
+
+
 
     const applicationGroups = vendors.map(item => {
       return item.class_teacher ? item.class_teacher.split(',') : []
@@ -1267,12 +1286,32 @@ router.get("/parentvendor", async (req, res) => {
     const vendorAppGroupIds = applicationGroups.map(id => `UUID_TO_BIN('${id}')`).join(',');
 
     if (vendorsIds.length > 0) {
-      vendorAppGroups = await db.query(
-        `SELECT name, BIN_TO_UUID(app_grp_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_app_groups
-         WHERE app_grp_id IN (${vendorAppGroupIds});
-      `
-        // [email]
-      );
+
+      if(form_type === 'mentoring') {
+        vendorAppGroups = await db.query(
+          `SELECT form_name as name, BIN_TO_UUID(app_grp_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_app_groups
+           WHERE app_grp_id IN (${vendorAppGroupIds});
+        `
+          // [email]
+        );
+      }
+      else {
+        vendorAppGroups = await db.query(
+          `SELECT form_name as name, BIN_TO_UUID(form_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_custom_application
+           WHERE form_id IN (${vendorAppGroupIds});
+        `
+          // [email]
+        );
+      }
+
+      vendorAppGroups = vendorAppGroups.map(item => {
+        return {
+          ...item,
+          name: item.name || 'Untitled',
+          is_custom_form: form_type !== 'mentoring' ? true : false
+        }
+      })
+  
     }
 
     return res.json({
