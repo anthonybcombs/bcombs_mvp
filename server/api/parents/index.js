@@ -628,7 +628,7 @@ export const getParentByVendorId = async ({
       AND a.custom_app_id=c.app_id
       AND u.id=up.user_id
       AND a.user_id=up.user_id
-      ${!isVendorMode ? ` AND ch.is_parent_allow_shared=1` : ' '}
+      ${!isVendorMode ? ` AND up.is_parent_allow_shared=1` : ' '}
       `,
         [
           ...whereValues,
