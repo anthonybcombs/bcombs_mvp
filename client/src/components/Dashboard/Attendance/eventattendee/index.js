@@ -376,31 +376,31 @@ const EventAttendee = props => {
 
     };
 
-    const handleCheckOutAll = () => { 
+    const handleCheckOutAll = () => {
 
         let updatedAttendance = [...(currentAttendance || [])];
 
         updatedAttendance = updatedAttendance.map(att => {
-            if(!att.attendance_start_time && !att.attendance_status) {
-                return  {
+            if (!att.attendance_end_time) {
+                return {
                     ...att,
                     attendance_end_time: getCurrentTime(),
                 }
             }
 
-            return  {
+            return {
                 ...att,
-            
+
             }
         });
 
         setCurrentAttendance(updatedAttendance);
+
+        setIsConfirmationVisible(true);
     }
 
     const handleSubmit = () => {
-
         setIsConfirmationVisible(true);
-
     };
 
     const handleUpdateAttendance = () => {
@@ -431,6 +431,13 @@ const EventAttendee = props => {
 
         console.log('Attendance Payload', payload)
         dispatch(requestUpdateAttendance(payload));
+
+        setTimeout(() => {
+            dispatch(requestAttendanceByEvent({
+                eventId: event_id,
+                attendanceType: queryParams?.type
+            }));
+        }, 1500);
     }
 
 
@@ -502,7 +509,7 @@ const EventAttendee = props => {
                         type="button"
                         style={{ width: '100%', backgroundColor: '#ff0e0e', color: 'white' }}
                     >
-                        End Session for Unchecked Attendees
+                        End Session
                     </button>
                 </div>
             </div>
@@ -714,14 +721,22 @@ const EventAttendee = props => {
             isVisible={isConfirmationVisible}
             message={<div>
 
-                <div style={{ padding: 12 }}>
-                    <input
-                        checked={markedAsAbsent}
-                        type="checkbox"
-                        onChange={e => {
-                            setMarkedAsAbsent(e.target.checked)
-                        }} /> {` `} Would you like to label students without a <b>Time In</b> as <b>Absent</b>?
+                <div style={{ padding: 12, textAlign: 'left' }}>
+                    <div> 
+                        Are you certain you wish to conclude the session? This action will check out all participants from the event.
+                    </div>
+                    <div style={{ marginTop: 12 }}>
+                        <input
+                            checked={markedAsAbsent}
+                            type="checkbox"
+                            onChange={e => {
+                                setMarkedAsAbsent(e.target.checked)
+                            }} 
+                        />
 
+                        Mark unchecked users as Absent
+
+                    </div>
                 </div>
             </div>}
             toggleConfirmationVisible={setIsConfirmationVisible}
