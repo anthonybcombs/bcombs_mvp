@@ -687,11 +687,11 @@ export default function index() {
                 value={selectedGroupByVendor}
                 onChange={(e) => {
                   
-            
+                  const isCustomForm  =  selectedGroupByVendorOptions &&  selectedGroupByVendorOptions.find(item => (item.value === e.target.value) && item.is_form);
                   dispatch(requestParentByVendor({
                     vendor: selectedVendor,
                     app_group_id: e.target.value || '',
-                    form_type: isForm ? 'forms' : 'mentoring',
+                    form_type: isCustomForm ? 'forms' : 'mentoring',
                     vendor_mode: true
                   }))
                   setSelectedGroupbyVendor(e.target.value);

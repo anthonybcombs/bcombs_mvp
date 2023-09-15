@@ -56,8 +56,9 @@ const ParentContactStyled = styled.form`
     }
   `;
 
-const getParentVendorByParentEmail = async (parentEmail, formType = 'mentoring') => {
-    const response = await fetch(`${process.env.API_HOST}/api/parentvendor?email=${parentEmail}&form_type=${formType}`, {
+//  formType = 'mentoring'
+const getParentVendorByParentEmail = async (parentEmail) => {
+    const response = await fetch(`${process.env.API_HOST}/api/parentvendor?email=${parentEmail}`, {
         method: 'GET',
         mode: 'cors',
         cache: 'no-cache',
@@ -97,7 +98,7 @@ const ParentContactList = props => {
 
     const triggerApi = async email => {
         try {
-            const response = await getParentVendorByParentEmail(email, auth?.is_custom_form_user ? 'forms' : 'mentoring');
+            const response = await getParentVendorByParentEmail(email);
     
             if (response?.vendors) {
                 const vendorId = response?.vendors[0]?.vendor_id;
