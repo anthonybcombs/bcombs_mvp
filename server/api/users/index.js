@@ -405,9 +405,10 @@ export const executeUserUpdate = async user => {
     const { id } = users.filter(user => user.email === email)[0];
     const isProfileExist = await isProfileExistFromDatabase(id);
 
-    console.log(" executeUserUpdate user", user);
+    // console.log(" executeUserUpdate user", user);
     console.log(" executeUserUpdate id", id);
     console.log(" executeUserUpdate isProfileExist", isProfileExist);
+    console.log(" executeUserUpdate personalInfo", personalInfo);
     if (!isProfileExist) {
       await db.query(
         "UPDATE users SET is_profile_filled=1 where id=UUID_TO_BIN(?)",
@@ -502,10 +503,10 @@ export const executeUserUpdate = async user => {
           id
         ]
       );
-      await db.query(
-        "UPDATE user_calendars set image=?,name=? WHERE user_id=UUID_TO_BIN(?)",
-        ["", calendarInfo.name, id]
-      );
+      // await db.query(
+      //   "UPDATE user_calendars set image=?,name=? WHERE user_id=UUID_TO_BIN(?)",
+      //   ["", calendarInfo.name, id]
+      // );
     }
     client.DEL(user.creds.access_token);
     return {

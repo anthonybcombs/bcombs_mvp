@@ -10,6 +10,7 @@ import {
   requestUpdateUser,
   requestUserProfile
 } from "../../../redux/actions/Users";
+import { format } from 'date-fns';
 export default function index({ navigate }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [isCalendarSkip, setCalendarSkip] = useState(false);
@@ -94,12 +95,13 @@ export default function index({ navigate }) {
       ...profileDetails,
       personalInfo: {
         ...profileDetails.personalInfo,
-        ...securityInfo
+        ...securityInfo,
+        dateofbirth: profileDetails.personalInfo?.dateofbirth && format(new Date(profileDetails.personalInfo.dateofbirth), 'yyyy-MM-dd')
       }
     };
 
     delete profile.unrequiredFields;
-
+    console.log('profile', profile)
     dispatch(
       requestUpdateUser({
         ...profile,
