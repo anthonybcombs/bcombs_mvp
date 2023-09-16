@@ -216,7 +216,7 @@ const EventAttendeeStyled = styled.div`
 	}
 
     .actionBtn {
-		margin-top: 3rem !important;
+		margin-top: 1.5rem !important;
 	}
 	.actionBtn button {
 		border: none;
@@ -499,22 +499,6 @@ const EventAttendee = props => {
             </div>
         </div> : <span />}
 
-        <div>
-
-            <div style={{ padding: 12 }}>
-                <div className="field" style={{ padding: 12 }}>
-                    <button
-                        className="timeoutBtn"
-                        onClick={handleCheckOutAll}
-                        type="button"
-                        style={{ width: '100%', backgroundColor: '#ff0e0e', color: 'white' }}
-                    >
-                        End Session
-                    </button>
-                </div>
-            </div>
-        </div>
-
         <div className="attendee">
             <div className="gridView">
                 {currentAttendance.map(app => {
@@ -709,6 +693,17 @@ const EventAttendee = props => {
             </div>
 
             <div className="field actionBtn">
+                <button
+                    className="timeoutBtn"
+                    onClick={handleCheckOutAll}
+                    type="button"
+                    style={{ width: '100%', backgroundColor: '#ff0e0e', color: 'white', }}
+                >
+                    End Session
+                </button>
+            </div>
+
+            <div className="field actionBtn">
                 <button onClick={handleSubmit}>
                     {attendance.isAttendanceUpdateLoading ? 'Please Wait...' : 'Save'}
                 </button>
@@ -722,7 +717,7 @@ const EventAttendee = props => {
             message={<div>
 
                 <div style={{ padding: 12, textAlign: 'left' }}>
-                    <div> 
+                    <div>
                         Are you certain you wish to conclude the session? This action will check out all participants from the event.
                     </div>
                     <div style={{ marginTop: 12 }}>
@@ -731,7 +726,7 @@ const EventAttendee = props => {
                             type="checkbox"
                             onChange={e => {
                                 setMarkedAsAbsent(e.target.checked)
-                            }} 
+                            }}
                         />
 
                         Mark unchecked users as Absent
