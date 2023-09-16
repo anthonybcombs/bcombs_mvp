@@ -27,7 +27,7 @@ export const requestUpdateParentPermissionByVendor = ({
 export const requestParentByVendor = ({
   vendor,
   app_group_id = null,
-  form_type = 'mentoring',
+  form_type = '',
   vendor_mode = false
 }) => {
   return {
@@ -40,7 +40,7 @@ export const requestParentByVendor = ({
 };
 
 
-export function* getParentByVendor({ vendor, app_group_id, form_type = 'mentoring', vendor_mode = false }) {
+export function* getParentByVendor({ vendor, app_group_id, form_type = '', vendor_mode = false }) {
   try {
 
     const response = yield call(getParentByVendorFromDatabase, {
