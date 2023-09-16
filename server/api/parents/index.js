@@ -540,8 +540,8 @@ export const getParentChildRelationship = async ({
 
 export const getParentByVendorId = async ({
   vendorId,
-  appGroupId = null,
-  formType = 'mentoring',
+  appGroupId = null,  // THIS IS FORM ID IF formType = 'forms'
+  formType = null, 
   isVendorMode = false
 }) => {
   const db = makeDb();
@@ -550,97 +550,101 @@ export const getParentByVendorId = async ({
   try {
     let whereValues = [vendorId];
 
+    const applicationQuery  =  `
+    SELECT 
+      BIN_TO_UUID(p.parent_id) as parent_id,
+      BIN_TO_UUID(p.application) as application,
+      p.firstname, 
+      p.lastname, 
+      p.email_address,
+      p.email_type,
+      p.phone_number,
+      p.phone_type,
+      p.occupation,
+      p.parent_goals,
+      p.parent_child_goals,
+      p.live_area,
+      p.level_of_education,
+      p.child_hs_grad,
+      p.child_col_grad,
+      p.address,
+      p.city,
+      p.state,
+      p.zip_code,
+      p.phone_type2,
+      p.phone_number2,
+      p.email_type2,
+      p.email_address2,
+      p.person_recommend,
+      p.age,
+      p.birthdate,
+      p.gender,
+      p.ethnicities,
+      p.image,
+      p.is_parent_allow_shared,
+      p.is_vendor_allow_shared,
+      u.is_profile_filled
+    FROM parent p
+
+    CROSS JOIN application a ON p.application=a.app_id AND p.application=a.app_id
+    CROSS JOIN vendor v ON a.vendor=v.id 
+
+    LEFT JOIN users u ON u.email=p.email_address
+
+    WHERE v.id=UUID_TO_BIN(?) ${!isVendorMode ? ` AND p.is_parent_allow_shared=1` : ' '}
+  
+    ${appGroupId ? ` AND a.class_teacher  LIKE '%${appGroupId}%'` : ''}
+  `;
+    
+    const customApplicationQuery = `
+    SELECT
+      BIN_TO_UUID(ch.ch_id) as parent_id,
+      BIN_TO_UUID(c.app_id) as application,
+      ch.firstname as firstname, 
+      ch.lastname as lastname,
+      u.email as email_address,
+      ch.phone_number as phone_number, 
+      ch.phone_type as phone_type,
+      ch.address as address,
+      ch.city as city,
+      ch.state as state,
+      up.is_parent_allow_shared,
+      ch.is_vendor_allow_shared,
+      u.is_profile_filled
+    FROM custom_application c,child ch, application_user a, user_profiles up, users u
+    WHERE c.vendor=UUID_TO_BIN(?) 
+    ${appGroupId ? ` AND c.form=UUID_TO_BIN(?)` : ' '}
+    AND ch.ch_id=c.child
+    AND a.custom_app_id=c.app_id
+    AND u.id=up.user_id
+    AND a.user_id=up.user_id
+    ${!isVendorMode ? ` AND up.is_parent_allow_shared=1` : ' '}
+  `;
+
     if (formType === 'mentoring') {
-      applications = await db.query(
-        `
-          SELECT 
-            BIN_TO_UUID(p.parent_id) as parent_id,
-            BIN_TO_UUID(p.application) as application,
-            p.firstname, 
-            p.lastname, 
-            p.email_address,
-            p.email_type,
-            p.phone_number,
-            p.phone_type,
-            p.occupation,
-            p.parent_goals,
-            p.parent_child_goals,
-            p.live_area,
-            p.level_of_education,
-            p.child_hs_grad,
-            p.child_col_grad,
-            p.address,
-            p.city,
-            p.state,
-            p.zip_code,
-            p.phone_type2,
-            p.phone_number2,
-            p.email_type2,
-            p.email_address2,
-            p.person_recommend,
-            p.age,
-            p.birthdate,
-            p.gender,
-            p.ethnicities,
-            p.image,
-            p.is_parent_allow_shared,
-            p.is_vendor_allow_shared,
-            u.is_profile_filled
-          FROM parent p
-  
-          CROSS JOIN application a ON p.application=a.app_id AND p.application=a.app_id
-          CROSS JOIN vendor v ON a.vendor=v.id 
-  
-          LEFT JOIN users u ON u.email=p.email_address
-  
-          WHERE v.id=UUID_TO_BIN(?) ${!isVendorMode ? ` AND p.is_parent_allow_shared=1` : ' '}
-        
-          ${appGroupId ? ` AND a.class_teacher  LIKE '%${appGroupId}%'` : ''}
-        `,
-        [
-          whereValues
-        ]
-      )
+      applications = await db.query(applicationQuery, whereValues);
     }
 
-    else {
+    else if(formType === 'forms'){
       // HOLD CUSTOM APPLICATION FOR NOW
       //     ${appGroupId ? ` AND c.class_teacher  LIKE '%${appGroupId}%'` : ''}
-      applications = await db.query(`
-      SELECT
-        BIN_TO_UUID(ch.ch_id) as parent_id,
-        BIN_TO_UUID(c.app_id) as application,
-        ch.firstname as firstname, 
-        ch.lastname as lastname,
-        u.email as email_address,
-        ch.phone_number as phone_number, 
-        ch.phone_type as phone_type,
-        ch.address as address,
-        ch.city as city,
-        ch.state as state,
-        up.is_parent_allow_shared,
-        ch.is_vendor_allow_shared,
-        u.is_profile_filled
-      FROM custom_application c,child ch, application_user a, user_profiles up, users u
-      WHERE c.vendor=UUID_TO_BIN(?) 
-      AND c.form=UUID_TO_BIN(?) 
-      AND ch.ch_id=c.child
-      AND a.custom_app_id=c.app_id
-      AND u.id=up.user_id
-      AND a.user_id=up.user_id
-      ${!isVendorMode ? ` AND up.is_parent_allow_shared=1` : ' '}
-      `,
-        [
+      if(appGroupId) {
+        whereValues = [
           ...whereValues,
           appGroupId
         ]
-      );
-
-
+      }
+      applications = await db.query(customApplicationQuery, whereValues);
       // for (const application of applications) {
       //   application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
       //   application.form_contents = JSON.parse(application.form_contents);
       // }
+    }
+
+    else {
+      let mentoringContacts = await db.query(applicationQuery, whereValues);
+      let formContacts = await db.query(customApplicationQuery, whereValues);
+      applications = [...(mentoringContacts || []), ...( formContacts || [])]
     }
 
 
