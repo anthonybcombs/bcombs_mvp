@@ -200,9 +200,6 @@ export default function index() {
   );
 
 
-  console.log('formListzzzzzzzz', formList)
-
-  console.log('vendorForms', vendorForms)
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -297,9 +294,9 @@ export default function index() {
 
 
   useEffect(() => {
-    console.log('formList',formList)
     if (formList.length > 0) {
-      const updatedForms = formList.map(item => {
+      let updatedForms = formList.filter(item => item.vendor === selectedVendor);
+      updatedForms = updatedForms.map(item => {
         return {
           ...item,
           name: item?.form_contents?.formTitle,
@@ -310,7 +307,7 @@ export default function index() {
 
       setSelectedGroupbyVendorOptions([...selectedGroupByVendorOptions, ...updatedForms])
     }
-  }, [formList])
+  }, [formList, selectedVendor])
 
 
 
@@ -367,8 +364,6 @@ export default function index() {
 
     const formList = vendorForms.formList;
 
-    console.log("vendors.formList", vendorForms.formList);
-    console.log('formList', formList)
     const formattedVendors = getFormattedVendors(formList);
 
     setFormattedVendors(formattedVendors);
@@ -389,8 +384,6 @@ export default function index() {
     return formattedVendors;
   }
 
-  console.log("groups", groups);
-  console.log("vendorForms", vendorForms);
 
   // const selectedGroup = groups.find(group => group.id === selectedGroupId);
   // const filteredContacts = contacts.filter(contact => {
@@ -478,7 +471,6 @@ export default function index() {
   const handleAppGroupDetails = () => {
 
   }
-  console.log('vendorForms', vendorForms)
   const handleAppGroupModal = group => {
     // if(vendorForms.formList.length > 0) {
     setCurrentAppGroup(group);
