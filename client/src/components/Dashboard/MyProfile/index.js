@@ -268,6 +268,7 @@ export default function index() {
         securityquestion2answer: user.profile.security_question2_answer,
         securityquestion3: user.profile.security_question3,
         securityquestion3answer: user.profile.security_question3_answer,
+        is_parent_allow_shared: user.profile.is_parent_allow_shared,
       });
     }
   }, [user, isEditProfileVisible]);

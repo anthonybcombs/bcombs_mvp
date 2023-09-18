@@ -21,7 +21,7 @@ export default ({
     } else {
       const newItems = cloneDeep(items)
       onChangeFieldSettings({
-        items: newItems.map((item, i) => ({
+        items:  Array.isArray(newItems) && newItems.map((item, i) => ({
           ...item,
           [subType]: i === index
             ? subType === 'rank' ? (ratingValue * 1) : ratingValue

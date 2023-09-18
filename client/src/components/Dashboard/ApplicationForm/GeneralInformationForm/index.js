@@ -508,7 +508,7 @@ export default function index({
                         pastChildInformation.school_phone != childGeneralInformation.school_phone ?
                         "field-input highlights" : "field-input"
                     }
-                    placeholder="Phone"
+                    placeholder="School Phone"
                     readOnly={isReadonly}
                     id={`ch_school_phone_${counter - 1}`}
                     defaultValue={childGeneralInformation.school_phone}
@@ -518,7 +518,7 @@ export default function index({
                     id={`ch_school_phone_${counter - 1}`}
                     name={"ch_school_phone" + (counter - 1)}
                     className="field-input"
-                    placeholder="Phone"
+                    placeholder="School Phone"
                     onChange={({ target }) => {
                       handleChildFormDetailsChange(counter - 1, "general_information", "school_phone", target.value);
                     }}
@@ -537,7 +537,7 @@ export default function index({
                     })}
                   />
               }
-              <label className="field-label" for={`ch_school_phone_${counter - 1}`}>Phone</label>
+              <label className="field-label" for={`ch_school_phone_${counter - 1}`}>School Phone</label>
             </div>
             <ErrorMessage
               field={errors["ch_school_phone" + (counter - 1)]}

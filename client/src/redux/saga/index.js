@@ -22,7 +22,8 @@ import {
   updatedEvent,
   addedEvent,
   getUserEvents,
-  searchedEvents
+  searchedEvents,
+  updateUserEventAttendance
 } from "../actions/Events";
 import {
   addedContact,
@@ -84,7 +85,8 @@ import {
   getVendorReminders,
   updateVendorLogo,
   createVendor,
-  setSelectedVendor
+  setSelectedVendor,
+  updateDefaultVendor
 } from "../actions/Vendors";
 
 import {
@@ -122,7 +124,9 @@ import {
   getCustomApplicationHistory
 } from "../actions/FormBuilder";
 
-import { requestUpdateAttendance, updateAttendance,getAttendance,getEventAttendance } from "../actions/Attendance";
+import { requestUpdateAttendance, updateAttendance,getAttendance, getEventAttendance, getAttendanceByEvent } from "../actions/Attendance";
+
+import { getParentByVendor, updateParentPermissionByVendor } from '../actions/Parents';
 
 import reducer from "../reducers";
 function* rootSaga() {
@@ -325,11 +329,26 @@ function* rootSaga() {
   yield takeLatest(actionType.ADD_UPDATE_STUDENT_CUMULATIVE, addUpdateStudentCumulative)
   yield takeLatest(actionType.ARCHIVE_GROUP, getArchiveGroup)
   yield takeLatest(actionType.ADD_ARCHIVE_GROUP, addArchiveGroup)
-  yield takeLatest(actionType.REMOVE_GROUP_FROM_ARCHIVE, removeGroupFromArchive),
+  yield takeLatest(actionType.REMOVE_GROUP_FROM_ARCHIVE, removeGroupFromArchive);
   yield takeLatest(actionType.REQUEST_UPDATE_VENDOR_LOGO, updateVendorLogo)
+
+  yield takeLatest(actionType.SET_DEFAULT_VENDOR, updateDefaultVendor)
 
   yield takeLatest(actionType.REQUEST_CREATE_VENDOR, createVendor)
   yield takeLatest(actionType.REQUEST_SELECTED_VENDOR, setSelectedVendor)
+  
+  yield takeLatest(actionType.REQUEST_PARENT_BY_VENDOR, getParentByVendor)
+  yield takeLatest(actionType.REQUEST_PARENT_PERMISSION_BY_VENDOR, updateParentPermissionByVendor)
+
+  yield takeLatest(
+    actionType.REQUEST_USER_EVENT_ATTENDANCE,
+    updateUserEventAttendance
+  )
+
+  yield takeLatest(
+    actionType.REQUEST_ATTENDANCE_BY_EVENT_ID,
+    getAttendanceByEvent
+  )
 }
 const sagaMiddleware = createSagaMiddleware();
 

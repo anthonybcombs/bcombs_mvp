@@ -11,7 +11,9 @@ import cloneDeep from 'lodash.clonedeep'
 export default ({
   list, loading, renameModal, cloneModal, deleteModal,
   
-  onUpdateList, onCloneForm, onDeleteForm, setRenameModal, setCloneModal, setDeleteModal
+  onUpdateList, onCloneForm, onDeleteForm, setRenameModal, setCloneModal, setDeleteModal,
+
+  vendor
 }) => {
   const newList = cloneDeep(list)
   const recentList = newList.splice(0, 4)
@@ -42,6 +44,7 @@ export default ({
                       setRenameModal={setRenameModal}
                       setCloneModal={setCloneModal}
                       setDeleteModal={setDeleteModal}
+                      vendor={vendor}
                     />
                   )
                 })
@@ -71,6 +74,7 @@ export default ({
                         setRenameModal={setRenameModal}
                         setCloneModal={setCloneModal}
                         setDeleteModal={setDeleteModal}
+                        vendor={vendor}
                       />
                     )
                   })

@@ -181,6 +181,44 @@ export const getReScheduledTemplate = (
     </div>
   `;
 };
+
+export const bookDemoSchedule = ({
+  organizationName,
+  organizationType,
+  organizationSize,
+  websiteUrl,
+  fullName,
+  clientEmail,
+  contactNo
+}) => {
+  return sendEmail({
+    ...defaultMailConfig,
+    subject: `Bcombs: Demo Request`,
+    to: 'nate@bcombs.com',
+    html: `
+      <div>
+        
+        <p>
+          Organization Name: ${organizationName}
+          <br/>
+          Organization Type: ${organizationType}
+          <br/>
+          Organization Size: ${organizationSize}
+          <br/>
+          Website URL: ${websiteUrl}
+          <br/>
+          Full Name: ${fullName}
+          <br/>
+          Email: ${clientEmail}
+          <br/>
+          Contact No: ${contactNo}
+        </p>
+      
+      </div>
+    ` // html body
+  });
+};
+
 const sendEmail = config => {
   transporter.sendMail(config, function(error, info) {
     if (error) {
@@ -328,3 +366,13 @@ export const sendAdminInvite = async ({
     console.log("invite error", error);
   }
 };
+
+export const maskEmail = (mail) => {
+  let mailUsername = mail.split("@")[0];
+  mailUsername = mailUsername[0] + mailUsername.substring(1).replace(/./gi, '*')
+  let mailDomain = mail.split("@")[1].split(".")[0].replace(/./gi, '*');
+  let mailTld = mail.split("@")[1].split(".")[1].replace(/./gi, '*')
+
+  return `${mailUsername}@${mailDomain}.${mailTld}`
+}
+

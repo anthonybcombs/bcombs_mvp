@@ -3,12 +3,26 @@ import {
   currentS3BucketName,
   s3Bucket,
   s3BucketRootPath,
-  uploadFile
+  uploadFile,
+  deleteFile
 } from "../helpers/aws";
 import { customConnection, makeDb } from "../helpers/database";
 import fetch from "node-fetch";
 import { v4 as uuidv4 } from "uuid";
-import { sendMigratedAccount } from "../helpers/email";
+import { removeDuplicatesByKey } from '../helpers/array';
+import { sendMigratedAccount, bookDemoSchedule } from "../helpers/email";
+
+import { submitCustomApplication, addApplicationUser, createApplication } from '../api/applications';
+import { addChild } from '../api/child';
+import { checkUserEmail, executeSignUp, executeAddUserProfile } from '../api/users';
+import { getUserTypes } from "../api/userTypes/";
+
+import {
+  addParent
+} from "../api/parents";
+
+
+
 const multer = require("multer");
 const router = express.Router();
 
@@ -57,6 +71,26 @@ export const getUserFromDatabase = async email => {
   }
 };
 
+export const updateLastLogin = async userId => {
+  const db = makeDb();
+  let result;
+
+  try {
+    const rows = await db.query(
+      `UPDATE users SET last_login=now()   where id=UUID_TO_BIN(?)`,
+      [userId]
+    );
+    console.log('updateLastLogin rows', rows)
+    result = rows;
+  } catch (error) {
+    console.log('error updateLastLogin', error)
+  } finally {
+    await db.close();
+    return result;
+  }
+};
+
+
 export const getUserProfileFromDatabase = async userId => {
   const db = makeDb();
   let result;
@@ -79,7 +113,8 @@ export const getUserProfileFromDatabase = async userId => {
         security_question2,
         security_question2_answer,
         security_question3,
-        security_question3_answer
+        security_question3_answer,
+        is_parent_allow_shared
         from user_profiles where user_id=UUID_TO_BIN(?)`,
       [userId]
     );
@@ -619,7 +654,7 @@ router.put("/user/profile", async (req, res) => {
     const { personalInfo, otherInfo } = req.body;
     console.log("req.bodyyy", otherInfo);
     await db.query(
-      "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=?,address=?,school=?,ethnicity=?,grade=?,security_question1=?,security_question1_answer=?,security_question2=?,security_question2_answer=?,security_question3=?,security_question3_answer=? where id=UUID_TO_BIN(?)",
+      "UPDATE user_profiles SET first_name=?,last_name=?,family_relationship=?,gender=?,custom_gender=?,zip_code=?,birth_date=?,address=?,school=?,ethnicity=?,grade=?,security_question1=?,security_question1_answer=?,security_question2=?,security_question2_answer=?,security_question3=?,security_question3_answer=?,is_parent_allow_shared=? where id=UUID_TO_BIN(?)",
       [
         personalInfo.firstname,
         personalInfo.lastname,
@@ -638,6 +673,7 @@ router.put("/user/profile", async (req, res) => {
         personalInfo.securityquestion2answer,
         personalInfo.securityquestion3,
         personalInfo.securityquestion3answer,
+        personalInfo.is_parent_allow_shared,
         personalInfo.id
       ]
     );
@@ -663,14 +699,15 @@ router.put("/user/profile", async (req, res) => {
       const parentIds = otherInfo.parent_ids.map(id => `UUID_TO_BIN('${id}')`);
       console.log("Parent Ids", parentIds);
       await db.query(
-        `UPDATE parent SET firstname=?,lastname=?,address=?,zip_code=? WHERE parent_id IN (${parentIds.join(
+        `UPDATE parent SET firstname=?,lastname=?,address=?,zip_code=?, is_parent_allow_shared=? WHERE parent_id IN (${parentIds.join(
           ","
         )})`,
         [
           personalInfo.firstname,
           personalInfo.lastname,
           personalInfo.address,
-          personalInfo.zipcode
+          personalInfo.zipcode,
+          personalInfo.is_parent_allow_shared
         ]
       );
     }
@@ -693,6 +730,8 @@ router.put("/user/profile", async (req, res) => {
       security_question2_answer: personalInfo.securityquestion2answer,
       security_question3: personalInfo.securityquestion3,
       security_question3_answer: personalInfo.securityquestion3answer,
+      is_info_shared: personalInfo.is_info_shared,
+      is_parent_allow_shared: personalInfo.is_parent_allow_shared,
       id: personalInfo.id
     };
 
@@ -733,9 +772,8 @@ router.post("/user/photo", async (req, res) => {
       let updatedUser = await getUserFromDatabase(email);
 
       updatedUser.profile_img = updatedUser.profile_img
-        ? `${s3BucketRootPath}${
-            updatedUser.profile_img
-          }?${new Date().getTime()}`
+        ? `${s3BucketRootPath}${updatedUser.profile_img
+        }?${new Date().getTime()}`
         : "";
 
       res.status(200).json({ error: true, data: updatedUser });
@@ -964,6 +1002,676 @@ router.get("/invitation/calendar/:id/:status", async (req, res) => {
   }
 });
 
+
+
+router.post("/child/attendance/search", async (req, res) => {
+  const db = makeDb();
+  const { firstname, lastname, childId, eventId, attendanceType } = req.body;
+  let child = null;
+  let childAttendance = null;
+  try {
+
+    child = await db.query(
+      `SELECT BIN_TO_UUID(c.ch_id) as ch_id, c.firstname, c.lastname, c.new_childId
+      FROM child c
+      WHERE c.new_childId=? AND c.firstname=? AND c.lastname=?
+     `,
+      [childId, firstname, lastname]
+    );
+
+    child = child && child[0] && {
+      ...child[0],
+      ch_id: child[0].ch_id
+    };
+
+    if (child && attendanceType === 'forms') {
+      const customApplication = await db.query(
+        `SELECT BIN_TO_UUID(c.app_id) as ch_id
+        FROM custom_application c
+        WHERE c.child=UUID_TO_BIN(?)
+       `,
+        [child.ch_id]
+      );
+
+      console.log('customApplication', customApplication)
+      if (customApplication && customApplication[0]) {
+        child.ch_id = customApplication[0].ch_id;
+      }
+
+    }
+
+
+
+    if (child) {
+      childAttendance = await db.query(
+        `SELECT a.*, 
+          BIN_TO_UUID(a.app_group_id) as app_group_id, 
+          BIN_TO_UUID(a.child_id) as child_id,
+          BIN_TO_UUID(a.event_id) as event_id
+          FROM attendance a
+          WHERE a.child_id=UUID_TO_BIN(?) AND a.event_id=UUID_TO_BIN(?)
+       `,
+        [child.ch_id, eventId]
+      );
+      childAttendance = childAttendance ? childAttendance[0] : null
+      console.log('attendanceeee', childAttendance)
+    }
+  } catch (error) {
+    console.log("Search Child Error", error);
+  } finally {
+    db.close();
+
+    return res.json({
+      child: child,
+      attendance: childAttendance
+    })
+  }
+});
+
+router.get("/event/:eventId", async (req, res) => {
+
+  const db = makeDb();
+  const { eventId } = req.params;
+  let event = null;
+  try {
+    event = await db.query(
+      `SELECT 
+        id,
+        event_type,
+        title, 
+        start, 
+        end, 
+        is_full_day, 
+        vendor_app_group, 
+        tags, 
+        description, 
+        qr_code_url, 
+        location
+      FROM bc_calendar_event
+      WHERE id=?
+     `,
+      [eventId]
+    );
+    event = event && event[0]
+  } catch (error) {
+
+    console.log('error', error)
+    return res.json({
+      event: null,
+      message: 'Something went wrong'
+    });
+  } finally {
+    db.close();
+    return res.json({
+      event
+    });
+  }
+
+})
+
+router.get("/attendance/events", async (req, res) => {
+  const db = makeDb();
+  const { vendorId, appGroup } = req.query;
+  let { attendanceType } = req.query;
+
+  let events = null;
+
+  try {
+
+    let whereValues = [vendorId];
+
+    if (attendanceType) {
+      attendanceType = attendanceType === 'mentoring' ? 'bcombs' : 'forms';
+      whereValues = [
+        ...whereValues,
+        attendanceType
+      ]
+    }
+
+    if (appGroup && attendanceType) {
+      whereValues = [
+        ...whereValues,
+        appGroup
+      ]
+    }
+
+    events = await db.query(
+      `SELECT 
+        bce.id,
+        bce.event_type,
+        bce.title, 
+        bce.start, 
+        bce.end, 
+        bce.is_full_day, 
+        bce.vendor_app_group, 
+        bce.tags, 
+        bce.description, 
+        bce.qr_code_url, 
+        bce.location,
+        bce.attendance_type,
+        v.name as app_group_name,
+        CONVERT( vca.form_contents  USING utf8) as form_contents
+
+      FROM bc_calendar_event bce
+      LEFT JOIN vendor_app_groups v ON v.app_grp_id=UUID_TO_BIN(bce.attendance_app_group)
+      LEFT JOIN vendor_custom_application vca ON vca.form_id=UUID_TO_BIN(bce.attendance_app_group)
+      WHERE bce.vendor_id2=? AND bce.event_type='attendance'
+      ${attendanceType ? ' AND bce.attendance_type=? ' : ''}
+      ${appGroup ? ' AND bce.attendance_app_group=? ' : ''}
+      ORDER BY bce.start DESC
+     `,
+      whereValues
+    );
+
+
+
+    for (let x = 0; x < events.length; x++) {
+
+      if (events[x].attendance_type === 'forms' && events[x].form_contents) {
+
+        events[x].form_contents = events[x].form_contents ? Buffer.from(events[x].form_contents, "base64").toString("utf-8") : "{}";
+        events[x].form_contents = JSON.parse(events[x].form_contents);
+
+        if (events[x].form_contents && events[x].form_contents.formData) {
+          events[x].form_name = events[x].form_contents.formTitle;
+          delete events[x].form_contents;
+        }
+      }
+
+
+    }
+
+
+
+
+
+  } catch (error) {
+    console.log("Search Child Error", error);
+  } finally {
+    db.close();
+
+    return res.json({
+      events
+    });
+  }
+});
+
+
+router.delete("/attendance/event", async (req, res) => {
+
+  const db = makeDb();
+  const { eventId, vendorId } = req.body;
+  let event = null;
+  try {
+
+
+    const currentEvent = await db.query(
+      `SELECT qr_code_url FROM bc_calendar_event WHERE id=? AND vendor_id2=?`,
+      [eventId, vendorId]
+    );
+
+    if (currentEvent && currentEvent[0]) {
+
+      if (currentEvent[0].qr_code_url) {
+        await deleteFile(currentEvent[0].qr_code_url);
+      }
+
+      await db.query(
+        `DELETE  FROM attendance WHERE event_id=UUID_TO_BIN(?)`,
+        [eventId]
+      );
+      await db.query(
+        `DELETE  FROM bc_calendar_event WHERE id=? AND vendor_id2=?`,
+        [eventId, vendorId]
+      );
+
+    }
+
+
+    event = event && event[0]
+  } catch (error) {
+
+    console.log('error', error)
+    return res.json({
+      event: null,
+      message: 'Something went wrong'
+    });
+  } finally {
+    db.close();
+    return res.json({
+      message: 'Event has been deleted successfully!'
+    });
+  }
+
+})
+
+router.get("/parentvendor", async (req, res) => {
+  const db = makeDb();
+  const { email, form_type = 'mentoring' } = req.query;
+
+  try {
+    // let vendors = [];
+
+    let mentoringApplicationsVendor = vendors = await db.query(
+      `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name, a.class_teacher from parent p, application a, vendor v 
+    WHERE p.email_address=? AND
+    p.application=a.app_id AND v.id=a.vendor;
+`,
+      [email]
+    );
+
+    let customApplicationsVendor = await db.query(
+      `SELECT DISTINCT BIN_TO_UUID(a.vendor) vendor_id, v.name, BIN_TO_UUID(a.form) as class_teacher 
+      from users u, custom_application a, vendor v , application_user au
+      WHERE u.email=? AND v.id=a.vendor
+      AND au.custom_app_id=a.app_id AND au.user_id=u.id 
+      AND a.vendor=v.id;
+    `,
+      [email]
+    );
+
+
+    const applicationGroups = mentoringApplicationsVendor.map(item => {
+      return item.class_teacher ? item.class_teacher.split(',') : []
+    }).flat()
+
+    const customApplicationGroups = customApplicationsVendor.map(item => {
+      return item.class_teacher
+    }).flat();
+
+
+    let mentoringVendorAppGroups = [];
+    let customVendorAppGroups = [];
+
+    // let mentoringVendorIds = mentoringApplicationsVendor.map(item => `UUID_TO_BIN('${item.vendor_id}')`).join(',');
+    let mentoringAppGroupIds = applicationGroups.map(id => `UUID_TO_BIN('${id}')`).join(',');
+    let customAppGroupIds = customApplicationGroups.map(id => `UUID_TO_BIN('${id}')`).join(',');
+    // const vendorAppGroupIds = applicationGroups.map(id => `UUID_TO_BIN('${id}')`).join(',');
+
+    if (mentoringAppGroupIds.length > 0) {
+      mentoringVendorAppGroups = await db.query(
+        `SELECT name, BIN_TO_UUID(app_grp_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_app_groups
+         WHERE app_grp_id IN (${mentoringAppGroupIds});
+      `
+        // [email]
+      );
+
+    }
+
+    if (customAppGroupIds.length > 0) {
+
+      customVendorAppGroups = await db.query(
+        `SELECT form_name as name, BIN_TO_UUID(form_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_custom_application
+         WHERE form_id IN (${customAppGroupIds});
+      `
+        // [email]
+      );
+
+      customVendorAppGroups = customVendorAppGroups.map(item => {
+        return {
+          ...item,
+          name: item.name || 'Untitled',
+          is_custom_form: true
+        }
+      })
+    }
+
+
+    let vendors = [...mentoringApplicationsVendor, ...customApplicationsVendor]
+    vendors = removeDuplicatesByKey(vendors, 'vendor_id')
+    let vendorAppGroups = [...mentoringVendorAppGroups, ...customVendorAppGroups]
+    vendorAppGroups = removeDuplicatesByKey(vendorAppGroups, 'app_grp_id')
+
+
+
+    // if (vendorsIds.length > 0) {
+
+    //   if(form_type === 'mentoring') {
+
+    //   }
+    //   else {
+    //     vendorAppGroups = await db.query(
+    //       `SELECT form_name as name, BIN_TO_UUID(form_id) as app_grp_id, BIN_TO_UUID(vendor) as vendor_id FROM vendor_custom_application
+    //        WHERE form_id IN (${vendorAppGroupIds});
+    //     `
+    //       // [email]
+    //     );
+    //   }
+
+    //   vendorAppGroups = vendorAppGroups.map(item => {
+    //     return {
+    //       ...item,
+    //       name: item.name || 'Untitled',
+    //       is_custom_form: form_type !== 'mentoring' ? true : false
+    //     }
+    //   })
+
+    // }
+
+    return res.json({
+      vendors,
+      vendorAppGroups
+    })
+  } catch (error) {
+    console.log("GET Parent Vendor Error", error);
+  } finally {
+    await db.close();
+  }
+});
+
+
+router.post("/application/import", async (req, res) => {
+
+  const db = makeDb();
+  try {
+    const { type } = req.query;
+    const { data } = req.body;
+
+    let userType = await getUserTypes();
+
+    userType = userType.filter(type => {
+      return type.name === "USER";
+    })[0];
+
+
+    if (type === 'custom') {
+
+      for (let application of data) {
+
+        let loginType = application.form_contents.formData.filter((item) => {
+          return item.type == "login"
+        });
+
+        let nameType = application.form_contents.formData.filter((item) => {
+          return item.type == "name" && item.label !== 'Parent'
+        });
+
+        const formContentString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
+        application.form_contents = Buffer.from(formContentString, "utf-8").toString("base64");
+
+        let email;
+        let password;
+        let firstname = '';
+        let middlename = '';
+        let lastname = '';
+        const hasLoginField = loginType;
+        const hasNameField = nameType;
+
+        loginType = loginType ? loginType[0] : {};
+
+        nameType = nameType ? nameType[0] : {};
+
+        if (hasLoginField) {
+          email = loginType?.fields.filter((item) => {
+            return item.type == "email"
+          });
+          password = loginType?.fields.filter((item) => {
+            return item.type == "password"
+          });
+
+          email = email && email.length > 0 ? email[0] : "";
+          password = password && password.length > 0 ? password[0] : "";
+        }
+
+        if (hasNameField) {
+          firstname = nameType?.fields.filter((item) => {
+            return item.label == "First Name"
+          });
+          middlename = nameType?.fields.filter((item) => {
+            return item.label == "Middle Name"
+          });
+          lastname = nameType?.fields.filter((item) => {
+            return item.label == "Last Name"
+          });
+
+
+          let firstnameValue = firstname && firstname[0]?.value.slice(1, -1);
+          let lastnameValue = lastname && lastname[0]?.value.slice(1, -1);
+          let middlenameValue = middlename && middlename[0]?.value.slice(1, -1);
+
+          const childObj = {
+            firstname: firstnameValue,
+            lastname: lastnameValue,
+            middlename: middlenameValue
+          }
+
+
+
+          const child = await addChild(childObj);
+
+          application.child = child && child.ch_id;
+
+          const customApplication = await submitCustomApplication(application);
+
+          if (application.account_details) {
+
+            if (application.create_profile) {
+              let parent = {
+                username: application.account_details.firstname + "" + application.account_details.lastname,
+                email: application.account_details.email,
+                password: application.account_details.password,
+                type: userType
+              };
+
+              const resp = await executeSignUp(parent);
+
+              let parentInfo = {
+                ...parent,
+                email: parent.email,
+                dateofbirth: new Date()
+              };
+
+              await executeAddUserProfile(parentInfo);
+              const parentUser = await getUserFromDatabase(parent.email);
+
+              if (parentUser) {
+                await addApplicationUser({
+                  user_id: parentUser.id,
+                  custom_app_id: customApplication.app_id
+                });
+              }
+
+              console.log('Execute Signup on custom form', resp)
+            }
+          }
+
+
+        } else {
+
+          return res.json({
+            messageType: "error",
+            message: "Prime field name is required"
+          })
+        }
+
+
+      }
+
+    }
+    // IMPORT MENTORING STARTS HERE
+    else if (type === 'mentoring') {
+      let newChilds = [];
+      let newParents = [];
+
+      for (let application of data) {
+
+        const tempChildId = null;
+
+        console.log('application.child', application.child)
+
+        const child = await addChild({ ...application.child });
+        const parents = application.parents;
+        const currentChild = { ...application.child };
+
+        application.class_teacher = "";
+        application.child = child && child.ch_id;
+
+        newChilds.push({
+          tempId: tempChildId,
+          newId: child.ch_id
+        })
+
+        application = await createApplication(application);
+
+        const tempParentId = null;
+        parents.application = application.app_id;
+        const newParent = await addParent(parents);
+        let checkEmail = await checkUserEmail(parents.email_address);
+
+        if (checkEmail && checkEmail.is_exist && checkEmail.status !== 'Email is available to use') {
+          console.log("Parent Status: ", checkEmail.status);
+        } else {
+
+          let user = {
+            username: parents.firstname + "" + parents.lastname,
+            email: parents.email_address,
+            password: parents.password,
+            type: userType
+          };
+
+
+          console.log('parents.create_profile', parents.create_profile)
+          if (parents.create_profile) {
+            await executeSignUp(user);
+
+            let parentInfo = {
+              ...parents,
+              email: parents.email_address,
+              dateofbirth: parents.birthdate
+            };
+
+            await executeAddUserProfile(parentInfo);
+          }
+
+          // if (currentChild && currentChild.create_profile && currentChild.password) {
+          //   let childUser = {
+          //     username: currentChild.firstname + "" + currentChild.lastname,
+          //     email: currentChild.email_address,
+          //     password: currentChild.password,
+          //     type: userType
+          //   };
+
+          //   console.log('childUser', childUser)
+          //   const resp = await executeSignUp(childUser);
+          //   console.log('childUser resp', resp)
+          // }
+
+          newParents.push({
+            tempId: tempParentId,
+            newId: newParent?.parent_id
+          })
+
+          const parentUser = await getUserFromDatabase(parents.email_address);
+
+
+          if (parentUser) {
+            await addApplicationUser({
+              user_id: parentUser.id,
+              app_id: application.app_id
+            });
+          }
+
+
+        }
+
+
+      }
+    }
+
+  }
+  catch (error) {
+    console.log("GET Parent Vendor Error", error);
+
+    return res.json({
+      message: 'Something went wrong'
+    })
+  } finally {
+    await db.close();
+
+    return res.json({
+      message: 'Import Success'
+    })
+  }
+})
+
+
+// router.post("/vendor/default", async (req, res) => {
+//   const db = makeDb();
+//   try {
+//     const { user_id, vendor_id } = req.body;
+//     console.log('user_id', user_id)
+//     console.log('vendor_id', vendor_id)
+
+//     if (vendor_id) {
+//       await db.query(`UPDATE vendor
+//         SET is_default = CASE
+//         WHEN id=UUID_TO_BIN(?) THEN 1
+//         ELSE 0
+//         END
+//         WHERE user=UUID_TO_BIN(?);
+//       `,
+//         [vendor_id, user_id]
+//       );
+//     }
+//     else {
+//       await db.query(`UPDATE vendor
+//         SET is_default = 0
+//         WHERE user=UUID_TO_BIN(?);
+//       `,
+//         [user_id]
+//       );
+//     }
+
+//   }
+//   catch (error) {
+//     console.log('Vendor Default Error', error)
+//     return res.json({
+//       message: 'Something went wrong'
+//     })
+//   } finally {
+//     await db.close();
+//     return res.json({
+//       message: 'Vendor Updated'
+//     })
+//   }
+
+// });
+
+
+router.post("/demo_schedule/request", async (req, res) => {
+  try {
+    const {
+      organizationName = '',
+      organizationType = '',
+      organizationSize = '',
+      websiteUrl = '',
+      fullName = '',
+      clientEmail = '',
+      contactNo = ''
+    } = req.body
+
+    await bookDemoSchedule({
+      organizationName,
+      organizationType,
+      organizationSize,
+      websiteUrl,
+      fullName,
+      clientEmail,
+      contactNo
+    })
+    return res.json({
+      message: 'message sent'
+    })
+  } catch (error) {
+    return res.json({
+      message: 'Something went wrong'
+    })
+  }
+});
+
+
+
+
 // SCRIPT FOR MIGRATION
 
 const BACKUP_VENDOR = [
@@ -1005,7 +1713,7 @@ router.get("/migrate", async (req, res) => {
     );
     const userResults = await remoteDb.query("select * from users;");
     const schoolResults = await remoteDb.query("select * from schools;");
-    const parentResults = await remoteDb.query("select * from appparent;");
+    const parentResults = await remoteDb.query("select * from parent;");
     // let users = userResults.filter(user => user.user_type === "User");
     let vendors = userResults.filter(
       user => user.user_type === "Vendor" && BACKUP_VENDOR.includes(user.email)

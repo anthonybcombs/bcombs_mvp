@@ -434,6 +434,7 @@ export default function index({
       <div className="parent-info-wrapper">
         <div className="img-profile-wrapper">
           <img src={imagePreview || profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
+          <div style={{ padding: 5, width: 90, textAlign: 'center' }}>Upload</div>
           {!isReadonly && (
             <UploadPhotoForm
               auth={profile ? { profile_img: profile } : ''}
@@ -880,7 +881,7 @@ export default function index({
                   id={`parent_phonenumber_${counter - 1}`}
                   name={"parent_phonenumber" + (counter - 1)}
                   // className="field-input"
-                  className={`${((emptyFields.phone_number && parentProfile.phone_number === '') || ( emptyFields.phone_invalid && parentProfile.phone_number.includes('_')) && 'highlights') && 'highlights'} field-input`} 
+                  className={`${((emptyFields.phone_number && parentProfile.phone_number === '') || (emptyFields.phone_invalid && parentProfile.phone_number.includes('_')) && 'highlights') && 'highlights'} field-input`}
                   placeholder="Phone Number"
                   onChange={({ target }) => {
                     handleParentFormDetailsChange(
@@ -1037,20 +1038,20 @@ export default function index({
                     readOnly={isReadonly}
                     name={"parent_phonenumber2" + (counter - 1)}
                     // className={
-                      // isReadonly &&
-                      //   pastParentInformation &&
-                      //   !isVendorView &&
-                      //   (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
-                      //   pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
-                      //   "field-input highlights" : "field-input"
+                    // isReadonly &&
+                    //   pastParentInformation &&
+                    //   !isVendorView &&
+                    //   (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
+                    //   pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
+                    //   "field-input highlights" : "field-input"
                     // }
                     className={`${(emptyFields.phone_number && parentProfile.phone_number === '') && 'highlights'} 
-                    ${     isReadonly &&
-                      pastParentInformation &&
-                      !isVendorView &&
-                      (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
-                      pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
-                      "field-input highlights" : "field-input"
+                    ${isReadonly &&
+                        pastParentInformation &&
+                        !isVendorView &&
+                        (pastParentInformation.phone_number2 || pastParentInformation.phone_number2 == "") &&
+                        pastParentInformation.phone_number2 != parentProfile.phone_number2 ?
+                        "field-input highlights" : "field-input"
                       }
                      `
                     }
@@ -1290,7 +1291,7 @@ export default function index({
                   type="password"
                   id={`password_${counter - 1}`}
                   name={"parent_password" + (counter - 1)}
-                  className={`field-input ${(emptyFields.password && parentProfile.password === '' || (emptyFields.password_not_match &&  parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
+                  className={`field-input ${(emptyFields.password && parentProfile.password === '' || (emptyFields.password_not_match && parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
                   placeholder="Password"
                   autoComplete="new-password"
                   defaultValue={parentProfile?.password}
@@ -1323,7 +1324,7 @@ export default function index({
                         return oneSpecialCharacterRegex.test(value);
                       }
                     }
-                   
+
                   })}
                 />
                 <label className="field-label" for={`password_${counter - 1}`}>
@@ -1331,7 +1332,7 @@ export default function index({
                 </label>
               </div>
               <ErrorMessage
-                field={errors["parent_password" + (counter - 1)] || (emptyFields.password && parentProfile.password === '' || (emptyFields.password_not_match &&  parentProfile.password !== parentProfile.confirmed_password))}
+                field={errors["parent_password" + (counter - 1)] || (emptyFields.password && parentProfile.password === '' || (emptyFields.password_not_match && parentProfile.password !== parentProfile.confirmed_password))}
                 errorType="required"
                 message={
                   <>
@@ -1361,7 +1362,7 @@ export default function index({
                   type="password"
                   id={`parent_confirmed_paswword_${counter - 1}`}
                   name={`parent_confirmed_paswword${counter - 1}`}
-                  className={`field-input ${((emptyFields.confirmed_password && parentProfile.confirmed_password === '') || (emptyFields.password_not_match &&  parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
+                  className={`field-input ${((emptyFields.confirmed_password && parentProfile.confirmed_password === '') || (emptyFields.password_not_match && parentProfile.password !== parentProfile.confirmed_password)) && 'highlights'}`}
                   placeholder="Confirmed Password"
                   autoComplete="new-password"
                   defaultValue={parentProfile?.confirmed_password}
@@ -1392,7 +1393,7 @@ export default function index({
                 </label>
               </div>
               <ErrorMessage
-                field={errors[`parent_confirmed_paswword${counter - 1}`] || emptyFields.confirmed_password && parentProfile.confirmed_password === ''}  
+                field={errors[`parent_confirmed_paswword${counter - 1}`] || emptyFields.confirmed_password && parentProfile.confirmed_password === ''}
                 errorType="required"
                 message="Confirm password is required."
               />
@@ -1959,7 +1960,7 @@ export default function index({
             <div className="field select-field-wrapper">
               {!isReadonly ? (
                 <select
-                  required={selectedStep === 2}
+                  required={false}
                   defaultValue={parentProfile?.level_education}
                   name="parent_educationlevel"
                   className={
@@ -2118,7 +2119,7 @@ export default function index({
                 <span className="required">*</span> How did you find us?
               </label>
               <input
-                required={selectedStep === 2}
+                //     required={selectedStep === 2}
                 readOnly={isReadonly}
                 id={`parent_person_recommend_${counter - 1}`}
                 name={"parent_person_recommend" + (counter - 1)}
@@ -2160,6 +2161,22 @@ export default function index({
               errorType="required"
               message="This field is required"
             />
+          </div>
+          <div className="form-group">
+            <input
+              type="checkbox"
+              name="is_parent_allow_shared"
+              defaultChecked={parentProfile?.is_parent_allow_shared}
+              onChange={e => {
+                handleParentFormDetailsChange(
+                  counter - 1,
+                  "profile",
+                  "is_parent_allow_shared",
+                  e.target.value === 'on' ? 1 : 0
+                );
+              }}
+
+            /> Share Information to Others
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React  from 'react';
+import { useSelector } from 'react-redux';
 
 import '../../../Style/tablet.css';
 import './style.css';
@@ -23,6 +24,12 @@ import BcombsAppMobile600 from '../../../Resources/images/BCombs-App-Mobile-600w
 import BcombsAppFinalLogo180 from '../../../Resources/images/BCombs_Final-Logo2-180w.png';
 
 const TabletPage = props => {
+
+    const { auth } = useSelector(state => {
+        return {
+            auth: state.auth
+        }
+    });
   
     return <div
         id="dmRoot"
@@ -132,7 +139,7 @@ const TabletPage = props => {
                                                                             data-display-type="block"
                                                                             className="u_1395758421 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient"
                                                                             file="false"
-                                                                            href="/login"
+                                                                            href={auth?.user_id ? '/dashboard' : '/login'}
                                                                             data-element-type="dButtonLinkId"
                                                                             id={1395758421}
                                                                             data-buttonstyle="FLAT_ROUND_ICON"
@@ -153,7 +160,7 @@ const TabletPage = props => {
                                                                                 />
                                                                             </span>
                                                                             <span className="text" id={1650154059}>
-                                                                                USER LOGIN
+                                                                            {auth?.user_id ? 'GO TO DASHBOARD' : 'USER LOGIN'}
                                                                             </span>
                                                                         </a>
                                                                     </div>

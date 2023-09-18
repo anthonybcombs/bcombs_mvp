@@ -9,7 +9,7 @@ import {
 import client, { getRedisKey } from "../../services/redis";
 import { getUserFromDatabase } from "../index";
 import { addVendor } from "../vendor"
-import { getUserProfileFromDatabase } from "../index.js";
+import { getUserProfileFromDatabase, updateLastLogin } from "../index.js";
 
 export const getUsers = async () => {
   const db = makeDb();
@@ -85,6 +85,8 @@ export const getUserInfo = async creds => {
         userInfo.user_id = id;
         userInfo.type = type;
         userInfo.attendance_filter_config = attendance_filter_config;
+
+        userInfo.is_custom_form_user = false; // await checkIfCustomFormUser(id);
         
         client.set(creds.access_token, JSON.stringify(userInfo));
         client.EXPIRE([creds.access_token, "5"]);
@@ -98,6 +100,23 @@ export const getUserInfo = async creds => {
     return error;
   }
 };
+
+// const checkIfCustomFormUser = async id => {
+//   const db = makeDb();
+//   try {
+//     const row = await db.query(
+//       `SELECT id  FROM application_user WHERE user_id=UUID_TO_BIN(?) AND custom_app_id IS NOT NULL`,
+//       [
+//         id
+//       ]
+//     );
+
+//     return row.length > 0 ? true : false;
+//   } catch (error) {
+//   } finally {
+//     await db.close();
+//   }
+// }
 
 export const executeSignInApplication = async user => {
   
@@ -148,6 +167,8 @@ export const executeSignIn = async user => {
           }
         };
       }
+
+      await updateLastLogin(u.id);
       return {
         user: {
           ...authData,
@@ -384,9 +405,10 @@ export const executeUserUpdate = async user => {
     const { id } = users.filter(user => user.email === email)[0];
     const isProfileExist = await isProfileExistFromDatabase(id);
 
-    console.log(" executeUserUpdate user", user);
+    // console.log(" executeUserUpdate user", user);
     console.log(" executeUserUpdate id", id);
     console.log(" executeUserUpdate isProfileExist", isProfileExist);
+    console.log(" executeUserUpdate personalInfo", personalInfo);
     if (!isProfileExist) {
       await db.query(
         "UPDATE users SET is_profile_filled=1 where id=UUID_TO_BIN(?)",
@@ -481,10 +503,10 @@ export const executeUserUpdate = async user => {
           id
         ]
       );
-      await db.query(
-        "UPDATE user_calendars set image=?,name=? WHERE user_id=UUID_TO_BIN(?)",
-        ["", calendarInfo.name, id]
-      );
+      // await db.query(
+      //   "UPDATE user_calendars set image=?,name=? WHERE user_id=UUID_TO_BIN(?)",
+      //   ["", calendarInfo.name, id]
+      // );
     }
     client.DEL(user.creds.access_token);
     return {
@@ -565,7 +587,7 @@ export const getUserApplication = async email => {
 
   try {
     let parent = await db.query(
-      `SELECT vendor.name,
+    `SELECT vendor.name,
       parent.email_address,
       parent.firstname,
       parent.lastname,
@@ -657,14 +679,15 @@ export const executeAddUserProfile = async payload => {
     console.log("Execute Add User Profile ", currentUser);
     console.log("Execute Add User Payload", payload);
     await db.query(
-      "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,gender,zip_code,birth_date) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?)",
+      "INSERT IGNORE INTO user_profiles (id,user_id,first_name,last_name,gender,zip_code,birth_date, is_parent_allow_shared) values(UUID_TO_BIN(UUID()),UUID_TO_BIN(?),?,?,?,?,?,?)",
       [
         currentUser.id,
         payload.firstname,
         payload.lastname,
         payload.gender || "",
         payload.zip_code || "",
-        payload.dateofbirth || ""
+        payload.dateofbirth || "",
+        payload.is_parent_allow_shared || 0
       ]
     );
   } catch (err) {

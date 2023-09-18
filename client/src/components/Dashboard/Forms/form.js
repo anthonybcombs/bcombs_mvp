@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from "@reach/router";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash, faCopy } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -40,7 +41,7 @@ export default ({
       >
         {/* START - This is a hidden button to be triggered(click) on clicking the parent div */}
         {/* Reason is window.open will be blocked at some browser */}
-        <a id={`trigger-click-${form_id}`} style={{ display: 'none' }} href={`/dashboard/builder/${form_id}/edit`} />
+        <Link id={`trigger-click-${form_id}`} style={{ display: 'none' }} to={`/dashboard/builder/${form_id}/edit${vendor ? `?vendor=${vendor}` : ''}`} />
         {/* END  */}
 
         <div className='form-title'>

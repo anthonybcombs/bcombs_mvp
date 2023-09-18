@@ -475,6 +475,7 @@ export default function index({
       <div className="child-info-wrapper">
         <div className="img-profile-wrapper">
           <img src={imagePreview || profile || ProfileImg} width="80" height="80" onClick={() => setUploadPhotoVisible(true)} />
+          <div style={{ padding: 5, width: 90, textAlign: 'center' }}>Upload</div>
           {!isReadonly && (
             <UploadPhotoForm
               auth={profile ? { profile_img: profile } : ''}
@@ -492,6 +493,7 @@ export default function index({
               }}
             />
           )}
+
         </div>
         <div className="grid">
           <div className="form-group">
@@ -686,6 +688,7 @@ export default function index({
                 )}
                 selected={childProfile.date_of_birth}
                 disabled={isReadonly}
+                // maxDate={new Date()}
                 onChange={date => {
                   handleChildFormDetailsChange(
                     counter - 1,
@@ -1775,7 +1778,7 @@ export default function index({
 
     
             </div>
-            <input
+            {/* <input
               type="checkbox"
               name="child_select_all"
               onChange={e => {
@@ -1803,7 +1806,7 @@ export default function index({
               field={errors["ch_lives_with" + (counter - 1)]}
               errorType="required"
               message="Child lives with is required"
-            />
+            /> */}
           </div>
         </div>
       </div>

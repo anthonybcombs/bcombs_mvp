@@ -289,6 +289,7 @@ const inputs = `
         gender: String
         ethnicities: String
         parent_id: String
+        is_parent_allow_shared: Int
     }
 
     input DaycareChildInfoInput {
@@ -366,6 +367,7 @@ const inputs = `
         gender: String
         ethnicities: String
         image: String
+        is_parent_allow_shared: Int
     }
 
     input DaycareApplicationInput {
@@ -601,7 +603,8 @@ const inputs = `
         isMultiple: Boolean
         requireAddOption : Boolean
         fixedWidth: Boolean
-        file: FileContentInput
+        file: FileContentInput 
+        imageString: String
     }
     
     input FileContentInput {
@@ -717,6 +720,8 @@ const inputs = `
         app_id: String   
         app_group_id: String   
         attendance_status: String   
+        attendance_start_time: String
+        attendance_end_time: String
         volunteer_hours: Float
         mentoring_hours: Float
         child_id: String   
@@ -734,6 +739,11 @@ const inputs = `
         event_name: String
         location: String
         description: String
+        create_event: Boolean
+        vendorId2: Int
+        user_id: String   
+        event_id: String
+        form_id: String
     }
 
     input UserAttendanceFilterConfigInput{
@@ -868,10 +878,34 @@ const inputs = `
         logo: String
         vendor_id: String!
     }
+
+    input UserAttendanceInput {
+        child_id: String!
+        event_id: String!
+        attendance_date: String!
+        attendance_start_time: String
+        attendance_end_time: String
+        attendance_type: String
+
+    }
+
+    input ParentShareByVendorInput {
+        parent_id: String
+        is_vendor_allow_shared: Int
+    }
+
+    input ParentVendorShareInput{
+        parents: [ParentShareByVendorInput]
+        vendor_id: String
+
+    }
 `;
 const queryTypes = `
     scalar Date
 
+    type UserAttendance {
+        status: String
+    }
     type Event {
         id: String
         name: String
@@ -937,6 +971,7 @@ const queryTypes = `
         last_name: String
         school: String
         zip_code: String
+        is_custom_form_user: Boolean
         
     }
     type UserType {
@@ -1079,6 +1114,10 @@ const queryTypes = `
       is_default: Int
   }
 
+    type DefaultVendorResponse{
+        message: String
+    }
+
     type LocationSite {
         id: String!
         vendor_location_site_id: String!
@@ -1201,10 +1240,12 @@ const queryTypes = `
         other_allergies: String
         current_medications: String
         health_insurance_information: String
+        is_parent_allow_shared: Int
+        is_vendor_allow_shared: Int
     }
 
     type Parent {
-        parent_id: String!
+        parent_id: String
         new_parentId: String
         firstname: String
         lastname: String
@@ -1236,6 +1277,10 @@ const queryTypes = `
         birthdate: Date
         gender: String
         ethnicities: String
+        is_parent_allow_shared: Int
+        is_vendor_allow_shared: Int
+        is_profile_filled: Int
+        last_login: Date
     }
 
     type Application {
@@ -1404,6 +1449,8 @@ const queryTypes = `
         notes: String
         received_reminder: Boolean
         received_update: Boolean
+        is_profile_filled: Int
+        last_login: Date
     }
 
     type CustomApplicationByVendor {
@@ -1412,6 +1459,8 @@ const queryTypes = `
         form: String
         class_teacher: String
         form_contents: String
+        is_profile_filled: Int
+        last_login: Date
     }
 
     type CustomForm {
@@ -1463,6 +1512,7 @@ const queryTypes = `
         requireAddOption : Boolean
         fixedWidth: Boolean
         file: FileContent
+        imageString: String
     }
 
     type FileContent {
@@ -1579,7 +1629,7 @@ const queryTypes = `
         event_name: String
         description: String
         location: String
-        
+        event_id: String
     }
 
     type AttendanceList {
@@ -1593,7 +1643,7 @@ const queryTypes = `
         description: String
         firstname: String
         lastname: String
-        attendance_status: String   
+        attendance_status: String
         child_id: String   
         image: String
         mentoring_hours: Float
@@ -1601,6 +1651,10 @@ const queryTypes = `
         is_excused: Int
         is_following: Int
         app_group_name: String
+        event_id: String
+        event_title: String
+        form_contents: CustomForm
+        new_childId: String
     }
 
     type EventAttendanceList {
@@ -1835,8 +1889,12 @@ const mutations = `
         removeGroupFromArchive(archivedGroupIds: [Int], vendorId: String): [ArchivedGroup]
         createGroupReminder(groupReminder: SetReminderInput): [ApplicationReminder]
         updateVendorLogo(vendorLogo: VendorLogoInput): Vendor
+        createUpdateChildAttendance(user: UserAttendanceInput): UserAttendance
+        updateParentVendorShare(parents: [ParentShareByVendorInput], vendor_id: String, app_group_id: String ,form_type: String): [Parent]
+        updateDefaultVendor(user_id: String!, vendor_id:String): DefaultVendorResponse
     }
 `;
+
 
 const queries = `
     type RootQuery{
@@ -1877,6 +1935,7 @@ const queries = `
         getCustomFormApplicantById(app_id: String): SubmittedCustomApplicationOutput
         getCustomApplicationHistoryById(app_id: String!): [ApplicationHistory]
         getAttendance(application_group_id: String, attendance_type: String): [AttendanceList]
+        getAttendanceByEvent(event_id: String!, application_group_id: String, attendance_type: String): [AttendanceList]
         getEventAttendance(application_group_id: String): [EventAttendanceList]
         getUserVendorForms(user: String!): [VendorForms]
         getFormAppGroup(form: String!): [VendorAppGroup]
@@ -1892,6 +1951,7 @@ const queries = `
         getArchivedGroup(vendor_id: String): [ArchivedGroup]
         getVendorApplicationReminder(vendor_id: String): [ApplicationReminder]
         triggerCronSetReminder: String
+        getParentByVendor(vendor_id: String, app_group_id: String, form_type: String, vendor_mode: Boolean): [Parent]
       }
 `;
 

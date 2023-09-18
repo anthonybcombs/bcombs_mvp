@@ -3,6 +3,9 @@ import React from 'react'
 import FormGroup from '../FormGroup'
 import FieldConstructor from '../../FormBuilder/FieldConstructor'
 
+
+import { isValidJSONString } from '../../../../../helpers/Arrays'
+
 export default ({
   isReadOnly, fields, fieldError, id: pageId, addresses, historyFields = [],
   onChange, onCheckError, onCopyFirstAddress, onGetGroupById
@@ -31,7 +34,7 @@ export default ({
             FieldConstructor[fieldProps.type]({
               key: `specialField-${fieldProps.id}-${index}`,
               ...fieldProps,
-              fields: fieldProps.fields.map(e => ({ ...e, value: e.value ? JSON.parse(e.value) : '' })),
+              fields: fieldProps.fields.map(e => ({ ...e, value: e.value ? isValidJSONString(e.value) ? JSON.parse(e.value) : e.value : '' })),
               isReadOnly: isReadOnly,
               historyFields: newHistoryFields,
               fieldError,

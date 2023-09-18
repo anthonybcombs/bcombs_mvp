@@ -113,7 +113,7 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
         return enableEdit ? <div>
 
           <DatePicker
-            selected={row.school_year_start && row.school_year_start !== '' ? isNaN(row.school_year_start) ? new Date(row.school_year_start) : parseInt(row.school_year_start) : ''}
+            selected={row && row.school_year_start && row.school_year_start !== '' ? isNaN(row.school_year_start) ? new Date(row.school_year_start) : parseInt(row.school_year_start) : ''}
             onChange={date => {
               handleInputChange({ target: { value: date.toISOString() } }, row.id, 'school_year_start')
             }}
@@ -123,7 +123,7 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
           />
 
           <DatePicker
-            selected={row.school_year_end && row.school_year_end !== '' ? isNaN(row.school_year_end) ? new Date(row.school_year_end) : parseInt(row.school_year_end) : ''}
+            selected={row && row.school_year_end && row.school_year_end !== '' ? isNaN(row.school_year_end) ? new Date(row.school_year_end) : parseInt(row.school_year_end) : ''}
             onChange={date => {
               handleInputChange({ target: { value: date.toISOString() } }, row.id, 'school_year_end')
             }}
@@ -131,7 +131,7 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
             showMonthYearPicker
             showFullMonthYearPicker
           />
-        </div> : `${moment(row.school_year_start).format('YY')}/${moment(row.school_year_end).format('YY')}`
+        </div> : `${row && moment(row.school_year_start).format('YY')}/${row && moment(row.school_year_end).format('YY')}`
       case 'beg_cum':
         const prevYL = row.year_level - 1
         return (propRows.find(e => e.year_level === prevYL) || {}).gpa_final || '--'
@@ -390,11 +390,11 @@ export default ({ appGroupId, rows: propRows, testOptions, childId, refreshGrade
                                    
                                     <input
                                       type={type === 'number' ? 'number' : 'text'}
-                                      value={row[key]}
+                                      value={row && row[key]}
                                       onChange={(e) => handleInputChange(e, row.id, key)}
                                   />
                                   ) : (
-                                    row[key] || '--'
+                                    row && row[key] ? row[key] : '--'
                                   )
                                 )
                               }

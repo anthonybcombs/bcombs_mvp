@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
 import { requestUpdateVendor } from "../../../../redux/actions/Vendors";
-import ErrorMessage from "../../../../helpers/ErrorMessage";
+// import ErrorMessage from "../../../../helpers/ErrorMessage";
 import Loading from "../../../../helpers/Loading.js";
 
 import Toggle from "react-toggle";
@@ -149,7 +149,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
               <div className="form-group">
                 <div className="field">
                   <input
-                    required
+                    // required
                     id="vendor_name"
                     name="vendor_name"
                     className="field-input"
@@ -160,7 +160,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
                     value={formSettings.name}
                   />
                   <label className="field-label" for="vendor_name">
-                    Vendor Name <span style={{ color: "red" }}>{"*"}</span>
+                    Vendor Name {/* <span style={{ color: "red" }}>{"*"}</span> */}
                   </label>
                 </div>
               </div>
@@ -169,7 +169,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
               <div className="form-group">
                 <div className="field">
                   <input
-                    required={formSettings.section1_show}
+                    // required={formSettings.section1_show}
                     id="section1_title"
                     name="section1_title"
                     className="field-input title"
@@ -182,7 +182,7 @@ export default function index({ vendor, formSettingsLoading = false }) {
                   <label className="field-label" for="section1_title">
                     Title{" "}
                     <span style={{ color: "red" }}>
-                      {formSettings.section1_show ? "*" : ""}
+                      {/* {formSettings.section1_show ? "*" : ""} */}
                     </span>
                   </label>
                 </div>

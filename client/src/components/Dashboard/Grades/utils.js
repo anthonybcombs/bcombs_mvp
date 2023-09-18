@@ -7,18 +7,24 @@ export const getGradeTestAttempt = (tests = [], grade_taken = 1, test_name, chil
 export const getNameFromCustomForm = (form_contents) => {
   let firstname = '--'
   let lastname = '--'
-  const { formData = {} } = typeof form_contents === 'string' ? JSON.parse(form_contents) : form_contents
-  const nameField = formData.find(e => e.type === 'name')
-  const loginField = formData.find(e => e.type === 'login')
-  if (nameField) {
-    let [, fName = {}, , lName = {}] = nameField.fields || []
-    firstname = fName?.value ? JSON.parse(fName.value) : '--'
-    lastname = lName?.value ? JSON.parse(lName.value) : '--'
-  } else if (loginField) {
-    let [email = {}] = loginField.fields || []
-    firstname = email?.value ? JSON.parse(email.value) : ''
-    lastname = ''
+console.log('getNameFromCustomForm',form_contents)
+  try {
+    const { formData = {} } = typeof form_contents === 'string' ? JSON.parse(form_contents) : form_contents
+    const nameField = formData.find(e => e.type === 'name')
+    const loginField = formData.find(e => e.type === 'login')
+    if (nameField) {
+      let [, fName = {}, , lName = {}] = nameField.fields || []
+      firstname = fName?.value ? JSON.parse(fName.value) : '--'
+      lastname = lName?.value ? JSON.parse(lName.value) : '--'
+    } else if (loginField) {
+      let [email = {}] = loginField.fields || []
+      firstname = email?.value ? JSON.parse(email.value) : ''
+      lastname = ''
+    }
+  
+    return { firstname, lastname }
   }
-
-  return { firstname, lastname }
+  catch (err) {
+    return { firstname, lastname }
+  }
 }

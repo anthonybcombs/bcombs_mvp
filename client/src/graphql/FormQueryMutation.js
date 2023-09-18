@@ -141,6 +141,7 @@ export const FORM_UPDATE_MUTATION = gql`
               column
               value
               required
+              imageString
               validation {
                 include
                 items {
@@ -419,6 +420,8 @@ export const GET_APPLICANTS_BY_FORM = gql`
       verification
       student_status
       notes
+      is_profile_filled
+      last_login
       form_contents {
         formTitle
         formData {

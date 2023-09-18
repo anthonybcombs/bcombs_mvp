@@ -25,7 +25,7 @@ export default props => {
 		auth,
 		vendors,
 		loading,
-    vendor,
+   	 	vendor,
 		form: { formList = [], updateForm, addForm, deleteForm },
 	} = useSelector(({ auth, vendors, vendor, loading, form }) => {
 		return { auth, vendors, vendor, loading, form };
@@ -142,7 +142,7 @@ export default props => {
 		<FormStyled>
 			<h2>Form Manager</h2>
 			<div id="formManager">
-				<Headers onChangeFilter={handleChangeFilter} />
+				<Headers vendor={queryParams?.vendor} onChangeFilter={handleChangeFilter} />
 				{isLoading ? (
 					<Loading />
 				) : (
@@ -159,6 +159,7 @@ export default props => {
 						setRenameModal={data => setRenameModal(data)}
 						setCloneModal={data => setCloneModal(data)}
 						setDeleteModal={data => setDeleteModal(data)}
+						vendor={queryParams?.vendor}
 					/>
 				)}
 			</div>

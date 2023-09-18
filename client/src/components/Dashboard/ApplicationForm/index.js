@@ -1184,6 +1184,7 @@ export default function index() {
         age: parent.profile.date_of_birth ? getAge(parent.profile.date_of_birth) : 0,
         ethnicities: getAppEtnicities(parent.profile.ethinicity),
         image: parent.profile.image,
+        is_parent_allow_shared: parent.profile.is_parent_allow_shared,
       })
     });
     return parents;
@@ -1336,7 +1337,6 @@ export default function index() {
     window.location.replace(window.location.origin);
   }
 
-  console.log('emptyFieldsssssssssss', emptyFields)
   return (
     <ApplicationFormStyled
       id="applicationForm">

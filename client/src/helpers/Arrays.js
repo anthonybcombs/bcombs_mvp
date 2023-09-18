@@ -7,3 +7,13 @@ export function groupBy(data, n) {
   }
   return group;
 }
+
+
+export function isValidJSONString(str) {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

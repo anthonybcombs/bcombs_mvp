@@ -16,7 +16,7 @@ import StandardTestTable from './StandardTestTable'
 import GradeCumulativeTable from './GradeCumulativeTable'
 import IndividualGrades from './IndividualGrades'
 
-import { requestGetStudentCumulativeGradeByUser  } from '../../../../../redux/actions/Grades'
+import { requestGetStudentCumulativeGradeByUser } from '../../../../../redux/actions/Grades'
 import { getNameFromCustomForm } from '../../utils'
 
 export default ({ child_id }) => {
@@ -27,7 +27,7 @@ export default ({ child_id }) => {
 
 
   const queryLocation = useLocation();
-	const { group_id, parent_ids, group_type, request_type, is_parent } = parse(queryLocation.search)
+  const { group_id, parent_ids, group_type, request_type, is_parent } = parse(queryLocation.search)
   //const isVendor = request_type === 'vendor'
   const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
   const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
@@ -59,7 +59,7 @@ export default ({ child_id }) => {
   let profile = ''
 
   const { school_name, year_level, gpa_final, gpa_sem_1, gpa_sem_2, final_student_rank, mid_student_rank } = maxBy((data?.cumulative_grades || []), 'year_level') || {}
-  
+
   if (form_contents) {
     const name = getNameFromCustomForm(form_contents)
     firstname = name.firstname
@@ -78,7 +78,7 @@ export default ({ child_id }) => {
       profile = url.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + url : url;
     }
   }
-  console.log('TESTTTTTTTTTTTTTTTTTTTTTTT', data)
+
   return (
     <GradesStyled>
       <h2>Grades and Tracking</h2>
@@ -99,14 +99,16 @@ export default ({ child_id }) => {
                     <img src={profile || ProfileImg} />
                     <div className='profile-name'>{firstname} {lastname}</div>
                   </div>
-                  <div className='customLink'>
-                    <Link
-                      className='applyFilterBtn'
-                      to={is_parent ? `/dashboard/grades/input?appGroupIds=${group_id}&parent_ids=${parent_ids}&is_parent=true` : `/dashboard/grades/input/${child_id}?${commonQueryStrings}`}
-                    >
+                  {!is_parent &&
+                    <div className='customLink'>
+                      <Link
+                        className='applyFilterBtn'
+                        to={is_parent ? `/dashboard/grades/input?appGroupIds=${group_id}&parent_ids=${parent_ids}&is_parent=true` : `/dashboard/grades/input/${child_id}?${commonQueryStrings}`}
+                      >
                         {`Grades & Test Input`}
-                    </Link>
-                  </div>
+                      </Link>
+                    </div>}
+
                   <Collapsible
                     trigger={(
                       <div className='CollapsibleHeader'>

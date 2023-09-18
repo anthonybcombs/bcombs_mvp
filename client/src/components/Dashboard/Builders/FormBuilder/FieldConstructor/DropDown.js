@@ -8,6 +8,8 @@ export default ({
   isReadOnly = false, options, required, column, onChangeFieldSettings,
   isBuilder, isActive, id: fieldId, onChange, onCheckError, value = {}, className
 }) => {
+
+
   const hasOthers = options.find(e => e.name === 'other')
 
   const handleCheckError = (data) => {

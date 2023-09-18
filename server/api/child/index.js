@@ -284,7 +284,7 @@ export const addDaycareChild = async ({
 export const addChild = async ({
   firstname,
   lastname,
-  age,
+  age = 0,
   birthdate,
   gender,
   phone_type,
@@ -356,6 +356,14 @@ export const addChild = async ({
   let result = {};
   let lastId = "";
   let child;
+
+  let currentAge = age || 0;
+
+  if(birthdate) {
+    let today = new Date();
+    let birthDate = new Date(birthdate);
+    currentAge = today.getFullYear() - birthDate.getFullYear();
+  }
 
   try {
     result = await db.query(
@@ -441,8 +449,8 @@ export const addChild = async ({
       [
         firstname,
         lastname,
-        age,
-        birthdate,
+        currentAge,
+        birthdate ? birthdate : null,
         gender,
         phone_type,
         phone_number,
@@ -461,7 +469,7 @@ export const addChild = async ({
         programs,
         school_name,
         school_phone,
-        has_suspended,
+        has_suspended ? has_suspended : 0,
         reason_suspended,
         year_taken,
         hobbies,
@@ -517,7 +525,7 @@ export const addChild = async ({
     child = child.length > 0 ? child[0] : "";
 
   } catch (err) {
-    console.log("add child error", err);
+    console.error("add child error", err);
   } finally {
     await db.close();
     console.log("Add child", result);
@@ -952,3 +960,61 @@ export const getChildChildRelationship = async (child) => {
     return childs
   }
 }
+
+
+export const getChildByChildId = async childId => {
+  const db = makeDb();
+
+  try {
+
+    const rows = await db.query(
+      `SELECT BIN_TO_UUID(ch_id) as id, email_address, firstname, lastname  FROM child WHERE new_childId=?`,
+      [childId]
+    );
+
+    console.log('getChildByChildId rows',rows )
+
+    if (rows.length > 0) {
+      return rows[rows.length - 1];
+    }
+
+    return {
+      is_exist: false,
+      status: "Child not exist"
+    };
+  } catch (err) {
+    console.log("Child User", err);
+  } finally {
+    await db.close();
+  }
+};
+
+
+export const getGroupByChildId = async (childId) => {
+  const db = makeDb();
+  let results  = {};
+  try {
+    const rows = await db.query(
+      `select BIN_TO_UUID(app_grp_id) as app_grp_id  from vendor_app_groups_to_student where child_id=UUID_TO_BIN(?)`,
+      [childId]
+    );
+
+    if (rows.length > 0) {
+      results =  {
+        app_groups: rows
+      };
+    }
+
+    else {
+      return {
+        app_groups: []
+      };
+    }
+  } catch (err) {
+    console.log("Child User", err);
+  } finally {
+    await db.close();
+    return results
+  }
+};
+

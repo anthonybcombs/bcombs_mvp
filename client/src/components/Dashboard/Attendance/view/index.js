@@ -30,6 +30,7 @@ import { requestUpdateUserAttendanceFilterConfig, requestUserInfo } from '../../
 import ProfileImg from "../../../../images/defaultprofile.png";
 
 import { getNameFromCustomForm } from '../../Grades/utils'
+
 const AttendanceSummaryStyled = styled.div`
 	width: auto;
 	max-width: 1920px;
@@ -431,6 +432,32 @@ const DISPLAY_DATE_FORMAT = 'MMM d, yyyy';
 // MMM d, yyyy
 const DEFAULT_DISPLAY_DAYS = [subDays(new Date(), 2), subDays(new Date(), 1), new Date()];
 
+
+function getNearestDates(dateStrings, numDates) {
+	// Convert date strings to Date objects
+	const dates = dateStrings.map(dateString => new Date(dateString));
+
+	// Sort the dates in ascending order
+	dates.sort((a, b) => a - b);
+
+	const currentDate = new Date();
+	const nearestDates = [];
+
+	for (const date of dates) {
+		if (nearestDates.length >= numDates) {
+			break; // Exit the loop once we have enough nearest dates
+		}
+
+		// Check if the date is in the future (greater than the current date)
+		if (date > currentDate) {
+			nearestDates.push(format(date, DATE_FORMAT));
+		}
+	}
+
+	return nearestDates;
+}
+
+
 const AttendanceIcon = ({ color = 'gray' }) => {
 	return <div className="circle-icon" style={{ backgroundColor: color }} />;
 };
@@ -472,19 +499,18 @@ const isDateInstance = () => {
 }
 
 const getChildFromFormData = formData => {
-    const parentData = formData.find(item => {
-      const label = item.label.toLowerCase();
-      return   (label.includes('mentee') && label.includes('name')) ||  (label.includes('child') && label.includes('name'));
-    });
+	const parentData = formData.find(item => {
+		const label = item.label.toLowerCase();
+		return (label.includes('mentee') && label.includes('name')) || (label.includes('child') && label.includes('name'));
+	});
 
-    const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
-    console.log('parentFields',parentFields)
-    return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"',"")} ${parentFields[1].value.replaceAll('"',"")}` : ''
-  }
+	const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
+	return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"', "")} ${parentFields[1].value.replaceAll('"', "")}` : ''
+}
 
 // const getStudentName = row => {
 
-    
+
 //     if(row?.child?.firstname && row?.child?.lastname) {
 
 
@@ -648,7 +674,7 @@ export default function index(props) {
 		}
 	);
 	let dateAttendanceConfigFilter = {};
-	if ( auth && auth.attendance_filter_config && auth.attendance_filter_config !== '') {
+	if (auth && auth.attendance_filter_config && auth.attendance_filter_config !== '') {
 		dateAttendanceConfigFilter = JSON.parse(auth.attendance_filter_config);
 
 		if (dateAttendanceConfigFilter.default_attendance_filter_range) {
@@ -709,8 +735,8 @@ export default function index(props) {
 		if (vendors && vendors.length > 0 && searchParams && searchParams.type !== 'custom') {
 			dispatch(requestGetApplications(vendors[0].id))
 		}
-		else if(vendors && vendors.length > 0 && searchParams && searchParams.type === 'custom' ) {
-			
+		else if (vendors && vendors.length > 0 && searchParams && searchParams.type === 'custom') {
+
 			dispatch(requestGetCustomApplicationByVendor(vendors[0].id))
 		}
 	}, [vendors]);
@@ -734,11 +760,11 @@ export default function index(props) {
 	}, []);
 	useEffect(() => {
 
-		const appGroupIDLists = searchParams.appGroupIds &&  searchParams.appGroupIds.split(',')
-					
-		
+		const appGroupIDLists = searchParams.appGroupIds && searchParams.appGroupIds.split(',')
+
+
 		if (attendance.list) {
-			
+
 			// const activeAppszz =  applications.activeapplications && applications.activeapplications.filter(item => {
 			// 	// ebdd7331-1849-11ed-9ebd-72ed28470cbe
 			// 	// ebdd7331-1849-11ed-9ebd-72ed28470cbe
@@ -750,9 +776,9 @@ export default function index(props) {
 			// console.log('activeAppszz',activeAppszz)
 
 
-			let filteredAttendance = [...( attendance.list || [])]
+			let filteredAttendance = [...(attendance.list || [])]
 
-			if(searchParams && searchParams.type === 'all') {
+			if (searchParams && searchParams.type === 'all') {
 				filteredAttendance = filteredAttendance.filter(att => {
 					const isBcombs = applications.activeapplications.some(item => item.child.ch_id === att.child_id)
 					return isBcombs;
@@ -767,29 +793,29 @@ export default function index(props) {
 
 				let formApplication = {};
 
-			
+
 				if (searchParams && searchParams.type === 'custom' && searchParams.appGroupIds) {
 					const appGroupIDList = searchParams.appGroupIds.split(',')
-					
-					
-					
+
+
+
 					formApplication = applications.customActiveApplications.find(item => {
 
 						/// item.child.ch_id === att.child_id || 
 						// if ((item.app_id === att.child_id) && item.form === searchParams.formId) {
 						// 	const classTeacher = item.class_teacher && item.class_teacher.split(',');
-				
+
 						// 	return classTeacher && classTeacher.some(grpId => appGroupIDList?.includes(grpId))
 
 						//  }	
 
 						return item.app_id === att.child_id && item.form === searchParams.formId
 						// return item.child.ch_id === att.child_id || item.app_id === att.child_id
-					
+
 
 					});
 
-				
+
 				}
 				else if (searchParams && searchParams.type === 'custom' && !searchParams.appGroupIds) {
 					formApplication = applications.activeapplications.find(item => (item.class_teacher && item.class_teacher.includes(app_group_id)) && (item.app_id === att.child_id) && (item.form === searchParams.formId));
@@ -800,11 +826,7 @@ export default function index(props) {
 
 				// if(formApplication?.form_contents) {
 				// 	const contents = JSON.parse(formApplication?.form_contents);
-				// 	// console.log('contents',contents)
-				// 	console.log('contentszxczxc2222222',formApplication)
-				// 	console.log('contentszxczxc',contents)
-				// 	const dataaa = getChildFromFormData(contents.formData);
-				// 	console.log('zzzzzzzzzxxz',dataaa)
+
 
 				// 	// getChildFromFormData
 				// }
@@ -864,10 +886,10 @@ export default function index(props) {
 
 			if (searchParams && searchParams.type === 'custom') {
 				currentAttendance = currentAttendance.filter(item => item.custom && item.custom.id)
-	
+
 			}
 
-	
+
 			else {
 				// currentAttendance = currentAttendance.filter(item => (item.firstname && item.lastname) || item.fullname)
 			}
@@ -875,11 +897,30 @@ export default function index(props) {
 			//let displayDayList = [];
 			// THERE ERROR IS HERE
 
-			let displayDayList = attendance.list.map(att => {
+			// let displayDayList = attendance.list.sort((a, b) => {
+			// 	const dateA = new Date(a.attendance_date); // Convert date string to Date object
+			// 	const dateB = new Date(b.attendance_date);
 
+			// 	return dateA - dateB; // Compare dates to sort in ascending order
+			//   });
+
+			let displayDayList = attendance.list.map(att => {
 				return format(new Date(parseInt(att.attendance_date)), DATE_FORMAT)
 			});
-			displayDayList = [...new Set(displayDayList)].sort();
+
+
+			displayDayList = [...new Set(displayDayList)];
+
+			displayDayList = displayDayList.sort((a, b) => {
+				const dateA = new Date(a); // Convert date string to Date object
+				const dateB = new Date(b);
+
+				return dateA - dateB; // Compare dates to sort in ascending order
+			});
+
+
+
+
 
 			setDisplayDays(displayDayList);
 
@@ -889,10 +930,20 @@ export default function index(props) {
 			if (displayDayList.length <= 3) {
 				setCurrentDisplayDays(displayDayList);
 			} else {
-				setCurrentDisplayDays([displayDayList[0], displayDayList[1], displayDayList[2]]);
+
+				const nearestDates = getNearestDates(displayDayList, 3);
+				const dayIndexes = nearestDates.map(date => {
+					const currentIndex = displayDayList.findIndex(date2 => date2 === date);
+					return currentIndex
+				});
+				
+				setDisplayDayIndex(dayIndexes);
+				setCurrentDisplayDays(nearestDates);
 			}
 		}
 	}, [attendance.list, applications]);
+
+
 
 	useEffect(() => {
 		if (attendance.eventAttendanceList) {
@@ -1140,6 +1191,7 @@ export default function index(props) {
 			...selectedRangeDate,
 			[name]: value,
 		};
+
 		const dateIndex = displayDays.findIndex(date => date === format(new Date(value), DATE_FORMAT))
 		if (dateIndex > -1 && displayDays.length > 3) {
 			if (dateIndex < displayDays.length - 1 && dateIndex > 0) {
@@ -1169,6 +1221,8 @@ export default function index(props) {
 		// 	handleChangeRangeDate(payload);
 		// }
 	};
+
+	console.log('defaultAttendanceDisplay', defaultAttendanceDisplay)
 
 	const handleChangeDateFilter = date => {
 
@@ -1499,7 +1553,7 @@ export default function index(props) {
 							// localStorage.setItem('summaryFilterRange', JSON.stringify(selectedSummaryRangeDate));
 							// localStorage.setItem('attendanceFilterRange', JSON.stringify(selectedRangeDate));
 							if (selectedSummaryRangeDate) {
-							
+
 								if (!isDefaultDateSetLabel) {
 									setIsDefaultDateSetLabel(true);
 									const payload = {
@@ -1519,7 +1573,7 @@ export default function index(props) {
 								}
 
 							}
-							
+
 						}}>
 						Set Default Date
 					</span>

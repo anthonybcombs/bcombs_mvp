@@ -3,7 +3,7 @@ import React from 'react'
 export default (props) => {
   const { pageBreakLabel, id = '', onChangeFieldSettings, isBuilder, pageBreaks, isLastPageBreak, value = '' } = props
   const pageOptions = [
-    ...pageBreaks.map((e, index) => ({ value: e.id, label: `Page ${index + 1} (${e.label})` })).filter(e => !id.includes(e.value)),
+    ...(Array.isArray(pageBreaks) ? pageBreaks.map((e, index) => ({ value: e.id, label: `Page ${index + 1} (${e.label})` })).filter(e => !id.includes(e.value)) : []),
     { value: 'end', label: 'Submit Form' }
   ]
 
@@ -11,7 +11,7 @@ export default (props) => {
     onChangeFieldSettings({ value: pageValue })
   }
   
-  const pageBreakIndex = pageBreaks.findIndex(e => id.includes(e.id))
+  const pageBreakIndex = pageBreaks && pageBreaks.findIndex(e => id.includes(e.id))
 
   return (
     <div className={`field select-field-wrapper ${!isLastPageBreak ? 'pageBreak' : ''}`} style={{ display: 'flex', alignItems: 'center' }}>

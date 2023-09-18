@@ -23,6 +23,9 @@ import Login from './Login'
 import Website from './Website'
 import Terms from './Terms'
 
+import StaticImage from './StaticImage'
+import FormattedText from './FormattedText'
+
 
 import STATES from '../../../ApplicationForm/states.json'
 import COUNTRIES from '../../../ApplicationForm/country.json'
@@ -93,6 +96,7 @@ export default {
       value={value}
       placeholder={placeholder}
       onChange={onChange}
+      rows={4}
     />
   },
   checkbox: ({ label, name, isBuilder, onChange, isReadOnly = false }) => {
@@ -209,6 +213,9 @@ export default {
   profileImage: (props) => {
     return <ProfileImage {...props} />
   },
+  staticImage: (props) => {
+    return <StaticImage  {...props} /> 
+  },
   matrix: (props) => {
     return <Matrix {...props} />
   },
@@ -241,6 +248,10 @@ export default {
   },
   terms: (props) => {
     return <Terms {...props} />
+  },
+
+  formattedText: (props) => {
+    return <FormattedText {...props} />
   },
   // address: (props) => {
   //   return <Address {...props} />

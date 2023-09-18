@@ -605,7 +605,7 @@ export const updateApplicationTC = async ({
       ]
     );
   } catch (err) {
-    console.log("update terms and conditions", error);
+    console.log("update terms and conditions", err);
   } finally {
     await db.close();
     console.log("update tc result", result);
@@ -958,7 +958,7 @@ export const createCustomApplication = async ({
   let application;
 
   try {
-    console.log('form_contents createCustomApplication', form_contents)
+//    console.log('form_contents createCustomApplication', form_contents)
     result = await db.query(
       `INSERT INTO vendor_custom_application(
         form_id,
@@ -1001,7 +1001,7 @@ export const createCustomApplication = async ({
     if (application.length > 0) {
       application = application[0];
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-      console.log("get custom application string", application);
+     // console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
     } else {
       application = ""
@@ -1324,23 +1324,27 @@ export const getCustomFormApplicants = async ({ form_id, is_archived = 0 }) => {
 
     applications = await db.query(
       `
-        SELECT
-        id,
-        BIN_TO_UUID(form) as form,
-        BIN_TO_UUID(vendor) as vendor,
-        BIN_TO_UUID(app_id) as app_id,
-        BIN_TO_UUID(child) as child,
-        CONVERT(form_contents USING utf8) as form_contents,
-        application_date,
-        archived_date,
-        class_teacher,
-        color_designation,
-        verification,
-        student_status,
-        notes
-        FROM custom_application
-        WHERE form=UUID_TO_BIN(?) AND is_archived=?
-        ORDER BY application_date DESC
+      SELECT
+        ca.id,
+        BIN_TO_UUID(ca.form) as form,
+        BIN_TO_UUID(ca.vendor) as vendor,
+        BIN_TO_UUID(ca.app_id) as app_id,
+        BIN_TO_UUID(ca.child) as child,
+        CONVERT(ca.form_contents USING utf8) as form_contents,
+        ca.application_date,
+        ca.archived_date,
+        ca.class_teacher,
+        ca.color_designation,
+        ca.verification,
+        ca.student_status,
+        ca.notes,
+        u.last_login,
+        u.is_profile_filled
+      FROM custom_application ca
+      LEFT JOIN application_user au ON au.custom_app_id=ca.app_id
+      LEFT JOIN users u ON u.id=au.user_id
+      WHERE ca.form=UUID_TO_BIN(?) AND ca.is_archived=?
+      ORDER BY ca.application_date DESC
       `,
       [
         form_id,
@@ -1489,13 +1493,17 @@ export const getCustomApplicationByVendorId = async (vendor) => {
   try {
     applications = await db.query(
       `SELECT
-        id,
-        BIN_TO_UUID(app_id) as app_id,
-        BIN_TO_UUID(form) as form,
-        CONVERT(form_contents USING utf8) as form_contents,
-        class_teacher
-        FROM custom_application
-        WHERE vendor=UUID_TO_BIN(?)
+          ca.id,
+          BIN_TO_UUID(ca.app_id) as app_id,
+          BIN_TO_UUID(ca.form) as form,
+          CONVERT(ca.form_contents USING utf8) as form_contents,
+          ca.class_teacher,
+          u.last_login,
+          u.is_profile_filled
+        FROM custom_application ca
+        LEFT JOIN application_user au ON au.custom_app_id=ca.app_id
+        LEFT JOIN users u ON u.id=au.user_id
+        WHERE ca.vendor=UUID_TO_BIN(?)
       `,
       [
         vendor

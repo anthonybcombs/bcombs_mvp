@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
+import { Link } from "@reach/router";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faSearch, faArrowUp, faArrowDown, faTh, faBars, faHeart } from '@fortawesome/free-solid-svg-icons'
 import { Multiselect } from 'multiselect-react-dropdown'
 
-export default ({ onChangeFilter }) => {
+export default ({ onChangeFilter, vendor }) => {
 
   const CATEGORIES_OPTIONS = [
     { label: 'all', name: 'All' },
@@ -38,8 +39,8 @@ export default ({ onChangeFilter }) => {
             Search
           </label>
         </div>
-        <a
-          href='/dashboard/builder'
+        <Link
+          to={`/dashboard/builder?vendor=${vendor}`}
           // target='_blank'
           className='newFrom-btn'
         >
@@ -48,7 +49,7 @@ export default ({ onChangeFilter }) => {
             icon={faPlus}
           />
           Create a new form
-        </a>
+        </Link>
       </div>
 
       <div className='header-actions'>

@@ -1,10 +1,26 @@
 import express from "express";
 
-import { getAllCalendarActivities } from "./activity_functions"
+import { getAllCalendarActivities, getEventById } from "./activity_functions"
 
 //import { makeDb } from "../../../helpers/database";
 
 const router = express.Router();
+
+router.get('/:id', async (req,res) => {
+    const { id } = req.params;
+
+    getEventById(id, (error, retValue) => {
+        if (error) {
+            res.status(500).error({error:true, Message: error});
+            return;
+        }
+        res.status(200).json({
+            data: retValue.length > 0 ? retValue[0] : null
+        });
+
+    });
+});
+
 
 router.post("/", async (req, res) => {
 

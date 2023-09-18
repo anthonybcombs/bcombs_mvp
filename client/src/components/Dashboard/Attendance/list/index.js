@@ -553,14 +553,11 @@ const months = [
 ];
 
 const addtime = (time, hour) => {
-	console.log('Add Time Time', time)
-	console.log('Add Time hour', hour)
+
 	let times = time.split(':');
-	console.log('Add Time Timesssss', times)
 	times[0] = parseInt(times[0]) + hour;
 	times[0] >= 24 ? (times[0] -= 24) : null;
 	times[0] < 10 ? (times[0] = '0' + times[0]) : null;
-	console.log('ADDTIMEEEE', times)
 	return times.join(':');
 };
 
@@ -607,7 +604,7 @@ const DateCustomInput = ({ value, onClick, name, className, placeholder, registe
 );
 
 const TimeCustomInput = ({ value, onClick, name, className, placeholder, register, label }) => {
-	console.log('Time Custom Input', value)
+
 	return (
 		<div className="field">
 			<input
@@ -680,10 +677,11 @@ export default function index() {
 	const [defaultApplicationList, setDefaultApplicationList] = useState([]);
 	const [filteredApplicationList, setFilteredApplicationList] = useState([]);
 	const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
+	const [isCreateEvent, setIsCreateEvent] = useState(false);
 	const [appGroupIds, setAppGroupIds] = useState([]);
 	const [viewMode, setViewMode] = useState('grid');
 	const dispatch = useDispatch();
-	const { formList = [] } = form;
+
 
 	useEffect(() => {
 		if (name === 'custom' && vendor_id && auth.user_id) {
@@ -709,16 +707,9 @@ export default function index() {
 				}
 			}
 
-			// if(name !== 'custom') {
-			// 	dispatch(requestGetApplications(vendorId));
-			// }
-
 			if (name !== 'custom') {
 				dispatch(requestGetApplications(vendorId));
 			}
-			// else {
-			// 	dispatch(requestGetCustomApplicationByVendor(vendorId))
-			// }
 
 
 		}
@@ -736,7 +727,7 @@ export default function index() {
 				const filteredGroup = applicationGroups.filter(item => (searchParams && searchParams.appGroupId &&
 					(item.app_grp_id === searchParams.appGroupId)) ||
 					(searchParams && searchParams.type === 'all' && searchParams && searchParams.formId === item.form)).map(item => item.app_group_id)
-				console.log('filteredGrosssup', filteredGroup)
+
 
 				for (const group of applicationGroups) {
 					if (group.app_grp_id === searchParams.appGroupId) {
@@ -746,7 +737,7 @@ export default function index() {
 						// break;
 					}
 				}
-				// console.log('applicationGroups currentAppGroupId',currentAppGroupId)
+
 				setAppGroupId(searchParams.appGroupId);
 				const ids = searchParams && searchParams.appGroupIds ? searchParams.appGroupIds.split(',') : [];
 
@@ -777,7 +768,7 @@ export default function index() {
 				}
 			} else if (name === 'all') {
 				let vendorId = parseInt(vendor_id);
-				let currentVendor = vendors.find(item => item.id2 === vendorId)
+				let currentVendor = Array.isArray(vendors) && vendors.find(item => item.id2 === vendorId)
 				if (currentVendor && currentVendor.app_groups) {
 					const applicationGroups = currentVendor.app_groups;
 					const ids = applicationGroups.map(item => item.app_grp_id);
@@ -836,60 +827,25 @@ export default function index() {
 				return false;
 			});
 
-			console.log('filterApplicationszzzzzzzzz', filterApplications)
-			//console.log('2222applications.activeapplications1111', applications.customActiveApplications.filter(item => item.class_teacher))
-
-			// let stringAppGroupIds = appGroupIds && appGroupIds.length > 0 ? appGroupIds.join(',') : ''
-
-			// let appGroupIdStrings = appGroupIds ? appGroupIds.join(',')
 			filterApplications = filterApplications.filter(item => {
-
-
 				if (item.form === searchParams.formId && item.class_teacher && item.class_teacher !== '' && searchParams && searchParams.type !== 'all') {
 					return item.class_teacher?.includes(appGroupId)
 				}
 
 				//item.class_teacher && appGroupIds &&
 				else if (searchParams && searchParams.type === 'all' && item.form === searchParams.formId) {
-					//	let classTeacherArr = item.class_teacher.split(',');
-					// let resp = appGroupIds.some(appId => item.class_teacher?.includes(appId))
-
-					// return resp;
 					return item;
-					//return classTeacherArr.some(appGrpId => appGroupIds?.includes(appGrpId))
 				}
 
-				//return searchParams && searchParams.type === 'all' && item.class_teacher && item.form === searchParams.formId; 
-				// ( item.form === searchParams.formId  && (item.class_teacher && (appGroupId && (item.class_teacher?.includes(appGroupId)) ||  ))) || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)
+
 			});
-			// const test123 = applications.customActiveApplications.filter(item =>  item.form === searchParams.formId && (item.class_teacher && (appGroupId && (item.class_teacher?.includes(appGroupId)) ||  item.class_teacher?.includes(appGroupIds)))  || (searchParams && searchParams.type === 'all'   && item.form === searchParams.formId)  );
 
-			// if(searchParams.type === 'all'){
-			// 	filterApplications = filterApplications.map(item => {
-			// 		const classTeacher = item.class_teacher.split(',');
-			// 		if(classTeacher.length > 0) {
-			// 			return classTeacher.map(item2 => {
-			// 				return {
-			// 					...item,
-			// 					class_teacher:item2
-			// 				}
-			// 			})
-			// 		}
-			// 		return item
-			// 	}).flat()
-
-			// }
-
-
-			console.log(' applications.activeapplications1111 FILTERED APPLICATIONS', filterApplications)
 			setApplicationList(filterApplications);
 			setFilteredApplicationList(filterApplications);
 		}
 	}, [applications, appGroupId, appGroupIds]);
 
 	useEffect(() => {
-
-		console.log('attendance.list', attendance.list)
 		if (attendance.list) {
 			let updatedApplicationList = applicationList.map(application => {
 				let currentAttendance = attendance.list.find(
@@ -901,7 +857,6 @@ export default function index() {
 					is_following: currentAttendance?.is_following,
 				};
 			});
-			console.log('updatedApplicationList', updatedApplicationList)
 
 			setApplicationList(updatedApplicationList);
 			setDefaultApplicationList(updatedApplicationList);
@@ -915,7 +870,15 @@ export default function index() {
 			const redirect = () => {
 				setTimeout(() => {
 					// ${vendor_id ? `?vendor=${vendor_id}` : ''}
-					window.location.replace(`/dashboard/studentdata`);
+
+					if(isCreateEvent && vendor_id) {
+
+						const currentVendorId = name === 'custom' ?  searchParams?.vendor && parseInt(searchParams.vendor): parseInt(vendor_id)
+						window.location.replace(`/dashboard/attendance/events?vendorId=${currentVendorId}`);
+					}
+					else {
+						window.location.replace(`/dashboard/studentdata`);
+					}
 				}, 2000);
 				//window.location.replace(`/dashboard/studentdata`);
 			};
@@ -927,7 +890,7 @@ export default function index() {
 		let updatedApplication = [...(applicationList || [])];
 		let updatedFilteredApplication = [...(filteredApplicationList || [])];
 		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
-		let currentApplication = updatedApplication.find(app => app.id === payload.id);
+		// let currentApplication = updatedApplication.find(app => app.id === payload.id);
 		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
 
 		if (
@@ -987,14 +950,6 @@ export default function index() {
 			};
 		}
 
-		// updatedApplication[currentIndex] = {
-		// 	...updatedApplication[currentIndex],
-		// 	attendance_status: attendanceType,
-		// 	excused: null,
-		// };
-
-
-
 		setApplicationList(updatedApplication);
 		setFilteredApplicationList(updatedFilteredApplication);
 	};
@@ -1019,39 +974,18 @@ export default function index() {
 	};
 
 	const onSubmit = e => {
-		// const attendanceList = applicationList.map(app => {
-		// 	return {
-		// 		app_id: app.app_id,
-		// 		attendance_status: app.attendance_status || '',
-		// 		child_id: name === 'custom' ? app.app_id  : app.child && app.child.ch_id,
-		// 		vendor: app.vendor,
-		// 		volunteer_hours: app.volunteer_hours ? parseInt(app.volunteer_hours) : 0,
-		// 		mentoring_hours: app.mentoring_hours ? parseInt(app.mentoring_hours) : 0,
-		// 		is_excused: app.excused ? 1 : 0,
-		// 	};
-		// });
-
-		// const payload = {
-		// 	attendance_list: attendanceList,
-		// 	app_group_id: name === 'custom' ? searchParams && searchParams.formId  : appGroupId,
-		// 	attendance_type: name === 'custom' ? 'forms' : 'bcombs',
-		// 	...attendanceDetails,
-		// 	attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
-		// };
-		// dispatch(requestUpdateAttendance(payload));
 		setIsConfirmationVisible(true);
 	};
-	console.log('applicationListzz2222222zzzzz', applications.activeapplications)
-	console.log('applicationListzz2222222zzzzz applicationList', applicationList)
+
 	const handleAttendanceSave = () => {
 		//reset();
 
 		const attendanceList = applicationList.map(app => {
 
-			if (name === 'custom') {
+			// if (name === 'custom') {
 
-			}
-			// applications.activeapplications.find(activeApp => activeApp.child.ch_id)
+			// }
+
 			return {
 				app_id: app.app_id,
 				app_group_id: app.class_teacher,
@@ -1064,14 +998,20 @@ export default function index() {
 
 			};
 		});
-		const isAll = searchParams && searchParams.type === 'all'
+		const isAll = searchParams && searchParams.type === 'all';
+		
 		const payload = {
 			attendance_list: attendanceList,
 			app_group_id: name === 'custom' ? isAll ? appGroupIds[0] : searchParams && searchParams.appGroupId : appGroupId,
 			attendance_type: name === 'custom' ? 'forms' : 'bcombs',
 			...attendanceDetails,
 			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
-		};
+			create_event: isCreateEvent,
+			vendorId2: name === 'custom' ?  searchParams?.vendor && parseInt(searchParams.vendor): parseInt(vendor_id),
+			form_id: name === 'custom' ? searchParams?.formId : null
+	
+			};
+
 
 		dispatch(requestUpdateAttendance(payload));
 		setIsConfirmationVisible(false);
@@ -1150,30 +1090,30 @@ export default function index() {
 
 	};
 
-	const handleExcused = (payload, excuseType) => {
-		let updatedApplication = [...(applicationList || [])];
-		let updatedFilteredApplication = [...(filteredApplicationList || [])];
-		let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
-		let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
+	// const handleExcused = (payload, excuseType) => {
+	// 	let updatedApplication = [...(applicationList || [])];
+	// 	let updatedFilteredApplication = [...(filteredApplicationList || [])];
+	// 	let currentIndex = updatedApplication.findIndex(app => app.id === payload.id);
+	// 	let currentFilteredIndex = updatedFilteredApplication.findIndex(app => app.id === payload.id);
 
-		if (excuseType === payload.attendance_status.toLowerCase()) {
-			updatedApplication[currentIndex] = {
-				...updatedApplication[currentIndex],
-				excused: updatedApplication[currentIndex].excused === null ? excuseType : null,
-			};
-			updatedFilteredApplication[currentFilteredIndex] = {
-				...updatedFilteredApplication[currentFilteredIndex],
-				excused: updatedFilteredApplication[currentIndex].excused === null ? excuseType : null,
-			};
+	// 	if (excuseType === payload.attendance_status.toLowerCase()) {
+	// 		updatedApplication[currentIndex] = {
+	// 			...updatedApplication[currentIndex],
+	// 			excused: updatedApplication[currentIndex].excused === null ? excuseType : null,
+	// 		};
+	// 		updatedFilteredApplication[currentFilteredIndex] = {
+	// 			...updatedFilteredApplication[currentFilteredIndex],
+	// 			excused: updatedFilteredApplication[currentIndex].excused === null ? excuseType : null,
+	// 		};
 
-			setApplicationList(updatedApplication);
-			setFilteredApplicationList(updatedFilteredApplication);
-		}
-	};
+	// 		setApplicationList(updatedApplication);
+	// 		setFilteredApplicationList(updatedFilteredApplication);
+	// 	}
+	// };
 
 	const handleSearchChange = e => {
-		let { name, value } = e.target;
-		let lowerCaseVale = value;
+		let { value } = e.target;
+
 
 		if (value !== '') {
 			value = value.toLowerCase();
@@ -1193,9 +1133,9 @@ export default function index() {
 	};
 
 	const renderTableData = () => {
-		console.log('Render Table Data', filteredApplicationList);
 		return filteredApplicationList.map((app, index) => {
-			const currentChild = app.form_contents ? getNameFromCustomForm(app.form_contents) : {
+
+			const currentChild = app && app.form_contents ? getNameFromCustomForm(app.form_contents) : {
 				lastname: app.child?.lastname,
 				firstname: app.child?.firstname
 			}
@@ -1258,7 +1198,7 @@ export default function index() {
 											backgroundColor: app.attendance_status === 'Present' ? '#14e414' : 'gray',
 										}}
 									/>
-									<div>Present 1</div>
+									<div>Present</div>
 									{/* {app.attendance_status === 'Present' ? <div className="exclude-icon"></div> : <span />} */}
 								</div>
 							</div>
@@ -1348,7 +1288,7 @@ export default function index() {
 								name={'mentoring_hours'}
 								className={'field-input'}
 								placeholder="Mentoring Hours"
-								value={app?.mentoring_hours || ''}
+								value={app ? app?.mentoring_hours : 0}
 								style={{ textAlign: 'center', maxWidth: '200px' }}
 							/>
 						</div>
@@ -1569,15 +1509,6 @@ export default function index() {
 						</div>
 
 
-
-						{/* <div className="field select-field-wrapper">
-							<select onChange={handleViewChange} className={'field-input'}>
-								<option value="grid">Grid View</option>
-								<option value="list">List View</option>
-							</select>
-						
-						</div>	 */}
-
 						<div className="viewType">
 							<FontAwesomeIcon
 								onClick={() => {
@@ -1607,7 +1538,8 @@ export default function index() {
 					{viewMode === 'grid' ? (
 						<div className="gridView">
 							{filteredApplicationList.map(app => {
-								const currentChild = app.form_contents ? getNameFromCustomForm(app.form_contents) : {
+					
+								const currentChild = app && app.form_contents ? getNameFromCustomForm(app.form_contents) : {
 									lastname: app.child?.lastname,
 									firstname: app.child?.firstname
 								}
@@ -1793,9 +1725,17 @@ export default function index() {
 					<div className="field actionBtn">
 						{applicationList.length > 0 && (
 							<button disabled={attendance.isAttendanceUpdateSuccess} onClick={handleSubmit}>
-								{attendance.isAttendanceUpdateLoading ? 'Please Wait...' : 'Submit'}
+								{attendance.isAttendanceUpdateLoading ? 'Please Wait...' : 'Save'}
 							</button>
 						)}
+				
+						<button onClick={() => {
+							setIsCreateEvent(true);
+							setIsConfirmationVisible(true);
+						}} type="button" style={{ marginTop: 8, marginBottom: 8 }}>
+							
+							{attendance && attendance.isAttendanceUpdateLoading ? 'Please Wait...' : 'Save with QR'}
+						</button>
 					</div>
 				</form>
 			</div>

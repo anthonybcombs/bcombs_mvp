@@ -820,6 +820,7 @@ export default ({ applications, importData = [], childId, requestList, groupType
   }
 
 
+  console.log('gradeInputttttttttttttttttttttt',gradeInput)
   let selectStudentRows = (gradeInput.gradeList || []).filter(e => {
 
     if (appGroupIds && appGroupIds.length > 0 ) {

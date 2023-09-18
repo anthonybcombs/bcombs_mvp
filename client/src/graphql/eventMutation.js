@@ -85,3 +85,12 @@ export const EVENT_DELETE_MUTATION = gql`
     }
   }
 `;
+
+
+export const EVENT_ATTENDANCE_UPDATE_MUTATION = gql`
+  mutation Event($user: UserAttendanceInput) {
+    createUpdateChildAttendance(user: $user) {
+      status
+    }
+  }
+`;

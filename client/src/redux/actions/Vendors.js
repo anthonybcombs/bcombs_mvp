@@ -13,7 +13,8 @@ import {
   CREATE_GROUP_REMINDER,
   GET_VENDOR_REMINDER,
   UPDATE_VENDOR_LOGO,
-  CREATE_VENDOR
+  CREATE_VENDOR,
+  UPDATE_DEFAULT_VENDOR
 } from "../../graphql/vendorMutation";
 
 import { GET_FORM_APP_GROUP } from "../../graphql/groupQuery";
@@ -241,6 +242,28 @@ const updateVendorLogoToDatabase = payload => {
   });
 };
 
+const updateDefaultVendorFromDataBase = payload => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: UPDATE_DEFAULT_VENDOR,
+        variables: { user_id: payload.user_id, vendor_id: payload.vendor_id }
+      });
+
+      console.log("updateDefaultVendorFromDataBase data", data);
+
+      return resolve(data.updateDefaultVendor);
+    } catch (error) {
+      console.log("updateDefaultVendorFromDataBase error", error);
+      reject(error);
+    }
+  });
+};
+
+
+
+
+
 const updateVendorToDatabase = vendor => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -385,6 +408,15 @@ export const requestGetVendorReminders = vendor => {
     vendor
   };
 }
+
+export const setDefaultVendor = ({ user_id = '', vendor_id = '' }) => {
+  return {
+    type: actionType.SET_DEFAULT_VENDOR,
+    user_id,
+    vendor_id
+  };
+}
+
 
 export function* getVendorReminders({ vendor }) {
   try {
@@ -559,6 +591,10 @@ export function* getVendor(action) {
         is_lot: item.name.includes('LOT')
       }
     })
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .sort((a,b) => b.is_default - a.is_default)
+
+    console.log('formattedVendors',formattedVendors)
     yield put({
       type: actionType.REQUEST_VENDOR_COMPLETED,
       payload: formattedVendors
@@ -633,6 +669,21 @@ export function* updateVendorLogo({ data }) {
   
   }
 }
+
+export function* updateDefaultVendor({ user_id, vendor_id}) {
+  try {
+    console.log('updateDefaultVendor user_id', user_id)
+    console.log('updateDefaultVendor vendor_id', vendor_id)
+    const response = yield call(updateDefaultVendorFromDataBase, { user_id, vendor_id});
+
+    console.log('updateDefaultVendor responseee', response)
+  } catch (err) {
+    console.log('updateDefaultVendor err', err)
+  }
+}
+
+
+
 
 export function* createVendor({ vendor }) {
   try {

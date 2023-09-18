@@ -85,7 +85,8 @@ import {
   getVendorAdminsByUser,
   getVendorApplicationReminder,
   createAppGroupReminder,
-  updateLogo
+  updateLogo,
+  setDefaultVendor
 } from "../../api/vendor";
 import {
   createApplication,
@@ -130,9 +131,13 @@ import {
   addDaycareParent,
   addParentChildRelationship,
   updateParentChildRelationship,
-  getParentChildRelationship } from "../../api/parents";
+  getParentChildRelationship,
+  getParentByVendorId,
+  updateParentSharingByVendor
+
+} from "../../api/parents";
   
-import { getChildAttendance ,getChildEventAttendance,updateChildAttendance} from '../../api/attendance';
+import { getChildAttendance ,getChildEventAttendance,updateChildAttendance, updateAttendanceByChild, getAttendanceByEventId } from '../../api/attendance';
 
 import { getUserFromDatabase } from "../../api";
 
@@ -520,6 +525,10 @@ const resolvers = {
       return await getChildAttendance(application_group_id, attendance_type);
     },
 
+    async getAttendanceByEvent(root, { event_id, application_group_id, attendance_type }, context) {
+      return await getAttendanceByEventId(event_id, application_group_id, attendance_type);
+    },
+
     async getEventAttendance(root, { application_group_id }, context) {
       console.log('Get Event Attendance App Grp Id', application_group_id)
       return await getChildEventAttendance(application_group_id);
@@ -566,6 +575,15 @@ const resolvers = {
     },
     async getVendorApplicationReminder(root, { vendor_id }, context) {
       return await getVendorApplicationReminder(vendor_id);
+    },
+    async getParentByVendor(root, { vendor_id, app_group_id = null , form_type = null, vendor_mode = false }, context) {
+      const vendors = await getParentByVendorId({
+        vendorId: vendor_id,
+        appGroupId: app_group_id,
+        formType: form_type,
+        isVendorMode: vendor_mode
+      });
+      return vendors;
     },
     triggerCronSetReminder(root, args, context ) {
       triggerCronSetReminder();
@@ -1166,7 +1184,7 @@ const resolvers = {
       const previousApplication = await getApplicationByAppId(
         application.app_id
       );
-      console.log('Application saveApplication', application)
+      console.log('Application saveApplication 2222', application)
       const tc_signatures = {
         section1_signature: application.section1_signature,
         section1_date_signed: application.section1_date_signed,
@@ -1437,7 +1455,43 @@ const resolvers = {
         return item.type == "name"
       });
 
+      const staticImageTypeIndex = formData.findIndex((item) => {
+        return item.type === "staticImage"
+      });
+
       const hasNameField = !!(nameType.length > 0);
+      if(staticImageTypeIndex > -1) {
+
+        const buf = Buffer.from(
+          formData[staticImageTypeIndex]?.fields[0]?.imageString.replace(/^data:image\/\w+;base64,/, ""),
+          "base64"
+        );
+        const s3Payload = {
+          Bucket: currentS3BucketName,
+          Key: `/forms/file/${formData[staticImageTypeIndex]?.fields[0].id}.jpg`,
+          Body: buf,
+          ContentEncoding: "base64",
+          ContentType: "image/jpeg",
+          ACL: "public-read"
+        };
+
+        await uploadFile(s3Payload);
+        console.log('Image form key', s3Payload?.Key)
+
+        formData[staticImageTypeIndex].fields[0].value = s3Payload?.Key;
+     
+      }
+
+      
+      const updatedApplication = {
+        ...application,
+        form_contents: {
+          ...(application?.form_contents),
+          formData: formData
+        }
+      }
+
+      // console.log('updatedApplication',updatedApplication)
 
       if(!hasNameField) {
 
@@ -1449,13 +1503,13 @@ const resolvers = {
         return res
       }
 
-      let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
-      application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+      let formContentsString = updatedApplication.form_contents ? JSON.stringify(updatedApplication.form_contents) : "{}";
+      updatedApplication.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+      
+      // console.log("formContentsString", formContentsString.length);
+      // console.log("custom application", updatedApplication.form_contents.length);
 
-      console.log("formContentsString", formContentsString.length);
-      console.log("custom application", application.form_contents.length);
-
-      let form = await createCustomApplication(application);
+      let form = await createCustomApplication(updatedApplication);
 
       form = form ? form : {};
 
@@ -1476,6 +1530,13 @@ const resolvers = {
         return item.type == "name"
       });
       
+
+      const staticImageTypeIndex = formData.findIndex((item) => {
+        return item.type === "staticImage"
+      });
+
+
+
       const hasNameField = !!(nameType.length > 0);
 
       if(!hasNameField) {
@@ -1487,14 +1548,48 @@ const resolvers = {
 
         return res
       }
+
+      if(staticImageTypeIndex > -1) {
+
+        if(formData[staticImageTypeIndex]?.fields[0]?.imageString) {
+          const buf = Buffer.from(
+            formData[staticImageTypeIndex]?.fields[0]?.imageString.replace(/^data:image\/\w+;base64,/, ""),
+            "base64"
+          );
+          const s3Payload = {
+            Bucket: currentS3BucketName,
+            Key: `/forms/file/${formData[staticImageTypeIndex]?.fields[0].id}.jpg`,
+            Body: buf,
+            ContentEncoding: "base64",
+            ContentType: "image/jpeg",
+            ACL: "public-read"
+          };
+  
+          await uploadFile(s3Payload);
+          console.log('Image form key', s3Payload?.Key)
+  
+          formData[staticImageTypeIndex].fields[0].value = s3Payload?.Key;
+
+        }
+
+      }
+
+         
+      const updatedApplication = {
+        ...application,
+        form_contents: {
+          ...(application?.form_contents),
+          formData: formData
+        }
+      }
+
       
-      let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
-      application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+      let formContentsString = updatedApplication.form_contents ? JSON.stringify(updatedApplication.form_contents) : "{}";
+      updatedApplication.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
-      console.log("formContentsString", formContentsString.length);
-      console.log("custom application", application.form_contents.length);
 
-      let form = await updateCustomApplicationForm(application);
+
+      let form = await updateCustomApplicationForm(updatedApplication);
 
       form = form ? form : {};
 
@@ -1731,7 +1826,9 @@ const resolvers = {
           let addUser = await executeSignUp(user);
           console.log("addUser:", user);
           let userInfo = {
-            email: email.value
+            email: email.value,
+            firstname: firstname.value,
+            lastname: lastname.value,
           };
 
           await executeAddUserProfile(userInfo);
@@ -2002,6 +2099,20 @@ const resolvers = {
     async updateVendorLogo(root, { vendorLogo }, context) {
       return await updateLogo({logo: vendorLogo.logo, vendor_id: vendorLogo.vendor_id || ''})
     },
+
+    async createUpdateChildAttendance(root, { user }, context) { 
+
+      return await updateAttendanceByChild(user)
+    },
+
+    
+    async updateParentVendorShare(root, data, context) { 
+      return await updateParentSharingByVendor(data)
+    },
+
+    async updateDefaultVendor(root, { vendor_id, user_id}, context) {
+      return await setDefaultVendor({ vendor_id, user_id})
+    }
   }
 };
 

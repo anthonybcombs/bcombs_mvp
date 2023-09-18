@@ -156,6 +156,7 @@ export default function ContactForm({
         <div className="form-group">
           <div className="field">
             <input
+              id="contact_firstname"
               name="first_name"
               className="field-input"
               placeholder="First Name"
@@ -165,7 +166,7 @@ export default function ContactForm({
               ref={register({ required: true, maxLength: 20 })}
               defaultValue={contactDetails.first_name}
             />
-            <label className="field-label">
+            <label htmlFor="contact_firstname" className="field-label">
               <span className="required">*</span> First Name
             </label>
           </div>
@@ -183,6 +184,7 @@ export default function ContactForm({
         <div className="form-group">
           <div className="field">
             <input
+              id="contact_lastname"
               name="last_name"
               className="field-input"
               placeholder="Last Name"
@@ -192,7 +194,7 @@ export default function ContactForm({
               ref={register({ required: true, maxLength: 20 })}
               value={contactDetails.last_name}
             />
-            <label className="field-label">
+            <label htmlFor="contact_lastname" className="field-label">
               <span className="required">*</span> Last Name
             </label>
           </div>
@@ -225,6 +227,7 @@ export default function ContactForm({
           <div className="field">
             <NumberFormat
               name="phone_number"
+              id="phone_number"
               className="field-input"
               placeholder="Phone Number"
               onChange={({ target }) => {
@@ -247,7 +250,7 @@ export default function ContactForm({
               })}
               required
             />
-            <label className="field-label">
+            <label htmlFor="phone_number" className="field-label">
               <span className="required">*</span> Phone Number
             </label>
           </div>
@@ -263,6 +266,7 @@ export default function ContactForm({
             <input
               type="email"
               name="email"
+              id="contact_email"
               className="field-input"
               placeholder="Email"
               onChange={({ target }) => {
@@ -277,7 +281,7 @@ export default function ContactForm({
               })}
               value={contactDetails.email}
             />
-            <label className="field-label">
+            <label htmlFor="contact_email" className="field-label">
               <span className="required">*</span> Email
             </label>
           </div>
@@ -298,10 +302,11 @@ export default function ContactForm({
           />
         </div>
 
-        <label>
+        <label htmlFor="contact_relation">
           <span style={{ color: "red" }}>*</span> Relation
         </label>
         <select
+          id="contact_relation"
           name="relation"
           className="field-input"
           placeholder="Relation"

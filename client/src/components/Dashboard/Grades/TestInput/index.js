@@ -530,13 +530,17 @@ export default ({ child_id }) => {
 
       const vendorId = parseInt(vendor);
       const currentVendor = vendors.find(item => item.id2 === vendorId);
-      if (type && type === 'all' && !is_parent) {
-        dispatch(requestGetStudentCumulativeGradeByVendor(currentVendor.id));
-        dispatch(requestGetApplications(currentVendor.id));
+      if(currentVendor) {
+        if (type && type === 'all' && !is_parent) {
+      
+          dispatch(requestGetStudentCumulativeGradeByVendor(currentVendor.id));
+          dispatch(requestGetApplications(currentVendor.id));
+        }
+  
+  
+        dispatch(requestVendorAppGroups(currentVendor.id))
       }
 
-
-      dispatch(requestVendorAppGroups(currentVendor.id))
     }
     else if (is_parent && auth) {
       if (auth.user_id) {

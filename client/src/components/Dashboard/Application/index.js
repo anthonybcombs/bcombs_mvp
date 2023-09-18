@@ -33,6 +33,8 @@ import DaycareParentFormView from "./daycare/parent";
 import RelationshipToChildStyled from "../DaycareApplicationForm/RelationshipToChildForm";
 import CopyApplicationLinkModal from "./copylink";
 
+import ImportExportApplication from './import_export_application';
+
 import TermsWaiverFormViewStyled from "./view/waiver";
 import {
   requestVendor,
@@ -40,7 +42,8 @@ import {
   requestCreateGroupReminder,
   requestGetVendorReminders,
   requestCreateVendor,
-  requestSelectedVendor
+  requestSelectedVendor,
+  setDefaultVendor
 } from "../../../redux/actions/Vendors";
 
 import {
@@ -544,6 +547,9 @@ export default function index() {
 
   const [isNbmbaa, setIsNbmbaa] = useState(false);
 
+  const [isSettingDefaultVendorLoading, setIsSettingDefaultVendorLoading] = useState(false);
+
+
 
 
   const dispatch = useDispatch();
@@ -614,6 +620,7 @@ export default function index() {
 
   const [appGroups, setAppGroups] = useState([]);
   const [exportFilename, setExportFilename] = useState("");
+  const [currentForm, setCurrentForm] = useState(null);
 
   // const defaultVendor = vendors && vendors[0];
 
@@ -780,6 +787,7 @@ export default function index() {
 
       if (tempForm && tempForm.length > 0) {
         setExportFilename(tempForm[0]?.form_contents?.formTitle);
+        setCurrentForm(tempForm[0])
       }
       // dispatch(requestGetCustomApplications(queryParams.form));
     } else {
@@ -806,12 +814,12 @@ export default function index() {
     setAppGroups(formAppGroups);
   }, [formAppGroups])
 
-  
+
   const handleWaiverFormDetailsChange = (section, id, value) => {
 
     let subTermsWaiver = termsWaiver;
 
-    if(section === "section1") {
+    if (section === "section1") {
       subTermsWaiver.section1[id] = value;
     } else if (section === "section2") {
       subTermsWaiver.section2[id] = value;
@@ -821,7 +829,7 @@ export default function index() {
       console.log("Invalid Section");
     }
 
-    setTermsWaiver({...subTermsWaiver});
+    setTermsWaiver({ ...subTermsWaiver });
   }
 
 
@@ -1451,11 +1459,13 @@ export default function index() {
       parents: setupParentsList(),
       emergency_contacts: JSON.stringify(emergencyContacts),
       section1_signature: termsWaiver?.section1?.signature,
-      section1_date_signed: selectedApplication.section1_date_signed,
-      section2_signature:  termsWaiver?.section2?.signature,
-      section2_date_signed: selectedApplication.section2_date_signed,
-      section3_signature:  termsWaiver?.section3?.signature,
-      section3_date_signed: selectedApplication.section3_date_signed,
+      section1_date_signed: format(new Date(selectedApplication.section1_date_signed), "yyyy-MM-dd hh:mm:ss"),
+      section2_signature: termsWaiver?.section2?.signature,
+      section2_date_signed: format(new Date(selectedApplication.section2_date_signed), "yyyy-MM-dd hh:mm:ss"),
+      section3_signature: termsWaiver?.section3?.signature,
+      section3_date_signed: format(new Date(selectedApplication.section3_date_signed), "yyyy-MM-dd hh:mm:ss"),
+
+
       section1_text: selectedApplication.section1_text,
       section2_text: selectedApplication.section2_text,
       section3_text: selectedApplication.section3_text,
@@ -1464,7 +1474,7 @@ export default function index() {
       section3_name: selectedApplication.section3_name,
       updated_by: auth.name
     };
-    
+
 
     // const termsWaiver = {
     //   date: new Date().toString(),
@@ -1489,7 +1499,7 @@ export default function index() {
     };
     console.log("Submit update application", payload);
 
-     dispatch(requestSaveApplication(payload));
+    dispatch(requestSaveApplication(payload));
   };
 
   const [childInformation, setChildInformation] = useState({});
@@ -1514,7 +1524,6 @@ export default function index() {
     }
   };
 
-  console.log('selectedApplicationssssssssssss',selectedApplication)
 
   const [termsWaiver, setTermsWaiver] = useState({ ...termsWaiverObj });
 
@@ -1948,6 +1957,25 @@ export default function index() {
   }
 
 
+  const handleSetDefaultVendor = () => {
+    if (!isSettingDefaultVendorLoading) {
+      setIsSettingDefaultVendorLoading(true);
+      console.log('Handle Set Default Vendor', {
+        user_id: auth?.user_id,
+        vendor_id: selectedVendor?.id
+      })
+      dispatch(setDefaultVendor({
+        user_id: auth?.user_id,
+        vendor_id: selectedVendor?.id
+      }));
+
+      setTimeout(() => {
+        setIsSettingDefaultVendorLoading(false);
+      }, 1500)
+    }
+
+  }
+
   const handleParentChildRelationship = (parent, child, relationship) => {
 
     let exists = false;
@@ -2091,7 +2119,38 @@ export default function index() {
 
   }
 
-  let vendorOptions = vendors && vendors.length > 0 ? vendors.sort((a, b) => a.name.localeCompare(b.name)) : [];
+
+  const handleGetForms = value => {
+
+    if (value == "default" || value === 'lot') {
+
+      setSelectedForm(value);
+      setAppGroups(selectedVendor.app_groups);
+      window.history.replaceState("", "", "?vendor=" + selectedVendor?.id2);
+      // if (applications.activeapplications.length === 0) {
+      //   dispatch(requestGetApplications(selectedVendor.id));
+      // }
+      dispatch(requestGetApplications(selectedVendor.id));
+
+    } else {
+      setSelectedForm(value);
+      if (view === 'builderForm') {
+        setView('')
+        setSelectedApplication({})
+      }
+
+      const currentForms1 = renderForms.find(item => item.form_id === value)
+
+      window.history.replaceState("", "", "?form=" + value + `${queryParams?.vendor ? `&vendor=${queryParams.vendor}` : ''}`);
+      setAppGroups([]);
+      setCurrentForm(currentForms1)
+      dispatch(requestGetFormAppGroup(value));
+      dispatch(requestGetCustomApplications(value));
+    }
+  }
+
+  // .sort((a, b) => a.name.localeCompare(b.name)
+  let vendorOptions = vendors && vendors.length > 0 ? vendors : [];
   let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
 
   return (
@@ -2099,7 +2158,7 @@ export default function index() {
       <div style={{ display: "flex", alignItems: "center" }}>
         <h2>Applications</h2>
         {vendorOptions && vendorOptions.length > 0 && (
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'columns' }}>
             <select
               className="custom-default-select"
               style={{
@@ -2147,6 +2206,13 @@ export default function index() {
                 </option>
               ))}
             </select>
+            <span
+              onClick={handleSetDefaultVendor}
+              style={{ color: 'blue', cursor: 'pointer' }}
+
+            >
+              {isSettingDefaultVendorLoading ? 'Setting as Default...' : 'Set as default'}
+            </span>
           </div>
         )}
 
@@ -2172,30 +2238,30 @@ export default function index() {
 
                 }}
                 onChange={({ target }) => {
+                  handleGetForms(target.value);
 
+                  // if (target.value == "default" || target.value === 'lot') {
 
-                  if (target.value == "default" || target.value === 'lot') {
+                  //   setSelectedForm(target.value);
+                  //   setAppGroups(selectedVendor.app_groups);
+                  //   window.history.replaceState("", "", "?vendor=" + selectedVendor?.id2);
+                  //   // if (applications.activeapplications.length === 0) {
+                  //   //   dispatch(requestGetApplications(selectedVendor.id));
+                  //   // }
+                  //   dispatch(requestGetApplications(selectedVendor.id));
 
-                    setSelectedForm(target.value);
-                    setAppGroups(selectedVendor.app_groups);
-                    window.history.replaceState("", "", "?vendor=" + selectedVendor?.id2);
-                    // if (applications.activeapplications.length === 0) {
-                    //   dispatch(requestGetApplications(selectedVendor.id));
-                    // }
-                    dispatch(requestGetApplications(selectedVendor.id));
+                  // } else {
+                  //   setSelectedForm(target.value);
+                  //   if (view === 'builderForm') {
+                  //     setView('')
+                  //     setSelectedApplication({})
+                  //   }
 
-                  } else {
-                    setSelectedForm(target.value);
-                    if (view === 'builderForm') {
-                      setView('')
-                      setSelectedApplication({})
-                    }
-
-                    window.history.replaceState("", "", "?form=" + target.value);
-                    setAppGroups([]);
-                    dispatch(requestGetFormAppGroup(target.value));
-                    dispatch(requestGetCustomApplications(target.value));
-                  }
+                  //   window.history.replaceState("", "", "?form=" + target.value);
+                  //   setAppGroups([]);
+                  //   dispatch(requestGetFormAppGroup(target.value));
+                  //   dispatch(requestGetCustomApplications(target.value));
+                  // }
                 }}
               >
                 {(((selectedVendor && selectedVendor.name && !selectedVendor.name.includes('LOT')) && (auth && auth.nickname !== 'lot'))) && <option key={`${selectedVendor.id}-1`} selected={!(queryParams && queryParams.form)} value="default">
@@ -2218,6 +2284,18 @@ export default function index() {
             </div>
           )
         }
+        {selectedVendor ?<div style={{ marginLeft: 12, marginTop: 12 }}>
+          <ImportExportApplication
+            form={currentForm}
+            formType={selectedForm !== "default" && selectedForm !== "lot" ? 'custom' : 'mentoring'}
+            vendor={selectedVendor?.id}
+            isLot={selectedForm === 'lot'}
+            createProfileFeature={true}
+            refreshData={() => {
+              handleGetForms(selectedForm)
+            }}
+          />
+        </div> : <span/>}
         {
           vendors && vendors.length > 0 && isNbmbaa ? (
             <div className="copy-vendor-btn">
@@ -2234,6 +2312,7 @@ export default function index() {
           ) : null
         }
       </div>
+
       <div id="application">
         <div>
           <div id="labels">
@@ -2525,10 +2604,13 @@ export default function index() {
               isReadOnly={isReadonly}
               isFormHistory={isFormHistory}
               onChangeToEdit={handleChangeToEdit}
-              onGetUpdatedApplication={(form_contents) => setSelectedApplication({
-                ...selectedApplication,
-                form_contents
-              })}
+              onGetUpdatedApplication={(form_contents) => {
+
+                setSelectedApplication({
+                  ...selectedApplication,
+                  form_contents
+                })
+              }}
               onSubmitApplication={(form_contents) => {
                 dispatch(requestUpdateSubmittedForm({
                   updated_by: auth.email,
@@ -2611,9 +2693,9 @@ export default function index() {
               />
             ) : ""}
 
-            {selectNonMenuOption && view == "application" && (
+            {selectNonMenuOption && view == "application" ? (
               <hr className="style-eight"></hr>
-            )}
+            ) : <span />}
 
             {selectNonMenuOption &&
               view == "application" &&
