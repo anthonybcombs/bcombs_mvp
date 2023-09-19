@@ -274,8 +274,7 @@ export default ({ vendor = {}, user = {}, form_data, category = '', isLoading, f
 
       dispatch(requestAddForm({
         user: user.user_id,
-        // vendor: vendor.id,
-        vendor: '38c7479a-af2f-11ec-bf8a-124feb50f71e',
+        vendor: vendor.id,
         category: formCategory,
         form_contents: {
           formTitle,
