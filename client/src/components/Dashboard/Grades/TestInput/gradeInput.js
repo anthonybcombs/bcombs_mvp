@@ -20,6 +20,9 @@ import { getGradeTestAttempt } from '../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { requestAddUpdateStudentCumulative, requestDeleteStudentStandardizedTest, clearGrades } from '../../../../redux/actions/Grades'
 
+import { getOptionTestName } from '../../../../constants/options'
+
+
 export default ({ applications, importData = [], childId, requestList, groupType, loading, onHasChanged, appGroupIds, type, vendors, isParent = false,selectedChild = null, groupId }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
@@ -27,7 +30,7 @@ export default ({ applications, importData = [], childId, requestList, groupType
   }))
   console.log('gradeInput',gradeInput)
   const attempOptions = Array(5).fill().map((e, i) => ({ value: i + 1, label: `${i + 1}` }))
-  const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
+  const testOptions = getOptionTestName(groupId);
   const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))]
 
   let initialColumns = {

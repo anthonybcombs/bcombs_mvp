@@ -54,9 +54,40 @@ const OPTION_SCHOOL_YEAR = [
 
 
 
+
+const getOptionTestName = (id = null) => {
+
+  if(id === '415a9427-56a8-11ee-8a4a-c6be8a6b501e' ||  /* stage */  id === '2965faab-4633-11ee-adb5-824b66c683b0') {
+    return [
+      { value: 'casas_reading', label: 'CASAS Reading (Score Range- 153-275)' }, 
+      { value: 'casas_math', label: ' CASAS Math (Range- (192-240)' },
+    ];
+  }
+
+  else if(id === '8749e7aa-8c85-11eb-842a-1a35bd9fe28b' || /* stage */ id === 'e1ceb81c-4647-11ee-adb5-824b66c683b0') {
+    return [
+      { value: 'tabe_math', label: 'TABE Math (Range 1-50)' }, 
+      { value: 'tabe_reading', label: 'TABE Reading (Range 1-25)' },
+
+      { value: 'buckle_down', label: 'Buckle Down (Range 1-100)' }, 
+      { value: 'common_core_reading', label: 'Common Core Reading (Range 1-60)' },
+      { value: 'common_core_math', label: 'Common Core Math (Range 1-135)' },
+
+    ]
+  }
+  
+  return [
+    { value: 'act', label: 'ACT' }, 
+    { value: 'sat', label: 'SAT' }, 
+    { value: 'eog', label: 'EOG' }
+  ];
+}
+
+
 export {
   OPTION_FEMALE_RELATIONSHIPS,
   OPTION_MALE_RELATIONSHIPS,
   OPTION_CUSTOM_RELATIONSHIPS,
-  OPTION_SCHOOL_YEAR
+  OPTION_SCHOOL_YEAR,
+  getOptionTestName
 };
