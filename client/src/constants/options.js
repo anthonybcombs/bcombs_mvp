@@ -59,8 +59,8 @@ const getOptionTestName = (id = null) => {
 
   if(id === '668ac294-3b78-11ee-8a4a-c6be8a6b501e' /* Youth Literacy Program */ ||  /* stage */  id === '2965faab-4633-11ee-adb5-824b66c683b0') {
     return [
-      { value: 'casas_reading', label: 'CASAS Reading (Score Range- 153-275)' }, 
-      { value: 'casas_math', label: ' CASAS Math (Range- (192-240)' },
+      { value: 'casas_reading', label: 'CASAS Reading (Score Range - 153-275)' }, 
+      { value: 'casas_math', label: ' CASAS Math (Range - 192-240)' },
     ];
   }
 
