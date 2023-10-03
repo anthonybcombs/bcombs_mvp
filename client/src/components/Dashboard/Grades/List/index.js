@@ -20,6 +20,8 @@ import { getNameFromCustomForm } from '../utils'
 import ProfileImg from "../../../../images/defaultprofile.png";
 import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByVendor } from '../../../../redux/actions/Grades'
 
+import { getOptionTestName } from '../../../../constants/options'
+
 export default () => {
   const dispatch = useDispatch()
   const { gradeInput, loading: { gradeLoading } } = useSelector(({ gradeInput, loading }) => ({
@@ -27,10 +29,10 @@ export default () => {
   }))
 
   const queryLocation = useLocation();
-  const { group_id, group_type, request_type, vendor } = parse(queryLocation.search)
+  const { group_id, form_id, group_type, request_type, vendor } = parse(queryLocation.search)
   const isVendor = request_type === 'vendor'
   const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
-  const testOptions = [{ value: 'act', label: 'ACT' }, { value: 'sat', label: 'SAT' }, { value: 'eog', label: 'EOG' }]
+  const testOptions = getOptionTestName(form_id || group_id);
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
 
   const initialColumns = {
