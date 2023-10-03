@@ -41,7 +41,7 @@ export default ({ child_id }) => {
   });
   const dispatch = useDispatch()
   const queryLocation = useLocation();
-  const { group_id, group_type, return_page, request_type, type, appGroupIds = null, is_parent = null, parent_ids = null, selected_child = null, vendor } = parse(queryLocation.search)
+  const { group_id, group_type, return_page, request_type, type, appGroupIds = null, is_parent = null, parent_ids = null, selected_child = null, vendor, form_id } = parse(queryLocation.search)
   const isVendor = request_type === 'vendor'
   const DATE_FORMAT = "MM/dd/yyyy";
   console.log('applications gradeList', gradeList)
@@ -747,7 +747,7 @@ export default ({ child_id }) => {
             applications={is_parent ? applications.userAllApplications : group_type === 'forms' ? applications.customActiveApplications : applications.activeapplications}
             importData={formattedSt}
             childId={child_id}
-            groupId={group_id}
+            groupId={form_id || group_id}
             groupType={group_type}
             loading={gradeLoading}
             requestList={requestList}
@@ -800,7 +800,7 @@ export default ({ child_id }) => {
             childId={child_id}
             loading={gradeLoading}
             groupType={group_type}
-            groupId={group_id}
+            groupId={form_id || group_id}
             requestList={requestList}
             onHasChanged={(bool) => setHasChanged(bool)}
             type={type}

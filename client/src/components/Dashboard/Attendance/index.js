@@ -444,7 +444,7 @@ export default function index(props) {
 						</td>
 						<td>
 							{formGroup && formGroup.form_contents
-								? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms' + `&appGroupId=${group.app_grp_id}`}>Input</Link>
+								? <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=forms' + `&appGroupId=${group.app_grp_id}&form_id=${formGroup.form_id}`}>Input</Link>
 								: <Link to={'/dashboard/grades/input?group_id=' + group?.app_grp_id + '&group_type=bcombs' + `&vendor=${vendorDetails?.id2}`}>Input</Link>
 							} /
 							{formGroup && formGroup.form_contents

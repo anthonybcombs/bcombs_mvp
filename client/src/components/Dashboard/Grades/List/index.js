@@ -29,10 +29,10 @@ export default () => {
   }))
 
   const queryLocation = useLocation();
-  const { group_id, group_type, request_type, vendor } = parse(queryLocation.search)
+  const { group_id, form_id, group_type, request_type, vendor } = parse(queryLocation.search)
   const isVendor = request_type === 'vendor'
   const commonQueryStrings = `group_id=${group_id}&group_type=${group_type}&request_type=${request_type}`
-  const testOptions = getOptionTestName(group_id);
+  const testOptions = getOptionTestName(form_id || group_id);
   const testOptionsObj = cloneDeep(testOptions.reduce((acc, curr) => ({ ...acc, [curr.value]: 0 }), {}))
 
   const initialColumns = {
