@@ -66,12 +66,12 @@ const getOptionTestName = (id = null) => {
 
   else if(id === '636f012d-3207-11ee-8a4a-c6be8a6b501e' /* Youth Literacy Program */ || /* stage */ id === 'e1ceb81c-4647-11ee-adb5-824b66c683b0') {
     return [
-      { value: 'tabe_math', label: 'TABE Math (Range 1-50)' }, 
-      { value: 'tabe_reading', label: 'TABE Reading (Range 1-25)' },
+      { value: 'tabe_math', label: 'TABE Math' }, 
+      { value: 'tabe_reading', label: 'TABE Reading' },
 
-      { value: 'buckle_down', label: 'Buckle Down (Range 1-100)' }, 
-      { value: 'common_core_reading', label: 'Common Core Reading (Range 1-60)' },
-      { value: 'common_core_math', label: 'Common Core Math (Range 1-135)' },
+      { value: 'buckle_down', label: 'Buckle Down' }, 
+      { value: 'common_core_reading', label: 'Common Core Reading' },
+      { value: 'common_core_math', label: 'Common Core Math' },
 
     ]
   }
