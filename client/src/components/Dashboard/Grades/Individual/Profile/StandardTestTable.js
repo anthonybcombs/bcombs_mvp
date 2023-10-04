@@ -90,7 +90,7 @@ export default ({ rows: propRows, testOptions, refreshGrades, childId, groupType
     month_taken: { type: 'date', label: 'Taken'  },
     attempt: { type: 'number', label: 'Attempt', editable: false },
     grade_taken: { type: 'number', label: 'Grades', editable: false },
-    score: { type: 'number', label: 'Score' },
+    score: { type: 'number', label: 'Score', min: 0, max: 600 },
     ach_level: { type: 'number', label: 'Ach level' },
     score_percentage: { type: 'number', label: '%', func: formatValue },
     school_percentage: { type: 'number', label: '% school', func: formatValue },
@@ -263,7 +263,7 @@ export default ({ rows: propRows, testOptions, refreshGrades, childId, groupType
                   return (
                     <tr key={`tr-ct-${index}`}>
                       {
-                        Object.entries(columns).map(([key, { func = null, type, editable = true }]) => {
+                        Object.entries(columns).map(([key, { func = null, type, editable = true, min = null, max = null }]) => {
                           
                           editable = row.is_new;
                           return (
@@ -290,6 +290,8 @@ export default ({ rows: propRows, testOptions, refreshGrades, childId, groupType
                                     <input
                                       type={type}
                                       value={row[key]}
+                                      min={min}
+                                      max={max}
                                       onChange={(e) => handleInputChange(e, row.id, key)}
                                     />
                                   ) : (

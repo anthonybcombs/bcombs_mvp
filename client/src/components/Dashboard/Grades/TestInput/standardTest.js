@@ -39,7 +39,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     attempt: { type: 'number', label: 'Attempt' },
     grade_taken: { type: 'number', label: 'Grade Taken' },
     month_taken: { type: 'string', label: 'Month Taken' },
-    score: { type: 'number', label: 'Score' },
+    score: { type: 'number', label: 'Score', min: 0, max: 600 },
     score_percentage: { type: 'number', label: '%' },
     ach_level: { type: 'number', label: 'Ach level' },
     school_percentage: { type: 'number', label: '% school' },
@@ -172,6 +172,15 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
       mergeObj.attempt = attempt
     }
+    else if(key === 'score') {
+      value = parseInt(value);
+
+      if(value < 0 || value > 600) {
+        value = 0;
+
+        mergeObj = { [key]: value }
+      }
+    }
 
     onHasChanged(true)
     setRows(update(rows, {
@@ -240,7 +249,6 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
  
 
     return filteredRows.map((row, index) => {
-
       const colKeysArr = Object.entries(columns)
 
       const enableEdit = row.enableEdit
@@ -277,7 +285,8 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
             />
           </td>
           {
-            colKeysArr.map(([key, { type }]) => {
+            colKeysArr.map(([key, { type, min, max, label }]) => {
+
               const getFilename = (attachment) => {
                 if (!attachment) {
                   return ''
