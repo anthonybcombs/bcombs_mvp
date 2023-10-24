@@ -7,6 +7,7 @@ import { parse } from 'query-string';
 import StandardTest from './standardTest'
 import GradeInput from './gradeInput'
 
+import QRCodePReviewModal from './QRCodePReviewModal';
 
 import {
   requestGetApplications,
@@ -19,7 +20,7 @@ import { requestVendor, requestVendorAppGroups } from '../../../../redux/actions
 
 import { requestGetStudentCumulativeGradeByAppGroup, requestGetStudentCumulativeGradeByVendor, requestGetStudentCumulativeGradeByParent } from '../../../../redux/actions/Grades'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleLeft, faDownload, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faAngleLeft, faDownload, faUpload, faQrcode } from '@fortawesome/free-solid-svg-icons'
 
 // import { CSVLink, CSVDownload } from "react-csv";
 // import { format } from "date-fns";
@@ -30,6 +31,21 @@ import ConfirmDialog from './ConfirmDialog'
 // import { REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED } from '../../../../redux/actions/Constant';
 
 import { getChildFromFormData } from '../../../../helpers/ExportHeaders';
+
+const getPageQrCode = async () => {
+  const response = await fetch(`${process.env.API_HOST}/api/qr/grade/page`, {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer'
+  });
+  return response.json();
+}
 
 
 export default ({ child_id }) => {
@@ -47,7 +63,7 @@ export default ({ child_id }) => {
   console.log('applications gradeList', gradeList)
   console.log('applications', applications)
 
-  console.log('application_groups',application_groups)
+  console.log('application_groups', application_groups)
 
   const currentApplicationGroups = type === 'all' ? application_groups : application_groups.filter(item => item.app_grp_id === group_id)
 
@@ -64,23 +80,38 @@ export default ({ child_id }) => {
   const [selectedAppGroup, setSelectedAppGroup] = useState('');
   const [hasChanged, setHasChanged] = useState(false)
   const [backDialog, setBackDialog] = useState(false)
+  const [qrCode, setQrCode] = useState('');
+
+  const [isQRCodePreviewModalVisible, setIsQRCodePreviewModalVisible] = useState(false);
+
+  useEffect(() => {
+    const triggerGetQrCode = async () => {
+      try {
+        const response = await getPageQrCode();
+        setQrCode(response?.qr_code || '');
+      } catch (err) {
+        console.log('triggerGetQrCode err', err)
+      }
+    };
+
+    triggerGetQrCode();
+  }, []);
 
   const populateClass = (classes = []) => {
 
     //if(!classes) classes = [];
 
     let grades = {}
-    console.log('classesss',classes)
 
-    if(classes.length > 0) {
+    if (classes.length > 0) {
       classes.forEach((item, index) => {
-        const absentTotal = item.attendance_quarter_1_absent +  item.attendance_quarter_2_absent + 
-        item.attendance_quarter_3_absent +  item.attendance_quarter_4_absent;
-        const tardyTotal = item.attendance_quarter_1_tardy +  item.attendance_quarter_2_tardy + 
-        item.attendance_quarter_3_tardy +  item.attendance_quarter_4_tardy;
+        const absentTotal = item.attendance_quarter_1_absent + item.attendance_quarter_2_absent +
+          item.attendance_quarter_3_absent + item.attendance_quarter_4_absent;
+        const tardyTotal = item.attendance_quarter_1_tardy + item.attendance_quarter_2_tardy +
+          item.attendance_quarter_3_tardy + item.attendance_quarter_4_tardy;
 
-        const presentTotal = item.attendance_quarter_1_present +  item.attendance_quarter_2_present + 
-        item.attendance_quarter_3_present+  item.attendance_quarter_4_present;
+        const presentTotal = item.attendance_quarter_1_present + item.attendance_quarter_2_present +
+          item.attendance_quarter_3_present + item.attendance_quarter_4_present;
 
         grades = {
           ...grades,
@@ -107,7 +138,7 @@ export default ({ child_id }) => {
           [`Class Help Needed Q3 ${index + 1}`]: item.help_q3,
           [`Class Help Needed Q4 ${index + 1}`]: item.help_q4,
           [`Class Help Needed Overall ${index + 1}`]: '',
-          [`Class Attendance Absent Q1 ${index + 1}`]:  item.attendance_quarter_1_absent,
+          [`Class Attendance Absent Q1 ${index + 1}`]: item.attendance_quarter_1_absent,
           [`Class Attendance Absent Q2 ${index + 1}`]: item.attendance_quarter_2_absent,
           [`Class Attendance Absent Q3 ${index + 1}`]: item.attendance_quarter_3_absent,
           [`Class Attendance Absent Q4 ${index + 1}`]: item.attendance_quarter_4_absent,
@@ -122,7 +153,7 @@ export default ({ child_id }) => {
           [`Class Attendance Total Q1 ${index + 1}`]: item.attendance_quarter_1_total,
           [`Class Attendance Total Q2 ${index + 1}`]: item.attendance_quarter_2_total,
           [`Class Attendance Total Q3 ${index + 1}`]: item.attendance_quarter_3_total,
-          [`Class Attendance Total Q4 ${index + 1}`]:  item.attendance_quarter_4_total,
+          [`Class Attendance Total Q4 ${index + 1}`]: item.attendance_quarter_4_total,
           [`Class Attendance Overall Absent ${index + 1}`]: absentTotal,
           [`Class Attendance Overall Tardy ${index + 1}`]: tardyTotal,
           [`Class Attendance Overall Present ${index + 1}`]: presentTotal,
@@ -189,7 +220,7 @@ export default ({ child_id }) => {
 
 
   if (studentList.length > 0) {
-    console.log('studentListtttttt',studentList)
+    console.log('studentListtttttt', studentList)
     studentList.map((gr) => {
 
       const stardarizedTestList = gr.standardized_test || [];
@@ -197,18 +228,18 @@ export default ({ child_id }) => {
       let studentName = '';
       if (gr?.form_contents) {
         formVal = JSON.parse(gr?.form_contents);
- 
+
         formVal = formVal?.formData || [];
         studentName = getChildFromFormData(formVal);
       }
-      else { 
-        if(gr?.child) {
+      else {
+        if (gr?.child) {
           studentName = (gr?.child?.lastname ? `${gr?.child?.lastname},` : '') + ' ' + (gr?.child?.firstname || '')
         }
         else {
           studentName = (gr?.lastname ? `${gr?.lastname},` : '') + ' ' + (gr?.firstname || '')
         }
-        
+
       }
 
       if (stardarizedTestList && stardarizedTestList.length > 0) {
@@ -306,25 +337,25 @@ export default ({ child_id }) => {
         });
       } else {
         const cg = {} //Temporary fix for cg not defined
-        
+
         ///// gr?.child?.ch_id 
 
         const currentGrade = gradeList.find(grade => grade.child_id === (gr?.child?.ch_id || gr?.app_id))
         let currentGradeCumulative = [];
         if (currentGrade?.cumulative_grades) {
           currentGradeCumulative = currentGrade?.cumulative_grades.filter(item => {
-            if( gr?.child?.class_teacher) {
-             return item.app_group_id === gr?.child?.class_teacher
+            if (gr?.child?.class_teacher) {
+              return item.app_group_id === gr?.child?.class_teacher
             }
             return item.child_id === (gr?.child?.ch_id || gr?.app_id)
           });
         }
 
-        if(currentGradeCumulative.length > 0) {
-          currentGradeCumulative.forEach(cumGrd =>  {
+        if (currentGradeCumulative.length > 0) {
+          currentGradeCumulative.forEach(cumGrd => {
             const pClass = populateClass(cumGrd?.grades || {});
-       
-             let row = {
+
+            let row = {
               'Student Name': studentName,
               'Student ID': gr?.child?.ch_id || gr?.app_id,
               'App Group ID': gr?.child?.class_teacher,
@@ -334,7 +365,7 @@ export default ({ child_id }) => {
               'School Name': cumGrd?.school_name,
               'School Designation': cumGrd?.school_designation,
               'School Year Start': cumGrd?.school_year_start,
-              'School Year End':   cumGrd?.school_year_end,
+              'School Year End': cumGrd?.school_year_end,
               'School Year Time Frame': '',
               'GPA Scale': '',
               'Semester 1 (GPA)': cumGrd?.gpa_sem_1,
@@ -349,7 +380,7 @@ export default ({ child_id }) => {
           });
 
 
-         
+
         }
         else {
           const pClass = populateClass(gr?.grades || {});
@@ -373,7 +404,7 @@ export default ({ child_id }) => {
             'Class Rank (Sem 2)': '',
             ...pClass
           }
-  
+
           exportGradesData.push(row);
         }
 
@@ -530,14 +561,14 @@ export default ({ child_id }) => {
 
       const vendorId = parseInt(vendor);
       const currentVendor = vendors.find(item => item.id2 === vendorId);
-      if(currentVendor) {
+      if (currentVendor) {
         if (type && type === 'all' && !is_parent) {
-      
+
           dispatch(requestGetStudentCumulativeGradeByVendor(currentVendor.id));
           dispatch(requestGetApplications(currentVendor.id));
         }
-  
-  
+
+
         dispatch(requestVendorAppGroups(currentVendor.id))
       }
 
@@ -627,7 +658,7 @@ export default ({ child_id }) => {
       if (fields.length >= 17) {
         const childIdIndex = group_type === 'bcombs' ? 2 : 1;
         const appGroupIdIndex = group_type === 'bcombs' ? 1 : 2;
- 
+
         const cg = {
           name: fields[0].trim() + ' ' + (group_type === 'bcombs' ? fields[1].trim() : ''),
           child_id: fields[childIdIndex],
@@ -722,26 +753,30 @@ export default ({ child_id }) => {
               <FontAwesomeIcon icon={faUpload} />
               <span>Import</span>
             </button>
+
           </>}
 
         </div>
       </div>
       <div id='viewWrapper'>
         <div id='gradeInputView'>
-          <a
-            className='back-btn'
-            onClick={(e) => {
-              e.preventDefault()
-              if (hasChanged) {
-                setBackDialog(true)
-              } else {
-                handleBack()
-              }
-            }}
-          >
-            <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
-            Back
-          </a>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <a
+              className='back-btn'
+              onClick={(e) => {
+                e.preventDefault()
+                if (hasChanged) {
+                  setBackDialog(true)
+                } else {
+                  handleBack()
+                }
+              }}
+            >
+              <FontAwesomeIcon className='back-icon' icon={faAngleLeft} />
+              Back
+            </a>
+
+          </div>
           <StandardTest
             appGroupIds={appGroupIdList}
             applications={is_parent ? applications.userAllApplications : group_type === 'forms' ? applications.customActiveApplications : applications.activeapplications}
@@ -761,7 +796,7 @@ export default ({ child_id }) => {
           />
           <div className='gradeInputView-header' style={{ 'marginTop': '1rem' }}>
             <div className='action left'></div>
-            <div className='action right'>
+            <div className='action' style={{ display: 'flex', flexDirection: 'flex-end' }}>
               {/* <CSVLink
                 id="gradeExportBtn"
                 filename='Grades Export.csv'
@@ -777,16 +812,30 @@ export default ({ child_id }) => {
               {!is_parent && <>  <button
                 className='btn-save'
                 onClick={() => { setSelecteExportType('grades-export') }}
+                style={{ marginLeft: 5, marginRight: 5}}
               >
                 <FontAwesomeIcon icon={faDownload} />
                 <span>Export</span>
               </button>
+                {`   `}
                 <button
                   className='btn-save'
                   onClick={handleGradesImport}
+                  style={{ marginLeft: 5, marginRight: 5}}
                 >
                   <FontAwesomeIcon icon={faUpload} />
                   <span>Import</span>
+                </button>
+                {`   `}
+                <button
+                  className='btn-save'
+                  onClick={() => {
+                    setIsQRCodePreviewModalVisible(true)
+                  }}
+                  style={{ marginLeft: 5, marginRight: 5}}
+                >
+                  <FontAwesomeIcon icon={faQrcode} />
+                  <span>View QR Code</span>
                 </button>
               </>}
 
@@ -874,6 +923,13 @@ export default ({ child_id }) => {
           />
         )
       }
+
+      {isQRCodePreviewModalVisible && <QRCodePReviewModal
+        isImagePreviewModalVisible={isQRCodePreviewModalVisible}
+        setIsImagePreviewModalVisible={setIsQRCodePreviewModalVisible}
+        qrCodeUrl={qrCode}
+
+      />}
     </GradeInputStyled>
   )
 }
