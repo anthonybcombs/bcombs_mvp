@@ -199,6 +199,10 @@ const AsyncUserattendance = Loadable({
   loading: Loading
 });
 
+const AsyncUserGrades = Loadable({
+  loader: () => import("./components/UserGrade"),
+  loading: Loading
+});
 
 
 
@@ -215,6 +219,7 @@ export default function App() {
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <Router>
               <AsyncUserattendance path="/event/:event_id/attendance" />
+              <AsyncUserGrades path="/user/grades" />
               <AyncDashboardMyContactsPublic path="/mycalendars/public/:id" />
               <AsyncAuth path="/">
                 <AsyncLandingPage path="/" default />
