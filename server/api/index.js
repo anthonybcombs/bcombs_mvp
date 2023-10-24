@@ -2812,7 +2812,6 @@ router.get("/vendor/default/summary", async (req, res) => {
       [defaultUserId]
     );
 
-    console.log('applicationssssssss', applications)
     return res.status(200).json({
       data: applications
     })
@@ -2829,7 +2828,7 @@ router.get("/vendor/default/summary", async (req, res) => {
 
 router.get('/qr/grade/page', async (req, res) => {
   try {
-     const qrCodeDataURL = await QRCode.toDataURL(`${process.env.APP_URL}/user/grades`);
+     const qrCodeDataURL = await QRCode.toDataURL(`${process.env.APP_CLIENT_URL}/user/grades`);
      return res.status(200).json({
       qr_code: qrCodeDataURL
     });
