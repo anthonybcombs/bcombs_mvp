@@ -257,7 +257,7 @@ export default function UserGrade(props) {
   const [currentChild, setCurrentChild] = useState({
     firstname: "",
     lastname: "",
-    childId: "C110367",
+    childId: "",
   });
 
   const [qrCode, setQrCode] = useState('');
@@ -273,6 +273,7 @@ export default function UserGrade(props) {
   const [selectedReportingPeriod, setSelectedReportingPeriod] = useState('grade_quarter_1');
   const [selectedSchoolCumulative, setSelectedSchoolCumulative] = useState(null);
   const [selectedStudentGrades, setSelectedStudentGrades] = useState([{ ...classType }]);
+  const [selectedSchoolYear, setSelectedSchoolYear] = useState(null);
 
   const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
 
@@ -373,18 +374,17 @@ export default function UserGrade(props) {
   };
 
 
-  console.log('selectedSchoolCumulative', selectedSchoolCumulative)
   const handleGradeInputChange = index => e => {
     const { name, value } = e.target;
 
     const updatedStudentGrades = [...(studentGrades[selectedSchoolGrade] || [])];
 
-    const isGradeField = (name !== 'class') && (name !== 'subject') && (name !== 'designation');
+    // const isGradeField = (name !== 'class') && (name !== 'subject') && (name !== 'designation');
 
     if (index > -1) {
       updatedStudentGrades[index] = {
         ...(studentGrades[selectedSchoolGrade][index] || {}),
-        [name]: isGradeField ? parseInt(value) : value
+        [name]: value
       };
 
     }
@@ -401,8 +401,6 @@ export default function UserGrade(props) {
       ]
     }
 
-
-    // setSelectedStudentGrades([...updatedStudentGrades])
 
     setStudentGrades({
       ...studentGrades,
@@ -444,48 +442,81 @@ export default function UserGrade(props) {
 
   const handleSaveGrades = () => {
 
-    let updatedStudentCumulative = Object.keys(studentGrades).map(key => {
+    if (studentGrades && studentCumulative.length) {
+      let updatedStudentCumulative = Object.keys(studentGrades).map(key => {
 
-      let currentData = studentCumulative.find(item => item.year_level === parseInt(key));
+        let currentData = studentCumulative.find(item => item.year_level === parseInt(key));
 
-      currentData = currentData && selectedSchoolCumulative && selectedSchoolCumulative?.student_grade_cumulative_id === currentData?.student_grade_cumulative_id ? selectedSchoolCumulative : currentData;
-      const isNew = currentData?.student_grade_cumulative_id ? false : true;
+        currentData = currentData && selectedSchoolCumulative && selectedSchoolCumulative?.student_grade_cumulative_id === currentData?.student_grade_cumulative_id ? selectedSchoolCumulative : currentData;
+        const isNew = currentData?.student_grade_cumulative_id ? false : true;
 
-      const updatedGrades = removeKeysFromArrayObjects(studentGrades[key] || [], [
-        'date_created',
-        'date_updated',
-        'student_grades_id'
-      ])
+        let updatedGrades = removeKeysFromArrayObjects(studentGrades[key] || [], [
+          'date_created',
+          'date_updated',
+          'student_grades_id'
+        ]);
 
-      return {
-        ...currentData,
-        ...(isNew ? defaultCumulative : {}),
-        app_group_id: currentChildDetails?.app_grp_id,
-        student_grade_cumulative_id: currentData?.student_grade_cumulative_id || null,
-        year_level: parseInt(key),
-        child_id: currentChildDetails?.ch_id,
-        grades: updatedGrades || []
+        updatedGrades = updatedGrades.map(item => {
+          return {
+            ...item,
+            grade_quarter_1: parseInt(item.grade_quarter_1),
+            grade_quarter_2: parseInt(item.grade_quarter_2),
+            grade_quarter_3: parseInt(item.grade_quarter_3),
+            grade_quarter_4: parseInt(item.grade_quarter_4)
 
-      }
-    });
+          }
+        })
 
-    updatedStudentCumulative = removeKeysFromArrayObjects(updatedStudentCumulative || [], [
-      'class_teacher',
-      'date_added',
-      'date_updated'
-    ]);
+        return {
+          ...currentData,
+          ...(isNew ? defaultCumulative : {}),
+          app_group_id: currentChildDetails?.app_grp_id,
+          student_grade_cumulative_id: currentData?.student_grade_cumulative_id || null,
+          year_level: parseInt(key),
+          child_id: currentChildDetails?.ch_id,
+          grades: updatedGrades || []
 
-    console.log('updatedStudentCumulative', updatedStudentCumulative)
-    dispatch(requestAddUpdateStudentCumulative(updatedStudentCumulative));
+        }
+      });
+
+      updatedStudentCumulative = removeKeysFromArrayObjects(updatedStudentCumulative || [], [
+        'class_teacher',
+        'date_added',
+        'date_updated'
+      ]);
+
+
+      console.log('updatedStudentCumulative', updatedStudentCumulative)
+      dispatch(requestAddUpdateStudentCumulative(updatedStudentCumulative));
+    }
+
   }
 
   const handleSchoolYearChange = e => {
     const schoolYear = e.target.value.split('-');
 
     if (schoolYear.length > 0) {
+
       const startYear = new Date(`${schoolYear[0]}-08-30`);
       const endYear = new Date(`${schoolYear[1]}-06-30`);;
 
+      const currentCumulative = studentCumulative.find(item => {
+        const yearStart = item.school_year_start && item.school_year_start.split('-')[0];
+        return schoolYear[0] === yearStart
+      });
+
+
+      if (currentCumulative && currentCumulative?.year_level) {
+        setSelectedStudentGrades([...(studentGrades[currentCumulative?.year_level] || [])])
+        setSelectedSchoolGrade(currentCumulative?.year_level);
+        setSelectedSchoolCumulative(currentCumulative || null);
+      }
+      else {
+        setSelectedSchoolGrade(null);
+        setSelectedStudentGrades([]);
+      }
+
+      setSelectedSchoolYear(e.target.value);
       setSelectedSchoolCumulative({
         ...selectedSchoolCumulative,
         school_year_start: startYear.toISOString(),
@@ -551,7 +582,9 @@ export default function UserGrade(props) {
                   name="school_year"
                   className="form-control"
                   onChange={handleSchoolYearChange}
+                  selected={selectedSchoolYear}
                 >
+                  <option value="">Please Select</option>
                   <option value="2023-2024">2023-2024</option>
                   <option value="2022-2023">2022-2023</option>
                   <option value="2021-2022">2021-2022</option>
@@ -622,8 +655,13 @@ export default function UserGrade(props) {
           <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', width: 500 }}>
             <div style={{ padding: 24 }}>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
-                {qrCode && <img src={qrCode} style={{ width: 175, height: 175, textAlign: 'center' }} />}
+                {qrCode && <div>
+                  <img src={qrCode} style={{ width: 175, height: 175, textAlign: 'center' }} />
+                  <div>QR Code for this page</div>
+                </div>}
               </div>
+              <br />
+              <br />
               {studentGrades[selectedSchoolGrade] && studentGrades[selectedSchoolGrade].map((studentGrade, index) => {
                 return <div style={{ paddingBottom: 12, paddingTop: 12 }}>
                   <div>
@@ -682,7 +720,7 @@ export default function UserGrade(props) {
 
 
               <div style={{ width: '100%' }}>
-                <button onClick={handleAddClass} type="button" >
+                <button disabled={selectedSchoolYear ? false : true} onClick={handleAddClass} type="button" >
                   Add More Class
                 </button>
                 {studentGrades[selectedSchoolGrade] && studentGrades[selectedSchoolGrade].length > 0 && <button
