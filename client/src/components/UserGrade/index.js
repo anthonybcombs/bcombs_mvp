@@ -314,8 +314,12 @@ export default function UserGrade(props) {
 
   const handleFindUser = async () => {
     try {
+      setCurrentChildDetails({});
+      setStudentGrades({})
+      setStudentCumulative([]);
       setUserMessage('');
       setIsFindingUser(true);
+      
       const response = await getCurrentUserAndGrades({
         ...currentChild
       });
