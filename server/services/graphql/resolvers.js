@@ -86,7 +86,8 @@ import {
   getVendorApplicationReminder,
   createAppGroupReminder,
   updateLogo,
-  setDefaultVendor
+  setDefaultVendor,
+  setDefaultVendorForms
 } from "../../api/vendor";
 import {
   createApplication,
@@ -2112,7 +2113,13 @@ const resolvers = {
 
     async updateDefaultVendor(root, { vendor_id, user_id}, context) {
       return await setDefaultVendor({ vendor_id, user_id})
+    },
+
+    async updateDefaultVendorForms(root, { vendor_id, form_id}, context) {
+      return await setDefaultVendorForms({ vendor_id, form_id })
     }
+
+    
   }
 };
 

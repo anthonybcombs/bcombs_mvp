@@ -1488,3 +1488,35 @@ export const setDefaultVendor = async ({
 
 }
 
+
+export const setDefaultVendorForms = async ({
+  form_id,
+  // user_id,
+  vendor_id
+}) => {
+  const db = makeDb();
+ 
+  try {
+
+    await db.query(`UPDATE vendor
+    SET default_form =?
+    WHERE id=UUID_TO_BIN(?);
+  `,
+    [form_id, vendor_id]
+  );
+
+  }
+  catch (error) {
+    console.log('Vendor Default Error', error)
+    return {
+      message: 'Something went wrong'
+    }
+  } finally {
+    await db.close();
+    return {
+      message: 'Default vendor has been updated'
+    }
+  }
+
+}
+

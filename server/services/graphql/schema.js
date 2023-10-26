@@ -1892,6 +1892,7 @@ const mutations = `
         createUpdateChildAttendance(user: UserAttendanceInput): UserAttendance
         updateParentVendorShare(parents: [ParentShareByVendorInput], vendor_id: String, app_group_id: String ,form_type: String): [Parent]
         updateDefaultVendor(user_id: String!, vendor_id:String): DefaultVendorResponse
+        updateDefaultVendorForms(form_id: String!, vendor_id:String): DefaultVendorResponse
     }
 `;
 
