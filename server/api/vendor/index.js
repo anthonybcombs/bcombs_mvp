@@ -34,7 +34,8 @@ export const getVendors = async () => {
         section2_show,
         section3_show,
         logo,
-        is_default
+        is_default,
+        default_form
         FROM vendor`
     );
     return result;
@@ -114,7 +115,8 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
       v.created_at as created_at,
       v.is_daycare,
       v.logo,
-      v.is_default
+      v.is_default,
+      v.default_form
     FROM vendor v
     WHERE v.user=UUID_TO_BIN(?)
     ORDER BY v.id2 ASC
@@ -183,6 +185,7 @@ export const getVendorsByUserId = async (user, withApplications = true) => {
           v.is_daycare,
           v.logo,
           v.is_default,
+          v.default_form,
           va.created_at as created_at
         FROM vendor v, vendor_admin va
         WHERE va.user = UUID_TO_BIN(?) AND va.vendor = v.id
@@ -257,7 +260,8 @@ export const getVendorById2 = async (id2) => {
         v.section3_show,
         v.is_daycare,
         v.logo,
-        v.is_default
+        v.is_default,
+        v.default_form
       FROM vendor v
       WHERE v.id2=?`,
       [id2]
@@ -298,7 +302,8 @@ export const getVendorById = async (id) => {
         v.section3_show,
         v.is_daycare,
         v.logo,
-        v.is_default
+        v.is_default,
+        v.default_form
       FROM vendor v
       WHERE v.id=UUID_TO_BIN(?)`,
       [id]
@@ -1499,7 +1504,7 @@ export const setDefaultVendorForms = async ({
   try {
 
     await db.query(`UPDATE vendor
-    SET default_form =?
+    SET default_form=?
     WHERE id=UUID_TO_BIN(?);
   `,
     [form_id, vendor_id]

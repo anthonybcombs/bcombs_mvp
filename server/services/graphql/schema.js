@@ -1092,6 +1092,7 @@ const queryTypes = `
         forms: [CustomApplicationOutput]
         logo: String
         is_default: Int
+        default_form: String
     }
 
     type Vendor2 {
