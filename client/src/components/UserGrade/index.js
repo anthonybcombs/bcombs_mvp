@@ -268,6 +268,8 @@ export default function UserGrade(props) {
   const [userMessage, setUserMessage] = useState('');
   const [studentCumulative, setStudentCumulative] = useState([]);
   const [studentGrades, setStudentGrades] = useState({});
+  const [defaultStudentGrades, setDefaultStudentGrades] = useState({});
+
 
   const [selectedSchoolGrade, setSelectedSchoolGrade] = useState(null);
   const [selectedReportingPeriod, setSelectedReportingPeriod] = useState('grade_quarter_1');
@@ -279,9 +281,8 @@ export default function UserGrade(props) {
 
   const currentReportingPeriod = REPORTING_PERIOD_OPTIONS.find(item => item.value === selectedReportingPeriod);
 
-  const studentGradeLabels = Object.keys(studentGrades).map(key => {
+  const studentGradeLabels = Object.keys(defaultStudentGrades).map(key => {
     const currentGrade = GRADE_OPTIONS.find(item => item.value === parseInt(key));
-
     return currentGrade?.label
   }).join(',');
 
@@ -316,10 +317,11 @@ export default function UserGrade(props) {
     try {
       setCurrentChildDetails({});
       setStudentGrades({})
+      setDefaultStudentGrades({});
       setStudentCumulative([]);
       setUserMessage('');
       setIsFindingUser(true);
-      
+
       const response = await getCurrentUserAndGrades({
         ...currentChild
       });
@@ -327,6 +329,7 @@ export default function UserGrade(props) {
       if (response?.child) {
         const appGroups = response?.app_groups || [];
         setStudentGrades({ ...(response.grades || {}) });
+        setDefaultStudentGrades({ ...(response.grades || {}) });
         setStudentCumulative([...(response?.grade_cumulative || [])]);
 
 
@@ -446,54 +449,56 @@ export default function UserGrade(props) {
 
   const handleSaveGrades = () => {
 
-    if (studentGrades && studentCumulative.length) {
-      let updatedStudentCumulative = Object.keys(studentGrades).map(key => {
 
-        let currentData = studentCumulative.find(item => item.year_level === parseInt(key));
+    let updatedStudentCumulative = Object.keys(studentGrades).map(key => {
 
-        currentData = currentData && selectedSchoolCumulative && selectedSchoolCumulative?.student_grade_cumulative_id === currentData?.student_grade_cumulative_id ? selectedSchoolCumulative : currentData;
-        const isNew = currentData?.student_grade_cumulative_id ? false : true;
+      let currentData = studentCumulative.find(item => item.year_level === parseInt(key));
 
-        let updatedGrades = removeKeysFromArrayObjects(studentGrades[key] || [], [
-          'date_created',
-          'date_updated',
-          'student_grades_id'
-        ]);
+      currentData = currentData && selectedSchoolCumulative && selectedSchoolCumulative?.student_grade_cumulative_id === currentData?.student_grade_cumulative_id ? selectedSchoolCumulative : currentData;
+      const isNew = currentData?.student_grade_cumulative_id ? false : true;
 
-        updatedGrades = updatedGrades.map(item => {
-          return {
-            ...item,
-            grade_quarter_1: parseInt(item.grade_quarter_1),
-            grade_quarter_2: parseInt(item.grade_quarter_2),
-            grade_quarter_3: parseInt(item.grade_quarter_3),
-            grade_quarter_4: parseInt(item.grade_quarter_4)
-
-          }
-        })
-
-        return {
-          ...currentData,
-          ...(isNew ? defaultCumulative : {}),
-          app_group_id: currentChildDetails?.app_grp_id,
-          student_grade_cumulative_id: currentData?.student_grade_cumulative_id || null,
-          year_level: parseInt(key),
-          child_id: currentChildDetails?.ch_id,
-          grades: updatedGrades || []
-
-        }
-      });
-
-      updatedStudentCumulative = removeKeysFromArrayObjects(updatedStudentCumulative || [], [
-        'class_teacher',
-        'date_added',
-        'date_updated'
+      let updatedGrades = removeKeysFromArrayObjects(studentGrades[key] || [], [
+        'date_created',
+        'date_updated',
+        'student_grades_id'
       ]);
 
+      updatedGrades = updatedGrades.map(item => {
+        return {
+          ...item,
+          grade_quarter_1: parseInt(item.grade_quarter_1),
+          grade_quarter_2: parseInt(item.grade_quarter_2),
+          grade_quarter_3: parseInt(item.grade_quarter_3),
+          grade_quarter_4: parseInt(item.grade_quarter_4)
 
-      console.log('updatedStudentCumulative', updatedStudentCumulative)
-      dispatch(requestAddUpdateStudentCumulative(updatedStudentCumulative));
-    }
+        }
+      })
 
+      return {
+        ...currentData,
+        ...(isNew ? defaultCumulative : {}),
+        app_group_id: currentChildDetails?.app_grp_id,
+        student_grade_cumulative_id: currentData?.student_grade_cumulative_id || null,
+        year_level: parseInt(key),
+        child_id: currentChildDetails?.ch_id,
+        grades: updatedGrades || []
+
+      }
+    });
+
+    updatedStudentCumulative = removeKeysFromArrayObjects(updatedStudentCumulative || [], [
+      'class_teacher',
+      'date_added',
+      'date_updated'
+    ]);
+
+
+    console.log('updatedStudentCumulative', updatedStudentCumulative)
+    dispatch(requestAddUpdateStudentCumulative(updatedStudentCumulative));
+
+    setTimeout(() => {
+      handleFindUser();
+    },2000);
   }
 
   const handleSchoolYearChange = e => {
