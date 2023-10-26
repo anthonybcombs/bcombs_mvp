@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useForm } from "react-hook-form";
 // import { useParams } from "@reach/router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { format, setSeconds, setMilliseconds } from 'date-fns';
 
 
@@ -13,6 +13,8 @@ import { useDispatch } from "react-redux";
 import { requestAddUpdateStudentCumulative } from '../../redux/actions/Grades'
 
 import Confirmation from "../../helpers/Confirmation";
+
+import Loading from "../../helpers/Loading.js";
 
 
 
@@ -274,6 +276,20 @@ export default function UserGrade(props) {
 
   const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
 
+  const currentReportingPeriod = REPORTING_PERIOD_OPTIONS.find(item => item.value === selectedReportingPeriod);
+
+  const studentGradeLabels = Object.keys(studentGrades).map(key => {
+    const currentGrade = GRADE_OPTIONS.find(item => item.value === parseInt(key));
+
+    return currentGrade?.label
+  }).join(',');
+
+  const { gradeLoading } = useSelector(state => {
+    return {
+      gradeLoading: state.loading?.gradeEditLoading
+    }
+  })
+
   const dispatch = useDispatch();
   const theme = useContext(ThemeContext);
 
@@ -427,7 +443,7 @@ export default function UserGrade(props) {
 
 
   const handleSaveGrades = () => {
-    console.log(';studentGrades',studentGrades)
+
     let updatedStudentCumulative = Object.keys(studentGrades).map(key => {
 
       let currentData = studentCumulative.find(item => item.year_level === parseInt(key));
@@ -478,214 +494,221 @@ export default function UserGrade(props) {
     }
   }
 
-
   return (
-    <UserGradeStyled
-      theme={theme}
-      data-testid="user-grade-form"
-      method="POST">
+    <div> {gradeLoading ? <Loading /> :
+      <UserGradeStyled
+        theme={theme}
+        data-testid="user-grade-form"
+        method="POST">
 
-      <div className="gradeInfo">
-        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', width: 500 }}>
-          <div style={{ padding: 24 }}>
 
-            <div>
-              <h2>Student Grades</h2>
-            </div>
 
-            <div style={style.danger}>
-              {userMessage}
-            </div>
+        <div className="gradeInfo">
+          <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', width: 500 }}>
+            <div style={{ padding: 24 }}>
 
-            <div>
-              <div style={style.label}>Child ID</div>
-              <input
-                type="text"
-                value={currentChild?.childId}
-                id="childId"
-                name="childId"
-                placeholder=""
-                onChange={({ target }) => {
-                  handleInputChange("childId", target.value);
-                }}
-                ref={register({ required: true })}
-              />
-            </div>
-            <div>
-              <div style={style.label}>Student Name</div>
-              <input
-                disabled={true}
-                type="text"
-                value={`${currentChildDetails?.firstname || ''} ${currentChildDetails?.lastname || ''}`}
-                id="student_name"
-                name="student_name"
-                placeholder=""
-              />
-            </div>
+              <div>
+                <h2>Student Grades</h2>
+              </div>
 
-            <div>
-              <div style={style.label}>School Year</div>
-              <select
-                name="school_year"
-                className="form-control"
-                onChange={handleSchoolYearChange}
-              >
-                <option value="2023-2024">2023-2024</option>
-                <option value="2022-2023">2022-2023</option>
-                <option value="2021-2022">2021-2022</option>
-                <option value="2020-2021">2020-2021</option>
-              </select>
-            </div>
-            <div>
-              <div style={style.label}>School Grade</div>
-              <select
-                name="school_grade"
-                className="form-control"
-                onChange={handleSchoolGradeChange}
-              >
-                {GRADE_OPTIONS.map(item => <option value={item.value}>{item.label}</option>)}
-              </select>
-            </div>
+              <div style={style.danger}>
+                {userMessage}
+              </div>
 
-            <div>
-              <div style={style.label}>Reporting Period</div>
-              <select
-                selected={selectedReportingPeriod}
-                name="reporting_period"
-                className="form-control"
-                onChange={(e) => {
-                  setSelectedReportingPeriod(e.target.value);
-                }}
-              >
-                <option value={null}>Please select an option</option>
-                {REPORTING_PERIOD_OPTIONS.map(item => {
-                  return <option value={item.value}>{item.label}</option>
-                })}
-              </select>
-            </div>
-            <div>
-              <div style={style.label}>GPA Weighted</div>
-              <input
-                value={selectedSchoolCumulative?.gpa_final}
-                onChange={handleCumulativeInputChange}
-                type="number"
-                id="gpa_weighted"
-                name="gpa_final"
-                placeholder=""
-                step={0.1}
-                max={5.0}
-              />
-            </div>
-            <div>
-              <div style={style.label}>GPA Unweighted</div>
-              <input
-                value={selectedSchoolCumulative?.gpa_sem_2}
-                onChange={handleCumulativeInputChange}
-                type="number"
-                id="gpa_unweighted"
-                name="gpa_sem_2"
-                placeholder=""
-                step={0.1}
-                max={4.0}
-              />
-            </div>
+              {studentGradeLabels && <div style={{ marginTop: 12, marginBottom: 12 }}>
+                Currently, this student has grade records for the following levels: {studentGradeLabels}.
+              </div>}
 
-            <button disabled={isFindingUser} onClick={handleFindUser} type="button" >
-              {isFindingUser ? 'Please Wait...' : 'Find Student'}
-            </button>
+              <div>
+                <div style={style.label}>Child ID</div>
+                <input
+                  type="text"
+                  value={currentChild?.childId}
+                  id="childId"
+                  name="childId"
+                  placeholder=""
+                  onChange={({ target }) => {
+                    handleInputChange("childId", target.value);
+                  }}
+                  ref={register({ required: true })}
+                />
+              </div>
+              <div>
+                <div style={style.label}>Student Name</div>
+                <input
+                  disabled={true}
+                  type="text"
+                  value={`${currentChildDetails?.firstname || ''} ${currentChildDetails?.lastname || ''}`}
+                  id="student_name"
+                  name="student_name"
+                  placeholder=""
+                />
+              </div>
+
+              <div>
+                <div style={style.label}>School Year</div>
+                <select
+                  name="school_year"
+                  className="form-control"
+                  onChange={handleSchoolYearChange}
+                >
+                  <option value="2023-2024">2023-2024</option>
+                  <option value="2022-2023">2022-2023</option>
+                  <option value="2021-2022">2021-2022</option>
+                  <option value="2020-2021">2020-2021</option>
+                </select>
+              </div>
+              <div>
+                <div style={style.label}>School Grade</div>
+                <select
+                  name="school_grade"
+                  className="form-control"
+                  onChange={handleSchoolGradeChange}
+                >
+                  {GRADE_OPTIONS.map(item => <option value={item.value}>{item.label}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <div style={style.label}>Reporting Period</div>
+                <select
+                  selected={selectedReportingPeriod}
+                  name="reporting_period"
+                  className="form-control"
+                  onChange={(e) => {
+                    setSelectedReportingPeriod(e.target.value);
+                  }}
+                >
+                  <option value={null}>Please select an option</option>
+                  {REPORTING_PERIOD_OPTIONS.map(item => {
+                    return <option value={item.value}>{item.label}</option>
+                  })}
+                </select>
+              </div>
+              <div>
+                <div style={style.label}>GPA Weighted</div>
+                <input
+                  value={selectedSchoolCumulative?.gpa_final}
+                  onChange={handleCumulativeInputChange}
+                  type="number"
+                  id="gpa_weighted"
+                  name="gpa_final"
+                  placeholder=""
+                  step={0.1}
+                  max={5.0}
+                />
+              </div>
+              <div>
+                <div style={style.label}>GPA Unweighted</div>
+                <input
+                  value={selectedSchoolCumulative?.gpa_sem_2}
+                  onChange={handleCumulativeInputChange}
+                  type="number"
+                  id="gpa_unweighted"
+                  name="gpa_sem_2"
+                  placeholder=""
+                  step={0.1}
+                  max={4.0}
+                />
+              </div>
+
+              <button disabled={isFindingUser} onClick={handleFindUser} type="button" >
+                {isFindingUser ? 'Please Wait...' : 'Find Student'}
+              </button>
+
+            </div>
 
           </div>
+          <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', width: 500 }}>
+            <div style={{ padding: 24 }}>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                {qrCode && <img src={qrCode} style={{ width: 175, height: 175, textAlign: 'center' }} />}
+              </div>
+              {studentGrades[selectedSchoolGrade] && studentGrades[selectedSchoolGrade].map((studentGrade, index) => {
+                return <div style={{ paddingBottom: 12, paddingTop: 12 }}>
+                  <div>
+                    <div style={style.label}>Class Type</div>
+                    <input
+                      onChange={handleGradeInputChange(index)}
+                      value={studentGrade?.class}
+                      type="text"
+                      id="class"
+                      name="class"
+                      placeholder=""
+                    />
+                  </div>
 
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', width: 500 }}>
-          <div style={{ padding: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              {qrCode && <img src={qrCode} style={{ width: 175, height: 175, textAlign: 'center' }} />}
-            </div>
-            {studentGrades[selectedSchoolGrade] && studentGrades[selectedSchoolGrade].map((studentGrade, index) => {
-              return <div style={{ paddingBottom: 12, paddingTop: 12 }}>
-                <div>
-                  <div style={style.label}>Class Type</div>
-                  <input
-                    onChange={handleGradeInputChange(index)}
-                    value={studentGrade?.class}
-                    type="text"
-                    id="class"
-                    name="class"
-                    placeholder=""
-                  />
+                  <div>
+                    <div style={style.label}>Class Name</div>
+                    <input
+                      onChange={handleGradeInputChange(index)}
+                      value={studentGrade?.subject}
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      placeholder=""
+                    />
+                  </div>
+
+                  <div>
+                    <div style={style.label}>Class Grade {currentReportingPeriod?.label && `${currentReportingPeriod?.label}`}</div>
+                    <input
+                      onChange={handleGradeInputChange(index)}
+                      value={studentGrade[selectedReportingPeriod]}
+                      type="text"
+                      id="final_grade"
+                      name={selectedReportingPeriod || 'final_grade'}
+                      placeholder=""
+                    />
+                  </div>
+
+                  {selectedSchoolGrade >= 7 && <div>
+                    <div style={style.label}>Class Designation</div>
+                    <input
+                      onChange={handleGradeInputChange(index)}
+                      value={studentGrade?.designation}
+                      type="text"
+                      id="designation"
+                      name="designation"
+                      placeholder=""
+                    />
+                  </div>}
+
+
+
                 </div>
-
-                <div>
-                  <div style={style.label}>Class Name</div>
-                  <input
-                    onChange={handleGradeInputChange(index)}
-                    value={studentGrade?.subject}
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    placeholder=""
-                  />
-                </div>
-
-                <div>
-                  <div style={style.label}>Class Grade</div>
-                  <input
-                    onChange={handleGradeInputChange(index)}
-                    value={studentGrade[selectedReportingPeriod]}
-                    type="text"
-                    id="final_grade"
-                    name={selectedReportingPeriod || 'final_grade'}
-                    placeholder=""
-                  />
-                </div>
-
-                {selectedSchoolGrade >= 7 && <div>
-                  <div style={style.label}>Class Designation</div>
-                  <input
-                    onChange={handleGradeInputChange(index)}
-                    value={studentGrade?.designation}
-                    type="text"
-                    id="designation"
-                    name="designation"
-                    placeholder=""
-                  />
-                </div>}
+              })}
 
 
+
+              <div style={{ width: '100%' }}>
+                <button onClick={handleAddClass} type="button" >
+                  Add More Class
+                </button>
+                {studentGrades[selectedSchoolGrade] && studentGrades[selectedSchoolGrade].length > 0 && <button
+                  //  disabled={studentGrades[selectedSchoolGrade] && studentGrades[selectedSchoolGrade].length === 0}
+                  onClick={handleReview}
+                  type="button"
+                >
+                  Review
+                </button>}
 
               </div>
-            })}
-
-
-
-            <div style={{ width: '100%' }}>
-              <button onClick={handleAddClass} type="button" >
-                Add More Class
-              </button>
-              {studentGrades[selectedSchoolGrade] && studentGrades[selectedSchoolGrade].length > 0 && <button
-                //  disabled={studentGrades[selectedSchoolGrade] && studentGrades[selectedSchoolGrade].length === 0}
-                onClick={handleReview}
-                type="button"
-              >
-                Review
-              </button>}
-
             </div>
           </div>
         </div>
-      </div>
 
-      <Confirmation
-        isVisible={isConfirmationVisible}
-        message="Are you sure you want to save these changes?"
-        toggleConfirmationVisible={setIsConfirmationVisible}
-        onSubmit={() => {
-          handleSaveGrades();
-        }}
-        submitButtonLabel="Submit"
-      />
-    </UserGradeStyled>
+        <Confirmation
+          isVisible={isConfirmationVisible}
+          message="Do you want to save these changes? Saving will overwrite the student's existing grade records."
+          toggleConfirmationVisible={setIsConfirmationVisible}
+          onSubmit={() => {
+            handleSaveGrades();
+          }}
+          submitButtonLabel="Submit"
+        />
+      </UserGradeStyled>
+    }</div>
   );
 }
 
