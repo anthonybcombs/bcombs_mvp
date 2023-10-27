@@ -310,7 +310,7 @@ export default function UserGrade(props) {
   const [currentChild, setCurrentChild] = useState({
     firstname: "",
     lastname: "",
-    childId: "C110367",
+    childId: "",
   });
 
   const [qrCode, setQrCode] = useState('');
