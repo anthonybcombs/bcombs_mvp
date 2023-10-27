@@ -390,6 +390,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
         other_allergies
         current_medications
         health_insurance_information
+        new_childId
       }
       parents {
         parent_id
@@ -596,6 +597,7 @@ export const GET_APPLICATION_USER_ID_QUERY = gql`
           other_allergies
           current_medications
           health_insurance_information
+          new_childId
         }
         parents {
           parent_id
