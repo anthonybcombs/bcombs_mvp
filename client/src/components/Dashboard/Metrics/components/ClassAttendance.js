@@ -48,7 +48,10 @@ const ClassAttendance = props => {
 
     useEffect(() => {
         if (auth && auth.user_id) {
-            triggerApiCallAttendance(auth.user_id, year, 'fid_0', 'id_0');
+            const defaultForm = selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
+            triggerApiCallAttendance(auth.user_id, year, defaultForm, 'id_0');
+
+            setFormId(defaultForm);
         }
     }, [auth, selectedVendor]);
 

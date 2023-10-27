@@ -86,7 +86,8 @@ import {
   updateVendorLogo,
   createVendor,
   setSelectedVendor,
-  updateDefaultVendor
+  updateDefaultVendor,
+  updateDefaultVendorForms
 } from "../actions/Vendors";
 
 import {
@@ -333,6 +334,8 @@ function* rootSaga() {
   yield takeLatest(actionType.REQUEST_UPDATE_VENDOR_LOGO, updateVendorLogo)
 
   yield takeLatest(actionType.SET_DEFAULT_VENDOR, updateDefaultVendor)
+  
+  yield takeLatest(actionType.SET_DEFAULT_VENDOR_FORMS, updateDefaultVendorForms);
 
   yield takeLatest(actionType.REQUEST_CREATE_VENDOR, createVendor)
   yield takeLatest(actionType.REQUEST_SELECTED_VENDOR, setSelectedVendor)

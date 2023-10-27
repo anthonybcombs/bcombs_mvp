@@ -132,7 +132,10 @@ const ClassReports = props => {
         //defineChart(null);
         if (auth && auth.user_id) {
             setYear(2021);
-            triggerApi2(auth.user_id, year, vendors);
+            const defaultForm = selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
+
+            triggerApi2(auth.user_id, year, vendors, defaultForm);
+            setFormIdLocal(defaultForm);
         }
     }, [auth, vendors, selectedVendor]);
 

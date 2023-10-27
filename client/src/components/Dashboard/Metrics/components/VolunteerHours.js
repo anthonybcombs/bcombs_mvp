@@ -48,7 +48,9 @@ const VolunteerHours = props => {
 
     useEffect(() => {
         if (auth && auth.user_id) {
-            triggerApiCallVolunteering(auth.user_id, year, grade, 'fid_0', 'id_0');
+            const defaultForm = selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
+            triggerApiCallVolunteering(auth.user_id, year, grade, defaultForm, 'id_0');
+            setFormIdLocal(defaultForm);
         }
     }, [auth, selectedVendor]);
 

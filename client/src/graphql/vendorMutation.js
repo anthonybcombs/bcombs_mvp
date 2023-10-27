@@ -20,6 +20,7 @@ export const VENDORS_QUERY = gql`
       is_daycare
       logo
       is_default
+      default_form
     }
   }
 `;
@@ -44,6 +45,7 @@ export const VENDOR_BY_USER_QUERY = gql`
       is_daycare
       logo
       is_default
+      default_form
       app_programs {
         id
         vendor_program_id
@@ -101,6 +103,7 @@ export const VENDOR_BY_ID2_QUERY = gql`
       is_daycare
       logo
       is_default
+      default_form
       app_programs {
         id
         vendor_program_id
@@ -506,6 +509,15 @@ export const UPDATE_DEFAULT_VENDOR = gql`
     }
   }
 `;
+
+export const UPDATE_DEFAULT_VENDOR_FORMS = gql`
+  mutation updateDefaultVendorForms($form_id: String!, $vendor_id: String) {
+    updateDefaultVendorForms(form_id: $form_id, vendor_id: $vendor_id) {
+      message
+    }
+  }
+`;
+
 
 
 

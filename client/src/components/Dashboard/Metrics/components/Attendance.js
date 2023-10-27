@@ -45,9 +45,16 @@ const Attendance = props => {
     const [isLoading, setIsLoading] = useState(true);
     const chart = useRef();
 
+    console.log('formIdLocal',formIdLocal)
+    console.log('formIdLocal selectedVendor',selectedVendor)
+
+
     useEffect(() => {
         if (auth && auth.user_id) {
-            triggerApiCallAttendance(auth.user_id, year, grade);
+            const defaultForm = selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
+            triggerApiCallAttendance(auth.user_id, year, grade, defaultForm);
+
+            setFormIdLocal(defaultForm);
         }
     }, [auth, selectedVendor]);
     console.log('vendors 2', vendors)

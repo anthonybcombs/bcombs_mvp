@@ -47,7 +47,9 @@ const Tests = props => {
 
     useEffect(() => {
         if (auth && auth.user_id) {
-            triggerApiCallTests(auth.user_id, testName, grade, 'fid_0', 'id_0');
+            const defaultForm = selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
+            triggerApiCallTests(auth.user_id, testName, grade, defaultForm, 'id_0');
+            setFormIdLocal(defaultForm);
         }
     }, [auth, selectedVendor]);
 
