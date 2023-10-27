@@ -2266,7 +2266,9 @@ export default function index() {
         {
           vendors && vendors.length > 0 && (
             <div style={{
-              marginLeft: 12
+              marginLeft: 12,
+              display: 'flex', 
+              flexDirection: 'columns'
             }}>
               <select
 
@@ -2331,7 +2333,7 @@ export default function index() {
               </select>
               <span
                 onClick={handleSetDefaultForm}
-                style={{ color: 'blue', cursor: 'pointer', float: 'right' }}
+                style={{ color: 'blue', cursor: 'pointer', marginTop: 4 }}
 
               >
                 {isSettingDefaultVendorLoading ? 'Setting as Default...' : 'Set as default'}
