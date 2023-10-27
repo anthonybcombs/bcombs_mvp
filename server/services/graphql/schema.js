@@ -1799,6 +1799,7 @@ const queryTypes = `
         ch_id: String
         form_contents: String
         app_id: String
+        new_childId: String
     }
 
     type StudentRecords {
