@@ -35,12 +35,15 @@ const GRADE_OPTIONS = [
   ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))
 ];
 
-// const CLASS_TYPE = [
-//   { value: 'Math', label: 'Math' },
-//   { value: 'English', label: 'English' },
-//   { value: 'Science', label: 'Science' },
+const CLASS_TYPE = [
+  { value: 'Arts', label: 'Arts' },
+  { value: 'Math', label: 'Math' },
+  { value: 'English', label: 'English' },
+  { value: 'Science', label: 'Science' },
+  { value: 'Music', label: 'Music' },
+  { value: 'Social Studies', label: 'Social Studies' },
 
-// ]
+]
 
 const REPORTING_PERIOD_OPTIONS = [
   { value: 'grade_quarter_1', label: 'Q1 (Semester 1)' },
@@ -67,6 +70,45 @@ const removeKeysFromArrayObjects = (arr, keysToRemove) => {
   });
 
 }
+
+// function DropdownWithOptionalText (props) {
+
+//   const [selectedOption, setSelectedOption] = useState('');
+//   const [customOption, setCustomOption] = useState('');
+
+//   const handleSelectChange = (event) => {
+//     setSelectedOption(event.target.value);
+//   };
+
+//   const handleCustomInputChange = (event) => {
+//     setCustomOption(event.target.value);
+//   };
+
+//   return (
+//     <div>
+// <select value={selectedOption} onChange={handleSelectChange}>
+//   <option value="">Select an option</option>
+//   <option value="option1">Option 1</option>
+//   <option value="option2">Option 2</option>
+//   <option value="option3">Option 3</option>
+
+//   {CLASS_TYPE.map(item => {
+//      <option value={item.value}>{item.label}</option>
+//   })}
+// </select>
+//       {selectedOption === '' && (
+//         <input
+//           type="text"
+//           placeholder="Enter a custom option"
+//           value={customOption}
+//           onChange={handleCustomInputChange}
+//         />
+//       )}
+
+//     </div>
+//   );
+// }
+
 
 const UserGradeStyled = styled.form`
   display: flex;
@@ -122,25 +164,7 @@ const UserGradeStyled = styled.form`
     cursor: not-allowed; 
   }
 
-
-
-  svg {
-    vertical-align: middle;
-  }
-  #socials {
-    margin-top: 2em !important;
-  }
-  #socials button {
-    padding: 1em;
-    border-radius: 0 !important;
-    margin: 5px;
-  }
-  #facebook {
-    background-color: ${({ theme }) => theme.button.backgroundColor.secondary};
-  }
-  #google {
-    background-color: ${({ theme }) => theme.button.backgroundColor.error};
-  }
+ 
   #authOptions p {
     font-weight: bold;
     text-align: center;
@@ -186,13 +210,42 @@ const UserGradeStyled = styled.form`
     flex-direction: row;
   }
 
+    @media (max-width: 769px) {
+      .gradeInfo {
+        display: flex;
+        flex-direction: column !important;
+        width:100% !important;
+      }
+
+      .gradeForms {
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+      }
+  }
+
+  @media (min-width: 770px) {
+ 
+    .gradeForms {
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      width: 500px !important;
+  
+    }
+  
+}
+
+`;
+
+/*
   @media (max-width: 769px) {
     .gradeInfo {
       display: flex;
       flex-direction: column !important;
     }
   }
-`;
+*/
 
 const classType = {
   class: '',
@@ -257,7 +310,7 @@ export default function UserGrade(props) {
   const [currentChild, setCurrentChild] = useState({
     firstname: "",
     lastname: "",
-    childId: "",
+    childId: "C110367",
   });
 
   const [qrCode, setQrCode] = useState('');
@@ -382,8 +435,8 @@ export default function UserGrade(props) {
 
 
   const handleGradeInputChange = index => e => {
-    const { name, value } = e.target;
-
+    const { name, checked, value } = e.target;
+    console.log('value handleGradeInputChange', e.target.checked)
     const updatedStudentGrades = [...(studentGrades[selectedSchoolGrade] || [])];
 
     // const isGradeField = (name !== 'class') && (name !== 'subject') && (name !== 'designation');
@@ -391,7 +444,7 @@ export default function UserGrade(props) {
     if (index > -1) {
       updatedStudentGrades[index] = {
         ...(studentGrades[selectedSchoolGrade][index] || {}),
-        [name]: value
+        [name]: name === 'help_needed' ? checked : value
       };
 
     }
@@ -460,7 +513,9 @@ export default function UserGrade(props) {
       let updatedGrades = removeKeysFromArrayObjects(studentGrades[key] || [], [
         'date_created',
         'date_updated',
-        'student_grades_id'
+        'student_grades_id',
+        'selected_class_type',
+        'grade_type'
       ]);
 
       updatedGrades = updatedGrades.map(item => {
@@ -469,7 +524,8 @@ export default function UserGrade(props) {
           grade_quarter_1: parseInt(item.grade_quarter_1),
           grade_quarter_2: parseInt(item.grade_quarter_2),
           grade_quarter_3: parseInt(item.grade_quarter_3),
-          grade_quarter_4: parseInt(item.grade_quarter_4)
+          grade_quarter_4: parseInt(item.grade_quarter_4),
+          help_needed: item?.help_needed ? 'Yes' : 'No'
 
         }
       })
@@ -493,7 +549,8 @@ export default function UserGrade(props) {
     ]);
 
 
-    console.log('updatedStudentCumulative', updatedStudentCumulative)
+
+    console.log('updatedStudentCumulative',updatedStudentCumulative)
     dispatch(requestAddUpdateStudentCumulative(updatedStudentCumulative));
 
     setTimeout(() => {
@@ -533,7 +590,7 @@ export default function UserGrade(props) {
       })
     }
   }
-
+  console.log('studentGrades', studentGrades)
   return (
     <div> {gradeLoading ? <Loading /> :
       <UserGradeStyled
@@ -541,11 +598,9 @@ export default function UserGrade(props) {
         data-testid="user-grade-form"
         method="POST">
 
-
-
         <div className="gradeInfo">
-          <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', width: 500 }}>
-            <div style={{ padding: 24 }}>
+          <div className="gradeForms">
+            <div style={{ padding: 12 }}>
 
               <div>
                 <h2>Student Grades</h2>
@@ -558,6 +613,8 @@ export default function UserGrade(props) {
               {studentGradeLabels && <div style={{ marginTop: 12, marginBottom: 12 }}>
                 Currently, this student has grade records for the following levels: {studentGradeLabels}.
               </div>}
+
+
 
               <div>
                 <div style={style.label}>Child ID</div>
@@ -661,7 +718,7 @@ export default function UserGrade(props) {
             </div>
 
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', width: 500 }}>
+          <div className="gradeForms">
             <div style={{ padding: 24 }}>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 {qrCode && <div>
@@ -672,17 +729,41 @@ export default function UserGrade(props) {
               <br />
               <br />
               {studentGrades[selectedSchoolGrade] && studentGrades[selectedSchoolGrade].map((studentGrade, index) => {
+                const isClassInOption = CLASS_TYPE.find(item => item.value === studentGrade?.class);
+
+                if(!studentGrade?.selected_class_type) {
+                  studentGrade.selected_class_type = isClassInOption ? 'option' : 'custom';
+                }
+              
                 return <div style={{ paddingBottom: 12, paddingTop: 12 }}>
                   <div>
                     <div style={style.label}>Class Type</div>
-                    <input
+                    <select
+                      name="selected_class_type" id="selected_class_type"
+                      value={studentGrade?.selected_class_type} onChange={handleGradeInputChange(index)}>
+                      <option value="option">Select from option</option>
+                      <option value="custom">Input custom class type</option>
+                    </select>
+
+                    {!studentGrade?.selected_class_type || studentGrade?.selected_class_type === 'option' ? <select
+
+                      name="class" id="class"
+                      value={studentGrade?.class} onChange={handleGradeInputChange(index)}>
+                      <option value="">Select an option</option>
+                      {CLASS_TYPE.map(item =>
+                        <option value={item.value}>{item.label}</option>
+                      )}
+                    </select> : <input
+                      // disabled={studentGrade?.class}
                       onChange={handleGradeInputChange(index)}
                       value={studentGrade?.class}
                       type="text"
                       id="class"
                       name="class"
-                      placeholder=""
-                    />
+                      placeholder="Enter a custom option"
+                    />}
+
+
                   </div>
 
                   <div>
@@ -697,14 +778,27 @@ export default function UserGrade(props) {
                     />
                   </div>
 
+
+
                   <div>
                     <div style={style.label}>Class Grade {currentReportingPeriod?.label && `${currentReportingPeriod?.label}`}</div>
+                   
+                    <select
+                      name="grade_type" id="grade_type"
+                      value={studentGrade?.grade_type} onChange={handleGradeInputChange(index)}>
+                      <option value="number">Number</option>
+                      <option value="letter">Letter</option>
+                    </select>
+
+                   
                     <input
                       onChange={handleGradeInputChange(index)}
-                      value={studentGrade[selectedReportingPeriod]}
-                      type="text"
+                      value={studentGrade[`${studentGrade?.grade_type === 'letter' ? 'letter_' : ''}${selectedReportingPeriod}`]}
+                      type={studentGrade?.grade_type === 'letter' ? 'text' : 'number'}
                       id="final_grade"
-                      name={selectedReportingPeriod || 'final_grade'}
+                      // name={selectedReportingPeriod || 'final_grade'}
+                      name={studentGrade?.grade_type === 'letter' ? `letter_${selectedReportingPeriod}` : selectedReportingPeriod}
+                      // name={studentGrade?.grade_type === 'letter' ? 'text' : 'number'}
                       placeholder=""
                     />
                   </div>
@@ -720,6 +814,21 @@ export default function UserGrade(props) {
                       placeholder=""
                     />
                   </div>}
+
+
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <span style={style.label}>Request Assistance</span>
+                    <input
+                      onChange={handleGradeInputChange(index)}
+                      checked={!studentGrade?.help_needed || studentGrade?.help_needed === '' || studentGrade?.help_needed === 'No' ? false : studentGrade?.help_needed}
+                      type="checkbox"
+                      id="help_needed"
+                      name="help_needed"
+                      placeholder=""
+                      style={{ width: 25, marginTop: 2 }}
+                    />
+                  </div>
+                  <br />
 
 
 

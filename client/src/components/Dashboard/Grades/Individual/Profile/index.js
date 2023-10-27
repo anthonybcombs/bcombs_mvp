@@ -48,6 +48,9 @@ export default ({ child_id }) => {
     refreshGrades();
   }, [])
 
+
+  console.log('gradeInput',gradeInput)
+
   useEffect(() => {
     if (gradeInput?.individualList) {
       setData(gradeInput.individualList)
@@ -100,6 +103,8 @@ export default ({ child_id }) => {
                   <div className='profile'>
                     <img src={profile || ProfileImg} />
                     <div className='profile-name'>{firstname} {lastname}</div>
+
+      
                   </div>
                   {!is_parent &&
                     <div className='customLink'>
@@ -123,6 +128,9 @@ export default ({ child_id }) => {
                     open lazyRender
                   >
                     <div className='CollapsibleContent'>
+                      
+
+                    <div className='CollapsibleContentList'><p className='label'>Student ID:</p> <p className='value'>{data?.info?.new_childId || '--'}</p></div>
                       <div className='CollapsibleContentList'><p className='label'>School:</p> <p className='value'>{school_name || '--'}</p></div>
                       <div className='CollapsibleContentList'><p className='label'>Grade:</p> <p className='value'>{year_level || '--'}</p></div>
                       <div className='CollapsibleContentList'><p className='label'>Cum GPA:</p>  <p className='value'>{gpa_final || gpa_sem_1 || gpa_sem_2 || '--'}</p></div>

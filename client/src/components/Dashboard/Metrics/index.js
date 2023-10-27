@@ -150,7 +150,6 @@ const Metrics = props => {
   };
 
 
-  console.log('setSelectedVendorrrrrrr',selectedVendor)
   const lotVendorId2s = Array.isArray(vendors) && vendors.filter(item => item.name.includes('LOT')).map(item => item.id2)
   /// const lotVendors =
 
