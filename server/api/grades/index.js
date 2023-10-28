@@ -828,7 +828,7 @@ export const addUpdateStudentCumulativeGrades = async (
         );
 
         currentSubjectGrades = await db.query(
-          `SELECT student_grades_id,subject FROM student_grades 
+          `SELECT student_grades_id,subject, class FROM student_grades 
         WHERE student_grade_cumulative_id=? `,
           [cumulativeId]
         );
@@ -837,8 +837,11 @@ export const addUpdateStudentCumulativeGrades = async (
       if (grades.length > 0) {
         for (let grade of grades) {
           const isSubjectExist = currentSubjectGrades.find(
-            (item) => item.subject === grade.subject
+            (item) => {
+              return ((item.subject === grade.subject) && (item.class === grade.class))
+            }
           );
+
           if (!isSubjectExist) {
             await db.query(
               `INSERT INTO student_grades
