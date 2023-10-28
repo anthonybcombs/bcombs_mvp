@@ -54,6 +54,27 @@ const REPORTING_PERIOD_OPTIONS = [
   { value: 'final_grade', label: 'Semester 2 Final' },
 ]
 
+const GPA_OPTIONS = [
+  { value: 1 },
+  { value: 2 },
+  { value: 3 },
+  { value: 4 },
+  { value: 5 },
+];
+
+const SUB_GPA_OPTIONS = [
+  { value: 0 },
+  { value: 1 },
+  { value: 2 },
+  { value: 3 },
+  { value: 4 },
+  { value: 5 },
+  { value: 6 },
+  { value: 7 },
+  { value: 8 },
+  { value: 9 }
+]
+
 // Q1 (Semester 1)
 // Q2 (Semester 1)
 // Semester 1 Final
@@ -222,10 +243,19 @@ const UserGradeStyled = styled.form`
         flex-direction: column;
         background-color: white;
       }
+
+      .qrCodeContainer{
+        display: none;
+      }
   }
 
   @media (min-width: 770px) {
- 
+   
+    .qrCodeContainer{
+      display: flex;
+      justify-content: center;
+    }
+
     .gradeForms {
       display: flex;
       flex-direction: column;
@@ -329,6 +359,8 @@ export default function UserGrade(props) {
   const [selectedSchoolCumulative, setSelectedSchoolCumulative] = useState(null);
   const [selectedStudentGrades, setSelectedStudentGrades] = useState([{ ...classType }]);
   const [selectedSchoolYear, setSelectedSchoolYear] = useState(null);
+  const [selectedGradeLevel, setSelectedGradeLevel] = useState(null);
+
 
   const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
 
@@ -374,16 +406,32 @@ export default function UserGrade(props) {
       setStudentCumulative([]);
       setUserMessage('');
       setIsFindingUser(true);
+      setSelectedGradeLevel(null);
 
       const response = await getCurrentUserAndGrades({
         ...currentChild
       });
 
+
       if (response?.child) {
+  
+        const cumulative = response?.grade_cumulative ? response?.grade_cumulative.map(item => {
+          const gpaFinal = `${item.gpa_final}`.split('.');
+          const gpaSem2 = `${item.gpa_sem_2}`.split('.');
+          return {
+            ...item,
+            gpa_final: gpaFinal.length > 0 ? gpaFinal[0] : 0,
+            sub_gpa_final: gpaFinal.length > 1 ? gpaFinal[1] : 0,
+            gpa_sem_2: gpaFinal.length > 0 ? gpaFinal[0] : 0,
+            sub_gpa_sem_2: gpaSem2.length > 1 ? gpaSem2[1] : 0
+          }
+        }) : [];
+
+
         const appGroups = response?.app_groups || [];
         setStudentGrades({ ...(response.grades || {}) });
         setDefaultStudentGrades({ ...(response.grades || {}) });
-        setStudentCumulative([...(response?.grade_cumulative || [])]);
+        setStudentCumulative([...(cumulative || [])]);
 
 
         setCurrentChildDetails({
@@ -417,26 +465,33 @@ export default function UserGrade(props) {
 
   const handleCumulativeInputChange = e => {
     const { name, value } = e.target;
-    if (name === 'gpa_final' || name === 'gpa_sem_2') {
-      let parsedValue = parseFloat(value);
+    // if (name === 'gpa_final' || name === 'gpa_sem_2') {
+    //   let parsedValue = value;
 
-      if ((name === 'gpa_final' && parsedValue > 4) || (name === 'gpa_sem_2' && parsedValue > 5)) {
-        return;
-      }
-      else {
-        setSelectedSchoolCumulative({
-          ...selectedSchoolCumulative,
-          [name]: parsedValue
-        });
-      }
-    }
+    //   // if ((name === 'gpa_final' && parsedValue > 4) || (name === 'gpa_sem_2' && parsedValue > 5)) {
+    //   //   return;
+    //   // }
+    //   // else {
+    //   //   setSelectedSchoolCumulative({
+    //   //     ...selectedSchoolCumulative,
+    //   //     [name]: parsedValue
+    //   //   });
+    //   // }
+    //   setSelectedSchoolCumulative({
+    //     ...selectedSchoolCumulative,
+    //     [name]: parsedValue
+    //   });
+    // }
 
+    setSelectedSchoolCumulative({
+      ...selectedSchoolCumulative,
+      [name]: parseInt(value)
+    });
   };
 
 
   const handleGradeInputChange = index => e => {
     const { name, checked, value } = e.target;
-    console.log('value handleGradeInputChange', e.target.checked)
     const updatedStudentGrades = [...(studentGrades[selectedSchoolGrade] || [])];
 
     // const isGradeField = (name !== 'class') && (name !== 'subject') && (name !== 'designation');
@@ -473,11 +528,29 @@ export default function UserGrade(props) {
 
   const handleSchoolGradeChange = e => {
     const currentGradeLevel = parseInt(e.target.value);
-    const currentCumulative = studentCumulative.find(item => item.year_level === currentGradeLevel)
 
-    setSelectedStudentGrades([...(studentGrades[currentGradeLevel] || [])])
-    setSelectedSchoolGrade(currentGradeLevel);
-    setSelectedSchoolCumulative(currentCumulative || null);
+    const currentCumulative = studentCumulative.find(item => item.year_level === currentGradeLevel)
+    setSelectedGradeLevel(currentGradeLevel);
+    if (currentCumulative) {
+      setSelectedStudentGrades([...(studentGrades[currentGradeLevel] || [])])
+      setSelectedSchoolGrade(currentGradeLevel);
+      setSelectedSchoolCumulative(currentCumulative || null);
+    }
+    else {
+
+
+      const newCumulative = {
+        ...defaultCumulative,
+        year_level: currentGradeLevel
+      }
+      setSelectedStudentGrades([...(studentGrades[currentGradeLevel] || []), newCumulative])
+      setSelectedSchoolGrade(currentGradeLevel);
+      setSelectedSchoolCumulative({
+        ...newCumulative
+      } || null);
+
+    }
+
   }
 
   const handleAddClass = () => {
@@ -507,8 +580,15 @@ export default function UserGrade(props) {
 
       let currentData = studentCumulative.find(item => item.year_level === parseInt(key));
 
-      currentData = currentData && selectedSchoolCumulative && selectedSchoolCumulative?.student_grade_cumulative_id === currentData?.student_grade_cumulative_id ? selectedSchoolCumulative : currentData;
+      if (currentData) {
+        currentData = currentData && selectedSchoolCumulative && selectedSchoolCumulative?.student_grade_cumulative_id === currentData?.student_grade_cumulative_id ? selectedSchoolCumulative : currentData;
+      }
+      else {
+        currentData = { ...selectedSchoolCumulative }
+      }
+
       const isNew = currentData?.student_grade_cumulative_id ? false : true;
+
 
       let updatedGrades = removeKeysFromArrayObjects(studentGrades[key] || [], [
         'date_created',
@@ -521,23 +601,26 @@ export default function UserGrade(props) {
       updatedGrades = updatedGrades.map(item => {
         return {
           ...item,
-          grade_quarter_1: parseInt(item.grade_quarter_1),
-          grade_quarter_2: parseInt(item.grade_quarter_2),
-          grade_quarter_3: parseInt(item.grade_quarter_3),
-          grade_quarter_4: parseInt(item.grade_quarter_4),
+          grade_quarter_1: parseInt(item?.grade_quarter_1 || 0),
+          grade_quarter_2: parseInt(item?.grade_quarter_2 || 0),
+          grade_quarter_3: parseInt(item?.grade_quarter_3 || 0),
+          grade_quarter_4: parseInt(item?.grade_quarter_4 || 0),
           help_needed: item?.help_needed ? 'Yes' : 'No'
 
         }
       })
 
       return {
-        ...currentData,
+
         ...(isNew ? defaultCumulative : {}),
+        ...currentData,
         app_group_id: currentChildDetails?.app_grp_id,
         student_grade_cumulative_id: currentData?.student_grade_cumulative_id || null,
-        year_level: parseInt(key),
+        year_level: currentData?.year_level,
         child_id: currentChildDetails?.ch_id,
-        grades: updatedGrades || []
+        grades: updatedGrades || [],
+        gpa_final: parseFloat(`${currentData?.gpa_final || 1}.${currentData?.sub_gpa_final || 0}`),
+        gpa_sem_2: parseFloat(`${currentData?.gpa_sem_2 || 1}.${currentData?.sub_gpa_sem_2 || 0}`)
 
       }
     });
@@ -545,17 +628,16 @@ export default function UserGrade(props) {
     updatedStudentCumulative = removeKeysFromArrayObjects(updatedStudentCumulative || [], [
       'class_teacher',
       'date_added',
-      'date_updated'
+      'date_updated',
+      'sub_gpa_final',
+      'sub_gpa_sem_2',
     ]);
 
-
-
-    console.log('updatedStudentCumulative',updatedStudentCumulative)
     dispatch(requestAddUpdateStudentCumulative(updatedStudentCumulative));
 
     setTimeout(() => {
       handleFindUser();
-    },2000);
+    }, 2000);
   }
 
   const handleSchoolYearChange = e => {
@@ -568,9 +650,8 @@ export default function UserGrade(props) {
 
       const currentCumulative = studentCumulative.find(item => {
         const yearStart = item.school_year_start && item.school_year_start.split('-')[0];
-        return schoolYear[0] === yearStart
+        return (schoolYear[0] === yearStart) && (item.year_level === selectedGradeLevel)
       });
-
 
       if (currentCumulative && currentCumulative?.year_level) {
         setSelectedStudentGrades([...(studentGrades[currentCumulative?.year_level] || [])])
@@ -582,15 +663,16 @@ export default function UserGrade(props) {
         setSelectedStudentGrades([]);
       }
 
-      setSelectedSchoolYear(e.target.value);
       setSelectedSchoolCumulative({
         ...selectedSchoolCumulative,
         school_year_start: startYear.toISOString(),
         school_year_end: endYear.toISOString()
       })
     }
+
+
+    setSelectedSchoolYear(e.target.value);
   }
-  console.log('studentGrades', studentGrades)
   return (
     <div> {gradeLoading ? <Loading /> :
       <UserGradeStyled
@@ -643,6 +725,18 @@ export default function UserGrade(props) {
               </div>
 
               <div>
+                <div style={style.label}>School Grade</div>
+                <select
+                  name="school_grade"
+                  className="form-control"
+                  onChange={handleSchoolGradeChange}
+                >
+                  {GRADE_OPTIONS.map(item => <option value={item.value}>{item.label}</option>)}
+                </select>
+              </div>
+
+
+              <div>
                 <div style={style.label}>School Year</div>
                 <select
                   name="school_year"
@@ -655,16 +749,6 @@ export default function UserGrade(props) {
                   <option value="2022-2023">2022-2023</option>
                   <option value="2021-2022">2021-2022</option>
                   <option value="2020-2021">2020-2021</option>
-                </select>
-              </div>
-              <div>
-                <div style={style.label}>School Grade</div>
-                <select
-                  name="school_grade"
-                  className="form-control"
-                  onChange={handleSchoolGradeChange}
-                >
-                  {GRADE_OPTIONS.map(item => <option value={item.value}>{item.label}</option>)}
                 </select>
               </div>
 
@@ -686,7 +770,7 @@ export default function UserGrade(props) {
               </div>
               <div>
                 <div style={style.label}>GPA Weighted</div>
-                <input
+                {/* <input
                   value={selectedSchoolCumulative?.gpa_final}
                   onChange={handleCumulativeInputChange}
                   type="number"
@@ -695,11 +779,40 @@ export default function UserGrade(props) {
                   placeholder=""
                   step={0.1}
                   max={5.0}
-                />
+                /> */}
+
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <select
+                    name="gpa_final"
+                    className="form-control"
+                    onChange={handleCumulativeInputChange}
+                    value={selectedSchoolCumulative?.gpa_final || 1}
+
+                  >
+                    {GPA_OPTIONS.map(item => {
+                      return <option value={item.value}>{item.value}</option>
+                    })}
+                  </select>
+
+
+                  <select
+                    disabled={selectedSchoolCumulative?.gpa_final === 0}
+                    name="sub_gpa_final"
+                    className="form-control"
+                    onChange={handleCumulativeInputChange}
+                    value={selectedSchoolCumulative?.sub_gpa_final || 0}
+                  >
+
+                    {SUB_GPA_OPTIONS.map(item => {
+                      return <option value={item.value}>{item.value}</option>
+                    })}
+                  </select>
+
+                </div>
               </div>
               <div>
                 <div style={style.label}>GPA Unweighted</div>
-                <input
+                {/* <input
                   value={selectedSchoolCumulative?.gpa_sem_2}
                   onChange={handleCumulativeInputChange}
                   type="number"
@@ -708,7 +821,34 @@ export default function UserGrade(props) {
                   placeholder=""
                   step={0.1}
                   max={4.0}
-                />
+                /> */}
+
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <select
+                   disabled={selectedSchoolCumulative?.gpa_sem_2 === 0}
+                    name="gpa_sem_2"
+                    className="form-control"
+                    onChange={handleCumulativeInputChange}
+                    value={selectedSchoolCumulative?.gpa_sem_2 || 1}
+                  >
+                    {GPA_OPTIONS.map(item => {
+                      return <option value={item.value}>{item.value}</option>
+                    })}
+                  </select>
+
+
+                  <select
+                    name="sub_gpa_sem_2"
+                    className="form-control"
+                    onChange={handleCumulativeInputChange}
+                    value={selectedSchoolCumulative?.sub_gpa_sem_2 || 0}
+                  >
+
+                    {SUB_GPA_OPTIONS.map(item => {
+                      return <option value={item.value}>{item.value}</option>
+                    })}
+                  </select>
+                </div>
               </div>
 
               <button disabled={isFindingUser} onClick={handleFindUser} type="button" >
@@ -720,7 +860,7 @@ export default function UserGrade(props) {
           </div>
           <div className="gradeForms">
             <div style={{ padding: 24 }}>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div className="qrCodeContainer">
                 {qrCode && <div>
                   <img src={qrCode} style={{ width: 175, height: 175, textAlign: 'center' }} />
                   <div>QR Code for this page</div>
@@ -731,10 +871,10 @@ export default function UserGrade(props) {
               {studentGrades[selectedSchoolGrade] && studentGrades[selectedSchoolGrade].map((studentGrade, index) => {
                 const isClassInOption = CLASS_TYPE.find(item => item.value === studentGrade?.class);
 
-                if(!studentGrade?.selected_class_type) {
+                if (!studentGrade?.selected_class_type) {
                   studentGrade.selected_class_type = isClassInOption ? 'option' : 'custom';
                 }
-              
+
                 return <div style={{ paddingBottom: 12, paddingTop: 12 }}>
                   <div>
                     <div style={style.label}>Class Type</div>
@@ -782,25 +922,37 @@ export default function UserGrade(props) {
 
                   <div>
                     <div style={style.label}>Class Grade {currentReportingPeriod?.label && `${currentReportingPeriod?.label}`}</div>
-                   
-                    <select
+
+                    {/* <select
                       name="grade_type" id="grade_type"
                       value={studentGrade?.grade_type} onChange={handleGradeInputChange(index)}>
                       <option value="number">Number</option>
                       <option value="letter">Letter</option>
                     </select>
+ */}
 
-                   
                     <input
                       onChange={handleGradeInputChange(index)}
-                      value={studentGrade[`${studentGrade?.grade_type === 'letter' ? 'letter_' : ''}${selectedReportingPeriod}`]}
-                      type={studentGrade?.grade_type === 'letter' ? 'text' : 'number'}
+                      value={studentGrade[selectedReportingPeriod]}
+                      type="text"
                       id="final_grade"
                       // name={selectedReportingPeriod || 'final_grade'}
-                      name={studentGrade?.grade_type === 'letter' ? `letter_${selectedReportingPeriod}` : selectedReportingPeriod}
+                      name={selectedReportingPeriod}
                       // name={studentGrade?.grade_type === 'letter' ? 'text' : 'number'}
                       placeholder=""
                     />
+                    <div style={style.label}>Letter Class Grade {currentReportingPeriod?.label && `${currentReportingPeriod?.label}`}</div>
+                    <input
+                      onChange={handleGradeInputChange(index)}
+                      value={studentGrade[`letter_${selectedReportingPeriod}`]}
+                      type="text"
+                      id="letter_final_grade"
+                      // name={selectedReportingPeriod || 'final_grade'}
+                      name={`letter_${selectedReportingPeriod}`}
+                      // name={studentGrade?.grade_type === 'letter' ? 'text' : 'number'}
+                      placeholder=""
+                    />
+
                   </div>
 
                   {selectedSchoolGrade >= 7 && <div>
