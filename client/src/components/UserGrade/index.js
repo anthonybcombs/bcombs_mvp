@@ -55,24 +55,27 @@ const REPORTING_PERIOD_OPTIONS = [
 ]
 
 const GPA_OPTIONS = [
-  { value: 1 },
-  { value: 2 },
-  { value: 3 },
-  { value: 4 },
-  { value: 5 },
+  { value: null, label: 'Please select GPA value' },
+  { value: 0, label: 0 },
+  { value: 1, label: 1 },
+  { value: 2, label: 2 },
+  { value: 3, label: 3 },
+  { value: 4, label: 4 },
+  { value: 5, label: 5 },
 ];
 
 const SUB_GPA_OPTIONS = [
-  { value: 0 },
-  { value: 1 },
-  { value: 2 },
-  { value: 3 },
-  { value: 4 },
-  { value: 5 },
-  { value: 6 },
-  { value: 7 },
-  { value: 8 },
-  { value: 9 }
+  { value: null, label: 'Please select GPA value' },
+  { value: 0, label: 0 },
+  { value: 1, label: 1 },
+  { value: 2, label: 2 },
+  { value: 3, label: 3 },
+  { value: 4, label: 4 },
+  { value: 5, label: 5 },
+  { value: 6, label: 6 },
+  { value: 7, label: 7 },
+  { value: 8, label: 8 },
+  { value: 9, label: 9 }
 ]
 
 // Q1 (Semester 1)
@@ -340,7 +343,7 @@ export default function UserGrade(props) {
   const [currentChild, setCurrentChild] = useState({
     firstname: "",
     lastname: "",
-    childId: "",
+    childId: "C110367",
   });
 
   const [qrCode, setQrCode] = useState('');
@@ -414,16 +417,16 @@ export default function UserGrade(props) {
 
 
       if (response?.child) {
-  
+
         const cumulative = response?.grade_cumulative ? response?.grade_cumulative.map(item => {
           const gpaFinal = `${item.gpa_final}`.split('.');
           const gpaSem2 = `${item.gpa_sem_2}`.split('.');
           return {
             ...item,
-            gpa_final: gpaFinal.length > 0 ? gpaFinal[0] : 0,
-            sub_gpa_final: gpaFinal.length > 1 ? gpaFinal[1] : 0,
-            gpa_sem_2: gpaFinal.length > 0 ? gpaFinal[0] : 0,
-            sub_gpa_sem_2: gpaSem2.length > 1 ? gpaSem2[1] : 0
+            gpa_final: gpaFinal.length > 0 ? gpaFinal[0] : null,
+            sub_gpa_final: gpaFinal.length > 1 ? gpaFinal[1] : null,
+            gpa_sem_2: gpaFinal.length > 0 ? gpaFinal[0] : null,
+            sub_gpa_sem_2: gpaSem2.length > 1 ? gpaSem2[1] : null
           }
         }) : [];
 
@@ -432,8 +435,6 @@ export default function UserGrade(props) {
         setStudentGrades({ ...(response.grades || {}) });
         setDefaultStudentGrades({ ...(response.grades || {}) });
         setStudentCumulative([...(cumulative || [])]);
-
-
         setCurrentChildDetails({
           ...(response?.child || {}),
           app_grp_id: appGroups[0] && appGroups[0]?.app_grp_id
@@ -465,6 +466,7 @@ export default function UserGrade(props) {
 
   const handleCumulativeInputChange = e => {
     const { name, value } = e.target;
+    let subFields = {};
     // if (name === 'gpa_final' || name === 'gpa_sem_2') {
     //   let parsedValue = value;
 
@@ -483,11 +485,31 @@ export default function UserGrade(props) {
     //   });
     // }
 
+    const parsedValue = parseInt(value);
+
+    if (isNaN(parsedValue)) {
+
+      if (name === 'gpa_final') {
+        subFields = {
+          sub_gpa_final: null
+        }
+      }
+      else if (name === 'gpa_sem_2') {
+        subFields = {
+          sub_gpa_sem_2: null
+        }
+      }
+
+    }
+
+
     setSelectedSchoolCumulative({
       ...selectedSchoolCumulative,
-      [name]: parseInt(value)
+      [name]: !isNaN(parsedValue) ? parsedValue : null,
+      ...subFields,
     });
   };
+
 
 
   const handleGradeInputChange = index => e => {
@@ -525,6 +547,7 @@ export default function UserGrade(props) {
     });
 
   };
+
 
   const handleSchoolGradeChange = e => {
     const currentGradeLevel = parseInt(e.target.value);
@@ -633,7 +656,6 @@ export default function UserGrade(props) {
       'sub_gpa_sem_2',
     ]);
 
-    console.log('updatedStudentCumulative',updatedStudentCumulative)
     dispatch(requestAddUpdateStudentCumulative(updatedStudentCumulative));
 
     setTimeout(() => {
@@ -674,6 +696,7 @@ export default function UserGrade(props) {
 
     setSelectedSchoolYear(e.target.value);
   }
+
   return (
     <div> {gradeLoading ? <Loading /> :
       <UserGradeStyled
@@ -787,27 +810,26 @@ export default function UserGrade(props) {
                     name="gpa_final"
                     className="form-control"
                     onChange={handleCumulativeInputChange}
-                    value={selectedSchoolCumulative?.gpa_final || 1}
+                    value={selectedSchoolCumulative?.gpa_final || null}
 
                   >
                     {GPA_OPTIONS.map(item => {
-                      return <option value={item.value}>{item.value}</option>
+                      return <option value={item.value}>{item.label}</option>
                     })}
                   </select>
 
+                  {selectedSchoolCumulative?.gpa_final !== null && selectedSchoolCumulative?.gpa_final !== undefined && <select
 
-                  <select
-                    disabled={selectedSchoolCumulative?.gpa_final === 0}
                     name="sub_gpa_final"
                     className="form-control"
                     onChange={handleCumulativeInputChange}
-                    value={selectedSchoolCumulative?.sub_gpa_final || 0}
+                    value={selectedSchoolCumulative?.sub_gpa_final}
                   >
-
                     {SUB_GPA_OPTIONS.map(item => {
-                      return <option value={item.value}>{item.value}</option>
+                      return <option value={item.value}>{item.label}</option>
                     })}
-                  </select>
+                  </select>}
+
 
                 </div>
               </div>
@@ -826,29 +848,31 @@ export default function UserGrade(props) {
 
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                   <select
-                   disabled={selectedSchoolCumulative?.gpa_sem_2 === 0}
+
                     name="gpa_sem_2"
                     className="form-control"
                     onChange={handleCumulativeInputChange}
-                    value={selectedSchoolCumulative?.gpa_sem_2 || 1}
+                    value={selectedSchoolCumulative?.gpa_sem_2 || null}
                   >
                     {GPA_OPTIONS.map(item => {
-                      return <option value={item.value}>{item.value}</option>
+                      return <option value={item.value}>{item.label}</option>
                     })}
                   </select>
 
 
-                  <select
+                  {selectedSchoolCumulative?.gpa_sem_2 !== null && selectedSchoolCumulative?.gpa_sem_2 !== undefined && <select
+                    disabled={selectedSchoolCumulative?.gpa_sem_2 === null}
                     name="sub_gpa_sem_2"
                     className="form-control"
                     onChange={handleCumulativeInputChange}
-                    value={selectedSchoolCumulative?.sub_gpa_sem_2 || 0}
+                    value={selectedSchoolCumulative?.sub_gpa_sem_2 || null}
                   >
 
                     {SUB_GPA_OPTIONS.map(item => {
-                      return <option value={item.value}>{item.value}</option>
+                      return <option value={item.value}>{item.label}</option>
                     })}
-                  </select>
+                  </select>}
+
                 </div>
               </div>
 
@@ -876,7 +900,7 @@ export default function UserGrade(props) {
                   studentGrade.selected_class_type = isClassInOption ? 'option' : 'custom';
                 }
 
-                console.log('studentGrade?.help_needed',studentGrade?.help_needed)
+
                 return <div style={{ paddingBottom: 12, paddingTop: 12 }}>
                   <div>
                     <div style={style.label}>Class Type</div>
