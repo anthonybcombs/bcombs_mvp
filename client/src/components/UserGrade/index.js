@@ -425,7 +425,7 @@ export default function UserGrade(props) {
             ...item,
             gpa_final: gpaFinal.length > 0 ? gpaFinal[0] : null,
             sub_gpa_final: gpaFinal.length > 1 ? gpaFinal[1] : null,
-            gpa_sem_2: gpaFinal.length > 0 ? gpaFinal[0] : null,
+            gpa_sem_2: gpaSem2.length > 0 ? gpaSem2[0] : null,
             sub_gpa_sem_2: gpaSem2.length > 1 ? gpaSem2[1] : null
           }
         }) : [];
