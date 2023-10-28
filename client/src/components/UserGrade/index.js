@@ -605,7 +605,7 @@ export default function UserGrade(props) {
           grade_quarter_2: parseInt(item?.grade_quarter_2 || 0),
           grade_quarter_3: parseInt(item?.grade_quarter_3 || 0),
           grade_quarter_4: parseInt(item?.grade_quarter_4 || 0),
-          help_needed: item?.help_needed ? 'Yes' : 'No'
+          help_needed: item?.help_needed && item?.help_needed !== 'No' ? 'Yes' : 'No'
 
         }
       })
@@ -633,6 +633,7 @@ export default function UserGrade(props) {
       'sub_gpa_sem_2',
     ]);
 
+    console.log('updatedStudentCumulative',updatedStudentCumulative)
     dispatch(requestAddUpdateStudentCumulative(updatedStudentCumulative));
 
     setTimeout(() => {
@@ -875,6 +876,7 @@ export default function UserGrade(props) {
                   studentGrade.selected_class_type = isClassInOption ? 'option' : 'custom';
                 }
 
+                console.log('studentGrade?.help_needed',studentGrade?.help_needed)
                 return <div style={{ paddingBottom: 12, paddingTop: 12 }}>
                   <div>
                     <div style={style.label}>Class Type</div>
@@ -972,7 +974,7 @@ export default function UserGrade(props) {
                     <span style={style.label}>Request Assistance</span>
                     <input
                       onChange={handleGradeInputChange(index)}
-                      checked={!studentGrade?.help_needed || studentGrade?.help_needed === '' || studentGrade?.help_needed === 'No' ? false : studentGrade?.help_needed}
+                      checked={!studentGrade?.help_needed || studentGrade?.help_needed === 'No' ? false : studentGrade?.help_needed}
                       type="checkbox"
                       id="help_needed"
                       name="help_needed"
