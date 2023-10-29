@@ -635,6 +635,8 @@ export default function UserGrade(props) {
           grade_quarter_2: parseInt(item?.grade_quarter_2 || 0),
           grade_quarter_3: parseInt(item?.grade_quarter_3 || 0),
           grade_quarter_4: parseInt(item?.grade_quarter_4 || 0),
+          mid_final_grade: parseInt(item?.mid_final_grade || 0),
+          final_grade: parseInt(item?.final_grade || 0),
           help_q1: item?.help_q1 && item?.help_q1 !== 'No' ? 'Yes' : '',
           help_q2: item?.help_q2 && item?.help_q2 !== 'No' ? 'Yes' : '',
           help_q3: item?.help_q3 && item?.help_q3 !== 'No' ? 'Yes' : '',
