@@ -635,10 +635,10 @@ export default function UserGrade(props) {
           grade_quarter_2: parseInt(item?.grade_quarter_2 || 0),
           grade_quarter_3: parseInt(item?.grade_quarter_3 || 0),
           grade_quarter_4: parseInt(item?.grade_quarter_4 || 0),
-          help_q1: item?.help_q1 && item?.help_q1 !== 'No' ? 'Yes' : 'No',
-          help_q2: item?.help_q2 && item?.help_q2 !== 'No' ? 'Yes' : 'No',
-          help_q3: item?.help_q3 && item?.help_q3 !== 'No' ? 'Yes' : 'No',
-          help_q4: item?.help_q4 && item?.help_q4 !== 'No' ? 'Yes' : 'No'
+          help_q1: item?.help_q1 && item?.help_q1 !== 'No' ? 'Yes' : '',
+          help_q2: item?.help_q2 && item?.help_q2 !== 'No' ? 'Yes' : '',
+          help_q3: item?.help_q3 && item?.help_q3 !== 'No' ? 'Yes' : '',
+          help_q4: item?.help_q4 && item?.help_q4 !== 'No' ? 'Yes' : ''
 
         }
       })
@@ -1004,7 +1004,7 @@ export default function UserGrade(props) {
                   </div>}
 
 
-                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  {selectedReportingPeriod && !selectedReportingPeriod.includes('mid_') && !selectedReportingPeriod.includes('final_') && <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <span style={style.label}>Request Assistance</span>
                     <input
                       onChange={handleGradeInputChange(index)}
@@ -1015,7 +1015,8 @@ export default function UserGrade(props) {
                       placeholder=""
                       style={{ width: 25, marginTop: 2 }}
                     />
-                  </div>
+                  </div>}
+
                   <br />
 
 
