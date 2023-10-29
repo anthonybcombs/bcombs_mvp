@@ -52,7 +52,14 @@ const REPORTING_PERIOD_OPTIONS = [
   { value: 'grade_quarter_3', label: 'Q3 (Semester 2)' },
   { value: 'grade_quarter_4', label: 'Q4 (Semester 2)' },
   { value: 'final_grade', label: 'Semester 2 Final' },
-]
+];
+
+const QUARTER_PERIOD = {
+  grade_quarter_1: 'help_q1',
+  grade_quarter_2: 'help_q2',
+  grade_quarter_3: 'help_q3',
+  grade_quarter_4: 'help_q4'
+}
 
 const GPA_OPTIONS = [
   { value: null, label: 'Please select GPA value' },
@@ -343,7 +350,7 @@ export default function UserGrade(props) {
   const [currentChild, setCurrentChild] = useState({
     firstname: "",
     lastname: "",
-    childId: "",
+    childId: "C110367",
   });
 
   const [qrCode, setQrCode] = useState('');
@@ -521,7 +528,7 @@ export default function UserGrade(props) {
     if (index > -1) {
       updatedStudentGrades[index] = {
         ...(studentGrades[selectedSchoolGrade][index] || {}),
-        [name]: name === 'help_needed' ? checked : value
+        [name]: name.includes('help_') ? checked : value
       };
 
     }
@@ -628,7 +635,10 @@ export default function UserGrade(props) {
           grade_quarter_2: parseInt(item?.grade_quarter_2 || 0),
           grade_quarter_3: parseInt(item?.grade_quarter_3 || 0),
           grade_quarter_4: parseInt(item?.grade_quarter_4 || 0),
-          help_needed: item?.help_needed && item?.help_needed !== 'No' ? 'Yes' : 'No'
+          help_q1: item?.help_q1 && item?.help_q1 !== 'No' ? 'Yes' : 'No',
+          help_q2: item?.help_q2 && item?.help_q2 !== 'No' ? 'Yes' : 'No',
+          help_q3: item?.help_q3 && item?.help_q3 !== 'No' ? 'Yes' : 'No',
+          help_q4: item?.help_q4 && item?.help_q4 !== 'No' ? 'Yes' : 'No'
 
         }
       })
@@ -642,8 +652,8 @@ export default function UserGrade(props) {
         year_level: currentData?.year_level,
         child_id: currentChildDetails?.ch_id,
         grades: updatedGrades || [],
-        gpa_final: parseFloat(`${currentData?.gpa_final || 1}.${currentData?.sub_gpa_final || 0}`),
-        gpa_sem_2: parseFloat(`${currentData?.gpa_sem_2 || 1}.${currentData?.sub_gpa_sem_2 || 0}`)
+        gpa_final: parseFloat(`${currentData?.gpa_final || 0}.${currentData?.sub_gpa_final || 0}`),
+        gpa_sem_2: parseFloat(`${currentData?.gpa_sem_2 || 0}.${currentData?.sub_gpa_sem_2 || 0}`)
 
       }
     });
@@ -998,10 +1008,10 @@ export default function UserGrade(props) {
                     <span style={style.label}>Request Assistance</span>
                     <input
                       onChange={handleGradeInputChange(index)}
-                      checked={!studentGrade?.help_needed || studentGrade?.help_needed === 'No' ? false : studentGrade?.help_needed}
+                      checked={!studentGrade[QUARTER_PERIOD[selectedReportingPeriod]] || studentGrade[QUARTER_PERIOD[selectedReportingPeriod]] === 'No' ? false : studentGrade[QUARTER_PERIOD[selectedReportingPeriod]]}
                       type="checkbox"
                       id="help_needed"
-                      name="help_needed"
+                      name={`${QUARTER_PERIOD[selectedReportingPeriod]}`}
                       placeholder=""
                       style={{ width: 25, marginTop: 2 }}
                     />
@@ -1031,18 +1041,19 @@ export default function UserGrade(props) {
             </div>
           </div>
         </div>
-
-        <Confirmation
-          isVisible={isConfirmationVisible}
-          message="Do you want to save these changes? Saving will overwrite the student's existing grade records."
-          toggleConfirmationVisible={setIsConfirmationVisible}
-          onSubmit={() => {
-            handleSaveGrades();
-          }}
-          submitButtonLabel="Submit"
-        />
       </UserGradeStyled>
-    }</div>
+    }
+
+      <Confirmation
+        isVisible={isConfirmationVisible}
+        message="Do you want to save these changes? Saving will overwrite the student's existing grade records."
+        toggleConfirmationVisible={setIsConfirmationVisible}
+        onSubmit={() => {
+          handleSaveGrades();
+        }}
+        submitButtonLabel="Submit"
+      />
+    </div>
   );
 }
 
