@@ -56,6 +56,31 @@ const isUserExist = async user => {
     return result;
   }
 };
+
+const getAuth0ManagementToken = async () => {
+  try {
+    const AuthResponse = await fetch(`${process.env.AUTH_API}/oauth/token`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json', // Add this line to set the Content-Type
+      },
+      body: JSON.stringify({
+        client_id: process.env.AUTH_CLIENT_ID,
+        client_secret: process.env.AUTH_CLIENT_SECRET,
+        audience: `${process.env.AUTH_API}/api/v2/`,
+        grant_type: 'client_credentials',
+      })
+    });
+    return await AuthResponse.json();
+  }
+  catch (err) {
+    return {
+      err
+    }
+  }
+}
+
+
 export const getUserFromDatabase = async email => {
   const db = makeDb();
   let result;
@@ -2828,8 +2853,8 @@ router.get("/vendor/default/summary", async (req, res) => {
 
 router.get('/qr/grade/page', async (req, res) => {
   try {
-     const qrCodeDataURL = await QRCode.toDataURL(`${process.env.APP_CLIENT_URL}/user/grades`);
-     return res.status(200).json({
+    const qrCodeDataURL = await QRCode.toDataURL(`${process.env.APP_CLIENT_URL}/user/grades`);
+    return res.status(200).json({
       qr_code: qrCodeDataURL
     });
 
@@ -2840,5 +2865,65 @@ router.get('/qr/grade/page', async (req, res) => {
   }
 
 });
+
+
+router.post('/email/verify', async (req, res) => {
+  const db = makeDb();
+  try {
+
+    const { email } = req.body;
+    const rows = await db.query(
+      `SELECT auth_id from users where email=? `,
+      [email]
+    );
+
+    if (rows.length > 0) {
+      const resendVerificationEmailEndpoint = `${process.env.AUTH_API}/api/v2/jobs/verification-email`;
+
+      const verificationData = {
+        user_id: rows[0].auth_id,
+        client_id: process.env.AUTH_CLIENT_ID
+      };
+
+      const managementResponse = await getAuth0ManagementToken();
+  
+      if (managementResponse) {
+        const resp = await fetch(resendVerificationEmailEndpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${managementResponse.access_token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(verificationData),
+        }).then(response => response.json());
+
+
+
+        return res.status(200).json({
+          data: resp,
+          message: 'Email verification has been sent!'
+        });
+
+      }
+
+      return res.status(400).json({
+        message: 'Email verification fail to send!'
+      });
+    }
+
+    return res.status(400).json({
+      message: 'Something went wrong'
+    })
+
+
+  } catch (error) {
+    console.log('error', error)
+    return res.status(400).json({
+      message: 'Something went wrong'
+    })
+  }
+
+});
+
 
 export default router;
