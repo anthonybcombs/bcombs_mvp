@@ -77,6 +77,22 @@ const ApplicationListStyled = styled.div`
     border: 0;
   }
 
+  .verificationBtn {
+    color: #fff;
+    background-color: #f26e21;
+    border-radius: 4px;
+    padding: 5px 10px;
+  }
+
+  .verificationBtn:disabled {
+    color: #ccc;
+    border: 1px solid #ccc;
+    background-color: transparent;
+    box-shadow: unset!important;
+  }
+
+
+  
   #exportButton {
     display: flex;
     margin-left: 20px;
@@ -282,6 +298,27 @@ const CLASS_OPTIONS = [
   "Middle School"
 ];
 
+const getLoginData = formData => {
+  const loginData = formData.find(item => {
+    const label = item.label.toLowerCase();
+    return label.includes('login') && label.includes('login');
+  });
+
+  if (loginData) {
+    let email = loginData?.fields.find(field => field.type === 'email');
+
+    email = email?.value ? email.value.replaceAll('"', '') : '';
+    email = email.replace(/\\/g, '');
+    return {
+      email
+    }
+  }
+
+  return null;
+
+
+}
+
 const STUDENT_CLASS_OPTIONS = [
   { name: "In process", value: "new_applicant_in_process" },
   { name: "Accepted", value: "new_applicant_accepted" },
@@ -372,6 +409,26 @@ const FilterComponent = ({
   </>
 );
 
+const sendEmailVerification = async (data = {}) => {
+  // Default options are marked with *
+  const response = await fetch(`${process.env.API_HOST}/api/email/verify`, {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer',
+    body: JSON.stringify({
+      ...data
+    })
+  });
+  return response.json();
+}
+
+
 export default function index({
   applications,
   handleSelectedApplication,
@@ -383,8 +440,7 @@ export default function index({
   filename = ""
 }) {
 
-  console.log("appGroups select", appGroups);
-  console.log('applicationsssssss', applications)
+
   const getApplicationStatusVal = (student_status, verification, row) => {
     let studentStatusVal = "";
     let verificationVal = "";
@@ -447,10 +503,25 @@ export default function index({
     });
 
     const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
-    console.log('parentFields', parentFields)
     return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"', "")} ${parentFields[1].value.replaceAll('"', "")}` : ''
   }
 
+
+  const handleSendEmailVerification = async (data = {}) => {
+    try {
+      setIsVerificationLoading(true);
+      await sendEmailVerification({ ...data });
+      setIsVerificationSent(true);
+    } catch (err) {
+      console.log('handleSendEmailVerification error', err)
+    }
+    finally {
+      setTimeout(() => {
+        setIsVerificationSent(false);
+        setIsVerificationLoading(false);
+      }, 5000);
+    }
+  }
 
   const getChildFromFormData = formData => {
     const parentData = formData.find(item => {
@@ -459,7 +530,6 @@ export default function index({
     });
 
     const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
-    console.log('parentFields', parentFields)
     return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"', "")} ${parentFields[1].value.replaceAll('"', "")}` : ''
   }
   const getPrimaryParentName = (parents, id, data) => {
@@ -561,7 +631,6 @@ export default function index({
           // );
           displayGroups = displayGroups.slice(0, -1);
           const arrGroups = displayGroups.split(',');
-          console.log('arrGroups', arrGroups);
 
           if (arrGroups.length > 1) {
             return displayGroups = arrGroups[0] + ',...'
@@ -588,9 +657,9 @@ export default function index({
       name: "Verified Account",
       selector: "is_profile_filled",
       sortable: true,
-      cell: row =>{
-    
-        if(row.hasOwnProperty('is_profile_filled')) {
+      cell: row => {
+
+        if (row.hasOwnProperty('is_profile_filled')) {
           return <div>{row?.is_profile_filled ? 'Yes' : 'No'}</div>
         }
         return <div>{row?.parents && row.parents[0] && row?.parents[0]?.is_profile_filled ? 'Yes' : 'No'}</div>
@@ -607,15 +676,52 @@ export default function index({
       name: "Last Login",
       selector: "last_login",
       sortable: true,
-      cell: row =>{
-        if(row.hasOwnProperty('last_login')) {
-          return <div>{row.last_login ? format(new Date(row.last_login),DATE_TIME_FORMAT) : 'Never'}</div>
+      cell: row => {
+        if (row.hasOwnProperty('last_login')) {
+          return <div>{row.last_login ? format(new Date(row.last_login), DATE_TIME_FORMAT) : 'Never'}</div>
         }
 
-        return <div>{row?.parents && row.parents[0] && row?.parents[0]?.last_login ? format(new Date(row?.parents[0]?.last_login),DATE_TIME_FORMAT) : 'Never'}</div>
-      }
+        return <div>{row?.parents && row.parents[0] && row?.parents[0]?.last_login ? format(new Date(row?.parents[0]?.last_login), DATE_TIME_FORMAT) : 'Never'}</div>
+      },
     },
+    {
+      name: "Action",
+      selector: "email",
+      sortable: true,
+      cell: row => {
+
+        let isVerified = 0;
+
+        if(row.hasOwnProperty('is_profile_filled')) {
+          isVerified = row.is_profile_filled;
+        }
+        else if(row?.parents && row.parents[0] && row?.parents[0]) {
+          isVerified = row?.parents[0].is_profile_filled;
+        }
+
+        return !isVerified ?  <button
+          disabled={isVerificationLoading}
+          className="verificationBtn" onClick={() => {
+            let payload = {};
+            if (row?.form_contents) {
+              const data = getLoginData(row?.form_contents?.formData);
+
+              payload = {
+                email: data.email
+              }
+            }
+            else {
+              payload = {
+                email: row?.child?.email_address
+              }
+            }
+
+            handleSendEmailVerification(payload);
+          }}>Send Verification</button> : <span />
     
+      }
+    }
+
     // {
     //   name: "Attachment 1",
     //   selector: "attachment1",
@@ -721,6 +827,9 @@ export default function index({
   const [groupText, setGroupText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
 
+  const [isVerificationSent, setIsVerificationSent] = useState(false);
+  const [isVerificationLoading, setIsVerificationLoading] = useState(false);
+
   const dispatch = useDispatch();
 
   let data = applications.length > 0 ? applications : [];
@@ -728,7 +837,7 @@ export default function index({
   let getApplications = applications.length > 0 ? [...(applications || [])] : [];
 
   const exportData = applications.length > 0 ? [...(applications || [])] : [];
-  console.log('exportttttttttttt', exportData)
+
   data = getApplications.filter(item => {
     let name_match = true;
     let class_match = true;
@@ -763,9 +872,6 @@ export default function index({
       //     item?.parents[0]?.lastname
       //       .toLowerCase()
       //       .includes(filterText.toLowerCase()));
-
-      console.log('childFullname', childFullname);
-      console.log('parentFullname', parentFullname);
 
       name_match = (childFullname.toLowerCase().includes(filterText.toLowerCase())) ||
         (parentFullname.toLowerCase().includes(filterText.toLowerCase()))
@@ -845,7 +951,7 @@ export default function index({
 
   const doArchivedApplication = () => {
     const app_ids = selectedRows.map(a => a.app_id);
-    console.log("APP IDS", app_ids);
+
 
     dispatch(requestArchivedAppplication(app_ids));
   };
@@ -872,12 +978,11 @@ export default function index({
     setShowExportFilter(false);
   };
 
-  console.log('applicccccccccccccccc', applications)
-
   return (
     <ApplicationListStyled>
       <div id="applicationList">
         <div id="listHeader"></div>
+
         <div id="tableSection">
           <div id="tableHeader">
             <div id="archivedBtnContainer">
@@ -926,6 +1031,7 @@ export default function index({
               </a>
             </div>
           </div>
+          {isVerificationSent && <div style={{ padding: 12, color: 'green', textAlign: 'right', fontWeight: 'bolder' }}>Verification email has been sent to the user</div>}
           <div id="dataTableContainer">
             {listApplicationLoading ? (
               <div className="loading-container">
