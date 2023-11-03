@@ -561,6 +561,7 @@ export const PARENT_BY_VENDOR_QUERY = gql`
     		is_vendor_allow_shared
         is_profile_filled
         last_login
+        last_verification_sent
   }
 }
 `;

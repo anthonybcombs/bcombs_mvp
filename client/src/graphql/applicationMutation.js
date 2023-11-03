@@ -231,6 +231,7 @@ export const GET_APPLICATIONS_QUERY = gql`
         ethnicities
         is_profile_filled
         last_login
+        last_verification_sent
       }
       section1_signature
       section1_date_signed
@@ -426,6 +427,7 @@ export const GET_APPLICATION_ID_QUERY = gql`
         ethnicities
         is_profile_filled
         last_login
+        last_verification_sent
       }
       section1_signature
       section1_date_signed
@@ -1029,6 +1031,7 @@ export const GET_CUSTOM_APPLICATION_BY_VENDOR = gql`
       class_teacher
       form_contents
       last_login
+      last_verification_sent
       is_profile_filled
     }
   }

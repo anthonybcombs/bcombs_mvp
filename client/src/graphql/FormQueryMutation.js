@@ -422,6 +422,7 @@ export const GET_APPLICANTS_BY_FORM = gql`
       notes
       is_profile_filled
       last_login
+      last_verification_sent
       form_contents {
         formTitle
         formData {

@@ -788,7 +788,16 @@ export default function index() {
     }
   }, [vendors, queryParams?.vendor, queryParams?.form]);
 
-  console.log('selectedFormmmmmmm', selectedForm)
+
+  const handleRefreshApplication = () => {
+
+    if (selectedForm !== 'default') {
+      dispatch(requestGetCustomApplications(selectedForm));
+    }
+    else {
+      dispatch(requestGetApplications(selectedVendor?.id || ''));
+    }
+  }
 
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
@@ -2575,9 +2584,9 @@ export default function index() {
       {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
         <ApplicationListStyled
           // applications={applications.activeapplications}
-          applications={applications.activeapplications.filter(item => {
+          applications={applications?.activeapplications ? applications.activeapplications.filter(item => {
             return selectedForm === "lot" ? item.is_lot : !item.is_lot
-          })}
+          }) : []}
           handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" || selectedForm === "lot" ? viewType : 'builderForm')}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
@@ -2585,6 +2594,7 @@ export default function index() {
           isCustomForm={selectedForm !== "default" && selectedForm !== "lot"}
           isLot={selectedForm === 'lot'}
           filename={exportFilename}
+          handleRefreshApplication={handleRefreshApplication}
         />
       )}
       {

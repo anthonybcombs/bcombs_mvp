@@ -432,6 +432,7 @@ const sendEmailVerification = async (data = {}) => {
 export default function index({
   applications,
   handleSelectedApplication,
+  handleRefreshApplication,
   listApplicationLoading = false,
   vendor = {},
   appGroups = [],
@@ -502,14 +503,14 @@ export default function index({
       return label.includes('parent') && label.includes('name');
     });
 
-    const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
+    const parentFields = parentData?.fields ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
     return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"', "")} ${parentFields[1].value.replaceAll('"', "")}` : ''
   }
 
 
   const handleSendEmailVerification = async (data = {}) => {
     try {
-      setIsVerificationLoading(true);
+      // setIsVerificationLoading(true);
       await sendEmailVerification({ ...data });
       setIsVerificationSent(true);
     } catch (err) {
@@ -518,8 +519,10 @@ export default function index({
     finally {
       setTimeout(() => {
         setIsVerificationSent(false);
-        setIsVerificationLoading(false);
+        // setIsVerificationLoading(false);
       }, 5000);
+
+      handleRefreshApplication();
     }
   }
 
@@ -529,7 +532,7 @@ export default function index({
       return (label.includes('mentee') && label.includes('name')) || (label.includes('child') && label.includes('name'));
     });
 
-    const parentFields = parentData ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
+    const parentFields = parentData?.fields ? parentData.fields.filter(item => item.label === 'First Name' || item.label === 'Last Name') : [];
     return parentFields.length > 0 ? `${parentFields[0].value.replaceAll('"', "")} ${parentFields[1].value.replaceAll('"', "")}` : ''
   }
   const getPrimaryParentName = (parents, id, data) => {
@@ -677,11 +680,25 @@ export default function index({
       selector: "last_login",
       sortable: true,
       cell: row => {
+        console.log('row',row)
         if (row.hasOwnProperty('last_login')) {
           return <div>{row.last_login ? format(new Date(row.last_login), DATE_TIME_FORMAT) : 'Never'}</div>
         }
 
         return <div>{row?.parents && row.parents[0] && row?.parents[0]?.last_login ? format(new Date(row?.parents[0]?.last_login), DATE_TIME_FORMAT) : 'Never'}</div>
+      },
+    },
+    {
+      name: "Last Verification Sent",
+      selector: "last_verification_sent",
+      sortable: true,
+      cell: row => {
+        console.log('row',row)
+        if (row.hasOwnProperty('last_verification_sent')) {
+          return <div>{row.last_verification_sent ? format(new Date(row.last_verification_sent), DATE_TIME_FORMAT) : 'Never'}</div>
+        }
+
+        return <div>{row?.parents && row.parents[0] && row?.parents[0]?.last_verification_sent ? format(new Date(row?.parents[0]?.last_verification_sent), DATE_TIME_FORMAT) : 'Never'}</div>
       },
     },
     {
@@ -1033,7 +1050,7 @@ export default function index({
           </div>
           {isVerificationSent && <div style={{ padding: 12, color: 'green', textAlign: 'right', fontWeight: 'bolder' }}>Verification email has been sent to the user</div>}
           <div id="dataTableContainer">
-            {listApplicationLoading ? (
+            {(listApplicationLoading || isVerificationLoading) ? (
               <div className="loading-container">
                 <Loading />
               </div>
