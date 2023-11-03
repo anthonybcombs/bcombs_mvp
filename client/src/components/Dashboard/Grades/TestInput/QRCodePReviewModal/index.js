@@ -34,6 +34,9 @@ const QRCodePReviewModal = ({
                         height: 'auto'
                     }} />
 
+                    <div style={{ padding: 12 }}>
+                        <a href={`${process.env.HOST}/user/grades`} target="_blank">View Page</a>
+                    </div>
                     <div>
                         <button
 
