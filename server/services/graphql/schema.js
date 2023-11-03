@@ -1282,6 +1282,7 @@ const queryTypes = `
         is_vendor_allow_shared: Int
         is_profile_filled: Int
         last_login: Date
+        last_verification_sent: Date
     }
 
     type Application {
@@ -1452,6 +1453,7 @@ const queryTypes = `
         received_update: Boolean
         is_profile_filled: Int
         last_login: Date
+        last_verification_sent: Date
     }
 
     type CustomApplicationByVendor {
@@ -1462,6 +1464,7 @@ const queryTypes = `
         form_contents: String
         is_profile_filled: Int
         last_login: Date
+        last_verification_sent: Date
     }
 
     type CustomForm {

@@ -2898,6 +2898,11 @@ router.post('/email/verify', async (req, res) => {
         }).then(response => response.json());
 
 
+        await db.query(
+          `UPDATE users SET last_verification_sent=now() where auth_id=?`,
+          [rows[0].auth_id]
+        );
+
 
         return res.status(200).json({
           data: resp,
