@@ -166,6 +166,7 @@ const Metrics = props => {
         <div>
           <div>
             <select
+              disabled={true}
               ///    className="custom-default-select"
               style={{
                 "marginLeft": "20px",
