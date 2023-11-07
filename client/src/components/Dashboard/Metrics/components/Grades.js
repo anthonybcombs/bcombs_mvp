@@ -36,7 +36,7 @@ const apiCallGrades = async (vendor, id, year, grade, formId, classId, lotVendor
 
 
 const Mentoring = props => {
-    const { auth, vendors, lotVendorId2s, selectedVendor } = props;
+    const { auth, vendors, lotVendorId2s, selectedVendor, defaultFormId } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -50,7 +50,7 @@ const Mentoring = props => {
     useEffect(() => {
         if (auth && auth.user_id) {
 
-            const defaultForm = selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
+            const defaultForm = defaultFormId ? defaultFormId : selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
    
             triggerApiCallGrades(auth.user_id, year, grade, defaultForm, 'id_0');
             setFormIdLocal(defaultForm)
