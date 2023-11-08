@@ -14,7 +14,8 @@ import {
   GET_VENDOR_REMINDER,
   UPDATE_VENDOR_LOGO,
   CREATE_VENDOR,
-  UPDATE_DEFAULT_VENDOR
+  UPDATE_DEFAULT_VENDOR,
+  UPDATE_DEFAULT_VENDOR_FORMS
 } from "../../graphql/vendorMutation";
 
 import { GET_FORM_APP_GROUP } from "../../graphql/groupQuery";
@@ -260,6 +261,23 @@ const updateDefaultVendorFromDataBase = payload => {
   });
 };
 
+const updateDefaultVendorFormsFromDataBase = payload => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { data } = await graphqlClient.mutate({
+        mutation: UPDATE_DEFAULT_VENDOR_FORMS,
+        variables: { form_id: payload.form_id, vendor_id: payload.vendor_id }
+      });
+      console.log("updateDefaultVendorFormsFromDataBase data", data);
+      return resolve(data.updateDefaultVendor);
+    } catch (error) {
+      console.log("updateDefaultVendorFormsFromDataBase error", error);
+      reject(error);
+    }
+  });
+};
+
+
 
 
 
@@ -417,6 +435,13 @@ export const setDefaultVendor = ({ user_id = '', vendor_id = '' }) => {
   };
 }
 
+export const setDefaultVendorForms = ({ form_id = '', vendor_id = '' }) => {
+  return {
+    type: actionType.SET_DEFAULT_VENDOR_FORMS,
+    form_id,
+    vendor_id
+  };
+}
 
 export function* getVendorReminders({ vendor }) {
   try {
@@ -672,8 +697,6 @@ export function* updateVendorLogo({ data }) {
 
 export function* updateDefaultVendor({ user_id, vendor_id}) {
   try {
-    console.log('updateDefaultVendor user_id', user_id)
-    console.log('updateDefaultVendor vendor_id', vendor_id)
     const response = yield call(updateDefaultVendorFromDataBase, { user_id, vendor_id});
 
     console.log('updateDefaultVendor responseee', response)
@@ -681,6 +704,17 @@ export function* updateDefaultVendor({ user_id, vendor_id}) {
     console.log('updateDefaultVendor err', err)
   }
 }
+
+export function* updateDefaultVendorForms({ form_id, vendor_id }) {
+  try {
+    const response = yield call(updateDefaultVendorFormsFromDataBase, { form_id, vendor_id });
+
+    console.log('updateDefaultVendor responseee', response)
+  } catch (err) {
+    console.log('updateDefaultVendor err', err)
+  }
+}
+
 
 
 

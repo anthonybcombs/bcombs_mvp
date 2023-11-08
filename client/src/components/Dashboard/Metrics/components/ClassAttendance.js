@@ -32,7 +32,7 @@ const apiCallClassAttendance = async (vendor, id, year, formId, lotVendorId2s = 
 }
 
 const ClassAttendance = props => {
-    const { auth, selectedVendor, vendors, lotVendorId2s = [] } = props;
+    const { auth, selectedVendor, vendors, defaultFormId, lotVendorId2s = [] } = props;
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -48,9 +48,12 @@ const ClassAttendance = props => {
 
     useEffect(() => {
         if (auth && auth.user_id) {
-            triggerApiCallAttendance(auth.user_id, year, 'fid_0', 'id_0');
+            const defaultForm = defaultFormId ? defaultFormId :  selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
+            triggerApiCallAttendance(auth.user_id, year, defaultForm, 'id_0');
+
+            setFormId(defaultForm);
         }
-    }, [auth, selectedVendor]);
+    }, [auth, selectedVendor, defaultFormId]);
 
 
     const triggerApiCallAttendance = async (id, year, formId, class_id) => {

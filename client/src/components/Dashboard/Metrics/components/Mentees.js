@@ -34,7 +34,7 @@ const apiCall2 = async (vendor, id, year, formId, classId, lotVendorIds = []) =>
 }
 
 const Mentees = props => {
-    const { auth, vendors, selectedVendor, lotVendorId2s = [] } = props;
+    const { auth, vendors, selectedVendor, defaultFormId, lotVendorId2s = [] } = props;
 
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [year, setYear] = useState('2021');
@@ -157,7 +157,9 @@ const Mentees = props => {
         //defineChart(null);
         if (auth && auth.user_id) {
             setYear(2021);
-            triggerApi2(auth.user_id, year);
+            const defaultForm =  defaultFormId ? defaultFormId : selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
+            setFormIdLocal(defaultForm);
+            triggerApi2(auth.user_id, year, defaultForm);
         }
     }, [auth, selectedVendor]);
 

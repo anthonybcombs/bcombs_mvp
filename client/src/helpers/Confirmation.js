@@ -62,7 +62,7 @@ const ConfirmationModal = styled.div`
   }
   @media screen and (max-width: 768px) {
     .modal-content {
-      width: 25%;
+      width: 85%;
       border: none !important;
       height: auto;
     }

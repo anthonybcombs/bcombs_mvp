@@ -36,7 +36,7 @@ const apiCallMentoring = async (vendor, id, year, grade, formId, classId, lotVen
 
 
 const Mentoring = props => {
-    const { auth, vendors, lotVendorId2s, selectedVendor } = props;
+    const { auth, vendors, lotVendorId2s, selectedVendor, defaultFormId } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [classList, setClassList] = useState([]);
     const [formList, setFormList] = useState([]);
@@ -49,10 +49,12 @@ const Mentoring = props => {
  
     useEffect(() => {
         if (auth && auth.user_id) {
-            triggerApiCallMentoring(auth.user_id, year, grade, 'fid_0', 'id_0');
+            const defaultForm = defaultFormId ? defaultFormId :  selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
+            triggerApiCallMentoring(auth.user_id, year, grade, defaultForm, 'id_0');
+            setFormIdLocal(defaultForm);
         }
     }, [auth, selectedVendor]);
-    console.log('selectedVendozzzzzr',selectedVendor)
+
     const triggerApiCallMentoring = async (id, year, grade, formId, classId) => {
         try {
             if (!vendors ||!vendors.length) {

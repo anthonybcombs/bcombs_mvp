@@ -828,7 +828,7 @@ export const addUpdateStudentCumulativeGrades = async (
         );
 
         currentSubjectGrades = await db.query(
-          `SELECT student_grades_id,subject FROM student_grades 
+          `SELECT student_grades_id,subject, class FROM student_grades 
         WHERE student_grade_cumulative_id=? `,
           [cumulativeId]
         );
@@ -837,8 +837,11 @@ export const addUpdateStudentCumulativeGrades = async (
       if (grades.length > 0) {
         for (let grade of grades) {
           const isSubjectExist = currentSubjectGrades.find(
-            (item) => item.subject === grade.subject
+            (item) => {
+              return ((item.subject === grade.subject) && (item.class === grade.class))
+            }
           );
+
           if (!isSubjectExist) {
             await db.query(
               `INSERT INTO student_grades
@@ -967,7 +970,11 @@ export const addUpdateStudentCumulativeGrades = async (
 							letter_mid_final_grade=?,
 							letter_final_grade=?,
 							letter_year_final_grade=?,
-							help_needed=?
+							help_needed=?,
+              help_q1=?,
+              help_q2=?,
+              help_q3=?,
+              help_q4=?
 							
             WHERE student_grade_cumulative_id=? AND subject=? AND class=?
             `,
@@ -1004,6 +1011,10 @@ export const addUpdateStudentCumulativeGrades = async (
                 grade.letter_final_grade || "",
                 grade.letter_year_final_grade || "",
                 grade.help_needed || "",
+                grade.help_q1 || "",
+                grade.help_q2 || "",
+                grade.help_q3 || "",
+                grade.help_q4 || "",
                 cumulativeId,
                 grade.subject,
                 grade.class,

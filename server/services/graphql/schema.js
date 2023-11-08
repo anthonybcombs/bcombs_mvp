@@ -1092,6 +1092,7 @@ const queryTypes = `
         forms: [CustomApplicationOutput]
         logo: String
         is_default: Int
+        default_form: String
     }
 
     type Vendor2 {
@@ -1281,6 +1282,7 @@ const queryTypes = `
         is_vendor_allow_shared: Int
         is_profile_filled: Int
         last_login: Date
+        last_verification_sent: Date
     }
 
     type Application {
@@ -1451,6 +1453,7 @@ const queryTypes = `
         received_update: Boolean
         is_profile_filled: Int
         last_login: Date
+        last_verification_sent: Date
     }
 
     type CustomApplicationByVendor {
@@ -1461,6 +1464,7 @@ const queryTypes = `
         form_contents: String
         is_profile_filled: Int
         last_login: Date
+        last_verification_sent: Date
     }
 
     type CustomForm {
@@ -1798,6 +1802,7 @@ const queryTypes = `
         ch_id: String
         form_contents: String
         app_id: String
+        new_childId: String
     }
 
     type StudentRecords {
@@ -1892,6 +1897,7 @@ const mutations = `
         createUpdateChildAttendance(user: UserAttendanceInput): UserAttendance
         updateParentVendorShare(parents: [ParentShareByVendorInput], vendor_id: String, app_group_id: String ,form_type: String): [Parent]
         updateDefaultVendor(user_id: String!, vendor_id:String): DefaultVendorResponse
+        updateDefaultVendorForms(form_id: String!, vendor_id:String): DefaultVendorResponse
     }
 `;
 

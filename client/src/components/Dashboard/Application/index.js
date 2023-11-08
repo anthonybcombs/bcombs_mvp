@@ -43,7 +43,8 @@ import {
   requestGetVendorReminders,
   requestCreateVendor,
   requestSelectedVendor,
-  setDefaultVendor
+  setDefaultVendor,
+  setDefaultVendorForms
 } from "../../../redux/actions/Vendors";
 
 import {
@@ -552,6 +553,7 @@ export default function index() {
 
 
 
+  console.log('selectedVendor', selectedVendor)
   const dispatch = useDispatch();
 
   const componentRef = useRef();
@@ -631,6 +633,7 @@ export default function index() {
 
       dispatch(requestVendor(auth.user_id));
 
+      console.log('queryParams.form', queryParams.form)
       if (queryParams && queryParams.form) {
         dispatch(requestGetCustomApplications(queryParams.form));
       }
@@ -719,6 +722,7 @@ export default function index() {
         let defaultVendor = null;
         const hasDefaultVendor = vendors.find(item => item.is_default);
 
+
         if (auth && auth?.nickname === 'lot') {
           defaultVendor = vendors[vendors.length - 1]
           setSelectedVendor(defaultVendor);
@@ -741,9 +745,16 @@ export default function index() {
           }
         }
 
+        // if(hasDefaultVendor?.default_form ) {
+        //   // setSelectedForm(hasDefaultVendor?.default_form || 'default');
+
+        // }
+
+
         // if(vendors[0] && vendors[0].name.includes('LOT')) {
         //   setSelectedForm('lot');
         // }
+
         if (queryParams && queryParams.form) {
           dispatch(requestGetFormAppGroup(queryParams.form));
         } else if (!hasDefaultVendor) {
@@ -758,7 +769,13 @@ export default function index() {
         }))
 
         if (defaultVendor) {
-          dispatch(requestGetApplications(defaultVendor?.id));
+          if (defaultVendor?.default_form && defaultVendor?.default_form !== 'default') {
+            dispatch(requestGetCustomApplications(defaultVendor?.default_form));
+          }
+          else {
+            dispatch(requestGetApplications(defaultVendor?.id));
+          }
+
           dispatch(requestGetVendorReminders({ vendor: defaultVendor?.id }));
         }
 
@@ -769,7 +786,18 @@ export default function index() {
 
 
     }
-  }, [vendors, queryParams?.vendor]);
+  }, [vendors, queryParams?.vendor, queryParams?.form]);
+
+
+  const handleRefreshApplication = () => {
+
+    if (selectedForm !== 'default') {
+      dispatch(requestGetCustomApplications(selectedForm));
+    }
+    else {
+      dispatch(requestGetApplications(selectedVendor?.id || ''));
+    }
+  }
 
   useEffect(() => {
     //dispatch(requestGetApplications(selectedVendor.id));
@@ -792,7 +820,14 @@ export default function index() {
       // dispatch(requestGetCustomApplications(queryParams.form));
     } else {
       setExportFilename(selectedVendor?.name);
-      dispatch(requestGetApplications(selectedVendor?.id || ''));
+
+      if (selectedVendor?.default_form && selectedVendor?.default_form !== 'default') {
+        dispatch(requestGetCustomApplications(selectedVendor?.default_form || ''));
+      }
+      else {
+        dispatch(requestGetApplications(selectedVendor?.id || ''));
+      }
+
     }
 
 
@@ -803,8 +838,16 @@ export default function index() {
     if (selectedVendor) {
 
       const isLot = (selectedVendor && selectedVendor?.name && selectedVendor.name.includes('LOT')) || (auth && auth.nickname === 'lot');
+      console.log('selectedVendor', selectedVendor)
 
-      setSelectedForm(isLot ? "lot" : "default");
+      if (selectedVendor?.default_form && selectedVendor?.default_form !== 'default') {
+
+        setSelectedForm(selectedVendor?.default_form);
+        // window.history.replaceState("", "", "?form=" + selectedVendor?.default_form);
+      }
+      else {
+        setSelectedForm(isLot ? "lot" : 'default')
+      }
     }
 
   }, [selectedVendor])
@@ -1957,15 +2000,33 @@ export default function index() {
   }
 
 
-  const handleSetDefaultVendor = () => {
+  // const handleSetDefaultVendor = () => {
+  //   if (!isSettingDefaultVendorLoading) {
+  //     setIsSettingDefaultVendorLoading(true);
+  //     console.log('Handle Set Default Vendor', {
+  //       user_id: auth?.user_id,
+  //       vendor_id: selectedVendor?.id
+  //     })
+  //     dispatch(setDefaultVendor({
+  //       user_id: auth?.user_id,
+  //       vendor_id: selectedVendor?.id
+  //     }));
+
+  //     setTimeout(() => {
+  //       setIsSettingDefaultVendorLoading(false);
+  //     }, 1500)
+  //   }
+
+  // }
+
+
+  const handleSetDefaultForm = () => {
+    console.log('selectedFormmmm', selectedForm)
     if (!isSettingDefaultVendorLoading) {
       setIsSettingDefaultVendorLoading(true);
-      console.log('Handle Set Default Vendor', {
-        user_id: auth?.user_id,
-        vendor_id: selectedVendor?.id
-      })
-      dispatch(setDefaultVendor({
-        user_id: auth?.user_id,
+
+      dispatch(setDefaultVendorForms({
+        form_id: selectedForm,
         vendor_id: selectedVendor?.id
       }));
 
@@ -2152,7 +2213,7 @@ export default function index() {
   // .sort((a, b) => a.name.localeCompare(b.name)
   let vendorOptions = vendors && vendors.length > 0 ? vendors : [];
   let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
-
+  console.log('vendors', vendors)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2160,6 +2221,7 @@ export default function index() {
         {vendorOptions && vendorOptions.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'columns' }}>
             <select
+              disabled={true}
               className="custom-default-select"
               style={{
                 "marginLeft": "20px",
@@ -2206,20 +2268,16 @@ export default function index() {
                 </option>
               ))}
             </select>
-            <span
-              onClick={handleSetDefaultVendor}
-              style={{ color: 'blue', cursor: 'pointer' }}
 
-            >
-              {isSettingDefaultVendorLoading ? 'Setting as Default...' : 'Set as default'}
-            </span>
           </div>
         )}
 
         {
           vendors && vendors.length > 0 && (
             <div style={{
-              marginLeft: 12
+              marginLeft: 12,
+              display: 'flex', 
+              flexDirection: 'columns'
             }}>
               <select
 
@@ -2237,6 +2295,7 @@ export default function index() {
                   "color": "#000000",
 
                 }}
+                value={selectedForm}
                 onChange={({ target }) => {
                   handleGetForms(target.value);
 
@@ -2281,10 +2340,17 @@ export default function index() {
                   )
                 }
               </select>
+              <span
+                onClick={handleSetDefaultForm}
+                style={{ color: 'blue', cursor: 'pointer', marginTop: 4 }}
+
+              >
+                {isSettingDefaultVendorLoading ? 'Setting as Default...' : 'Set as default'}
+              </span>
             </div>
           )
         }
-        {selectedVendor ?<div style={{ marginLeft: 12, marginTop: 12 }}>
+        {selectedVendor ? <div style={{ marginLeft: 12, marginTop: 12 }}>
           <ImportExportApplication
             form={currentForm}
             formType={selectedForm !== "default" && selectedForm !== "lot" ? 'custom' : 'mentoring'}
@@ -2295,7 +2361,7 @@ export default function index() {
               handleGetForms(selectedForm)
             }}
           />
-        </div> : <span/>}
+        </div> : <span />}
         {
           vendors && vendors.length > 0 && isNbmbaa ? (
             <div className="copy-vendor-btn">
@@ -2518,9 +2584,9 @@ export default function index() {
       {selectedLabel === "Application Status" && !selectNonMenuOption && view !== 'builderForm' && (
         <ApplicationListStyled
           // applications={applications.activeapplications}
-          applications={applications.activeapplications.filter(item => {
+          applications={applications?.activeapplications ? applications.activeapplications.filter(item => {
             return selectedForm === "lot" ? item.is_lot : !item.is_lot
-          })}
+          }) : []}
           handleSelectedApplication={(row, viewType) => handleSelectedApplication(row, selectedForm === "default" || selectedForm === "lot" ? viewType : 'builderForm')}
           listApplicationLoading={loading.application}
           vendor={selectedVendor}
@@ -2528,6 +2594,7 @@ export default function index() {
           isCustomForm={selectedForm !== "default" && selectedForm !== "lot"}
           isLot={selectedForm === 'lot'}
           filename={exportFilename}
+          handleRefreshApplication={handleRefreshApplication}
         />
       )}
       {

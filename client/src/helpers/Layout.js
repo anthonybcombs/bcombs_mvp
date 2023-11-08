@@ -216,6 +216,7 @@ export default function Layout({ children }) {
   // const queryParams = parse(location.search);
   const urlParams = new URLSearchParams(window.location.search);
   const vendorId = urlParams.get('vendor');
+  const formId = urlParams.get('form');
 
 
   const [showLoginBox, setShowLoginBox] = useState(false);
@@ -354,7 +355,8 @@ export default function Layout({ children }) {
                                 ? "selected"
                                 : ""
                                 }`}
-                              to="/dashboard/bcdisplaycalendar">
+    
+                              to={`/dashboard/bcdisplaycalendar${window.location.search}`}>
                               <span>Calendar</span>
                             </Link>
                             <Link
@@ -363,7 +365,7 @@ export default function Layout({ children }) {
                                 ? "selected"
                                 : ""
                                 }`}
-                              to={`/dashboard/studentdata${vendorId ? `?vendor=${vendorId}` : ''}`}>
+                              to={`/dashboard/studentdata${window.location.search}`}>
                               <span>Data</span>
                             </Link>
                             <Link
@@ -372,7 +374,9 @@ export default function Layout({ children }) {
                                 ? "selected"
                                 : ""
                                 }`}
-                              to="/dashboard/mycontacts">
+
+                                
+                              to={`/dashboard/mycontacts${window.location.search}`}>
                               <span>Contacts</span>
                             </Link>
 
@@ -491,7 +495,7 @@ export default function Layout({ children }) {
                             : ""
                             }`}
 
-                          to={`/dashboard/application${vendorId ? `?vendor=${vendorId}` : ''}`}>
+                          to={`/dashboard/application${window.location.search}`}>
                           <span>Application</span>
                         </Link>
                       )}
@@ -501,7 +505,7 @@ export default function Layout({ children }) {
                             ? "selected"
                             : ""
                             }`}
-                          to="/dashboard/metrics">
+                          to={`/dashboard/metrics${window.location.search}`}>
                           <span>Metrics</span>
                         </Link>
                       )}

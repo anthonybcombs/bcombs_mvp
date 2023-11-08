@@ -1,4 +1,5 @@
 import express from "express";
+import QRCode from 'qrcode';
 import {
   currentS3BucketName,
   s3Bucket,
@@ -13,7 +14,7 @@ import { removeDuplicatesByKey } from '../helpers/array';
 import { sendMigratedAccount, bookDemoSchedule } from "../helpers/email";
 
 import { submitCustomApplication, addApplicationUser, createApplication } from '../api/applications';
-import { addChild } from '../api/child';
+import { addChild, getGroupByChildId } from '../api/child';
 import { checkUserEmail, executeSignUp, executeAddUserProfile } from '../api/users';
 import { getUserTypes } from "../api/userTypes/";
 
@@ -55,6 +56,31 @@ const isUserExist = async user => {
     return result;
   }
 };
+
+const getAuth0ManagementToken = async () => {
+  try {
+    const AuthResponse = await fetch(`${process.env.AUTH_API}/oauth/token`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json', // Add this line to set the Content-Type
+      },
+      body: JSON.stringify({
+        client_id: process.env.AUTH_CLIENT_ID,
+        client_secret: process.env.AUTH_CLIENT_SECRET,
+        audience: `${process.env.AUTH_API}/api/v2/`,
+        grant_type: 'client_credentials',
+      })
+    });
+    return await AuthResponse.json();
+  }
+  catch (err) {
+    return {
+      err
+    }
+  }
+}
+
+
 export const getUserFromDatabase = async email => {
   const db = makeDb();
   let result;
@@ -1064,6 +1090,114 @@ router.post("/child/attendance/search", async (req, res) => {
     return res.json({
       child: child,
       attendance: childAttendance
+    })
+  }
+});
+
+
+router.post("/child/grades/search", async (req, res) => {
+  const db = makeDb();
+  const { childId, userType } = req.body;
+  // const { childId } = req.params;
+  // const { userType } = req.query;
+
+  let child = null;
+  let childGradeCumulatives = [];
+  let childGrades = {};
+  let appGroups = [];
+  try {
+
+    child = await db.query(
+      `SELECT BIN_TO_UUID(c.ch_id) as ch_id, c.firstname, c.lastname, c.new_childId
+        FROM child c
+        WHERE c.new_childId=?
+     `,
+      [childId]
+    );
+
+    if (child && child[0]) {
+
+      child = JSON.parse(JSON.stringify(child[0]));
+      console.log('child', child)
+      child = {
+        ...child,
+        ch_id: child.ch_id
+      };
+
+
+      appGroups = await getGroupByChildId(child.ch_id);
+      appGroups = appGroups ? appGroups.app_groups : [];
+      appGroups = appGroups && appGroups.filter(item => item.app_grp_id);
+      console.log('appGroups', appGroups)
+    }
+    else {
+      child = null;
+    }
+
+
+
+    if (child && userType === 'forms') {
+      const customApplication = await db.query(
+        `SELECT BIN_TO_UUID(c.app_id) as ch_id
+        FROM custom_application c
+        WHERE c.child=UUID_TO_BIN(?)
+       `,
+        [child.ch_id]
+      );
+
+      console.log('customApplication', customApplication)
+      if (customApplication && customApplication[0]) {
+        child.ch_id = customApplication[0].ch_id;
+      }
+
+    }
+
+    if (child) {
+      childGradeCumulatives = await db.query(
+        `SELECT sgc.*, 
+          BIN_TO_UUID(sgc.app_group_id) as app_group_id, 
+          BIN_TO_UUID(sgc.child_id) as child_id
+          FROM student_grade_cumulative sgc
+          WHERE sgc.child_id=UUID_TO_BIN(?) 
+       `,
+        [child.ch_id]
+      );
+
+      if (childGradeCumulatives.length > 0) {
+        let cumulativeIds = childGradeCumulatives.map(item => {
+          return item.student_grade_cumulative_id;
+        });
+        cumulativeIds = [...new Set(cumulativeIds)];
+
+        childGrades = await db.query(
+          `SELECT sg.*
+            FROM student_grades sg
+            WHERE sg.student_grade_cumulative_id IN (${cumulativeIds.join(',')})
+         `
+        );
+
+
+        childGrades = childGrades.reduce((accum, item) => {
+          const currentCumulative = childGradeCumulatives.find(item2 => item2.student_grade_cumulative_id === item.student_grade_cumulative_id)
+          return {
+            ...accum,
+            [currentCumulative?.year_level]: [...(accum[currentCumulative?.year_level] || []), item]
+          }
+        }, {});
+
+      }
+
+    }
+  } catch (error) {
+    console.log("Search Child Error", error);
+  } finally {
+    db.close();
+
+    return res.json({
+      app_groups: appGroups,
+      child: child,
+      grade_cumulative: childGradeCumulatives,
+      grades: childGrades
     })
   }
 });
@@ -2703,7 +2837,6 @@ router.get("/vendor/default/summary", async (req, res) => {
       [defaultUserId]
     );
 
-    console.log('applicationssssssss', applications)
     return res.status(200).json({
       data: applications
     })
@@ -2716,5 +2849,86 @@ router.get("/vendor/default/summary", async (req, res) => {
     await db.close();
   }
 });
+
+
+router.get('/qr/grade/page', async (req, res) => {
+  try {
+    const qrCodeDataURL = await QRCode.toDataURL(`${process.env.APP_CLIENT_URL}/user/grades`);
+    return res.status(200).json({
+      qr_code: qrCodeDataURL
+    });
+
+  } catch (error) {
+    return res.status(400).json({
+      message: 'Something went wrong'
+    })
+  }
+
+});
+
+
+router.post('/email/verify', async (req, res) => {
+  const db = makeDb();
+  try {
+
+    const { email } = req.body;
+    const rows = await db.query(
+      `SELECT auth_id from users where email=? `,
+      [email]
+    );
+
+    if (rows.length > 0) {
+      const resendVerificationEmailEndpoint = `${process.env.AUTH_API}/api/v2/jobs/verification-email`;
+
+      const verificationData = {
+        user_id: rows[0].auth_id,
+        client_id: process.env.AUTH_CLIENT_ID
+      };
+
+      const managementResponse = await getAuth0ManagementToken();
+  
+      if (managementResponse) {
+        const resp = await fetch(resendVerificationEmailEndpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${managementResponse.access_token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(verificationData),
+        }).then(response => response.json());
+
+
+        await db.query(
+          `UPDATE users SET last_verification_sent=now() where auth_id=?`,
+          [rows[0].auth_id]
+        );
+
+
+        return res.status(200).json({
+          data: resp,
+          message: 'Email verification has been sent!'
+        });
+
+      }
+
+      return res.status(400).json({
+        message: 'Email verification fail to send!'
+      });
+    }
+
+    return res.status(400).json({
+      message: 'Something went wrong'
+    })
+
+
+  } catch (error) {
+    console.log('error', error)
+    return res.status(400).json({
+      message: 'Something went wrong'
+    })
+  }
+
+});
+
 
 export default router;

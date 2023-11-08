@@ -38,7 +38,8 @@ export const getParentByApplication = async (id) => {
         gender,
         ethnicities,
         users.is_profile_filled,
-        users.last_login
+        users.last_login,
+        users.last_verification_sent
         FROM parent
         LEFT JOIN users ON parent.email_address=users.email
         WHERE application=UUID_TO_BIN(?)`,

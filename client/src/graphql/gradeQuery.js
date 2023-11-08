@@ -138,6 +138,7 @@ query getStudentRecords(
         app_id
         form_contents
         image
+        new_childId
       }
       cumulative_grades{
         student_grade_cumulative_id

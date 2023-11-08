@@ -179,8 +179,8 @@ export default function index() {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const {applications } = useSelector(
-    ({ applications}) => {
+  const { applications } = useSelector(
+    ({ applications }) => {
       return { applications };
     }
   );
@@ -194,7 +194,7 @@ export default function index() {
   const DATE_FORMAT = "LLL dd, yyyy";
 
   const getAgeBdate = (child) => {
-    if(!child.age && child <= -1) return "";
+    if (!child.age && child <= -1) return "";
 
     let birthdate = child.birthdate && format(new Date(child.birthdate), DATE_FORMAT);
     return <span>{child.age}&nbsp; ({birthdate})</span>
@@ -212,7 +212,7 @@ export default function index() {
           <td className="label">Phone</td>
         </tr>
       ));
-        
+
       rows.push((
         <tr key={index + (index * 1) + 1}>
           <td>{parent.firstname + " " + parent.lastname}</td>
@@ -247,7 +247,12 @@ export default function index() {
                 application?.child?.firstname && application?.child?.lastname &&
                 <h1>{application.child.firstname + " " + application.child.lastname}</h1>
               }
-              
+
+              <div className="content">
+                <div className="left">
+                  <div className="label">Student ID:</div><div className="value">{application?.child?.new_childId || ""}</div>
+                </div>
+              </div>
               <div className="content">
                 <div className="left">
                   <div className="label">Email:</div><div className="value">{application.child && application.child.email_address ? application.child.email_address : ""}</div>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
+import { parse } from "query-string";
+import { useLocation } from "@reach/router";
 
 import MetricMenu from './components/Menu';
 import Attendance from "./components/Attendance";
@@ -13,6 +15,7 @@ import Mentoring from "./components/Mentoring";
 import VolunteerHours from "./components/VolunteerHours";
 
 import { requestVendor } from '../../../redux/actions/Vendors';
+
 
 
 const MetricStyled = styled.div`
@@ -98,6 +101,7 @@ const MetricStyled = styled.div`
 const Metrics = props => {
   const [selectedLabel, setSelectedLabel] = useState('attendance');
   const dispatch = useDispatch();
+  const location = useLocation();
   const {
     auth,
     user,
@@ -116,6 +120,8 @@ const Metrics = props => {
     }
   );
   const [selectedVendor, setSelectedVendor] = useState(null);
+
+  const queryParams = parse(location.search);
 
   useEffect(() => {
     if (auth) {
@@ -160,6 +166,7 @@ const Metrics = props => {
         <div>
           <div>
             <select
+              disabled={true}
               ///    className="custom-default-select"
               style={{
                 "marginLeft": "20px",
@@ -202,14 +209,14 @@ const Metrics = props => {
 
 
           </div>
-          {selectedLabel === 'attendance' && <Attendance auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
-          {selectedLabel === 'class_attendance' && <ClassAttendance auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
-          {selectedLabel === 'mentees' && <Mentees auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
-          {selectedLabel === 'classes' && <ClassReport auth={auth} selectedVendor={selectedVendor} vendors={vendors} />}
-          {selectedLabel === 'tests' && <Tests auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
-          {selectedLabel === 'grades' && <Grades auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
-          {selectedLabel === 'mentoring' && <Mentoring auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
-          {selectedLabel === 'volunteer_hours' && <VolunteerHours auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} />}
+          {selectedLabel === 'attendance' && <Attendance auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} defaultFormId={queryParams?.form} />}
+          {selectedLabel === 'class_attendance' && <ClassAttendance auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} defaultFormId={queryParams?.form} />}
+          {selectedLabel === 'mentees' && <Mentees auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} defaultFormId={queryParams?.form} />}
+          {selectedLabel === 'classes' && <ClassReport auth={auth} selectedVendor={selectedVendor} vendors={vendors} defaultFormId={queryParams?.form} />}
+          {selectedLabel === 'tests' && <Tests auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} defaultFormId={queryParams?.form} />}
+          {selectedLabel === 'grades' && <Grades auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} defaultFormId={queryParams?.form} />}
+          {selectedLabel === 'mentoring' && <Mentoring auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} defaultFormId={queryParams?.form} />}
+          {selectedLabel === 'volunteer_hours' && <VolunteerHours auth={auth} selectedVendor={selectedVendor} vendors={vendors} lotVendorId2s={lotVendorId2s} defaultFormId={queryParams?.form} />}
         </div>
       </div>
     </MetricStyled>

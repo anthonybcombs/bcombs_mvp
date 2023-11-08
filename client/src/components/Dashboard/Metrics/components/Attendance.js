@@ -34,7 +34,7 @@ const apiCallAttendance = async (vendor, id, year, grade, lotVendorIds) => {
 }
 
 const Attendance = props => {
-    const { auth, vendors, selectedVendor, lotVendorId2s } = props;
+    const { auth, vendors, selectedVendor, lotVendorId2s, defaultFormId } = props;
     const [tempOptionsData, setTempOptionsData] = useState([]);
     const [year, setYear] = useState('2021');
     const [grade, setGrade] = useState('all');
@@ -45,12 +45,17 @@ const Attendance = props => {
     const [isLoading, setIsLoading] = useState(true);
     const chart = useRef();
 
+
+
     useEffect(() => {
         if (auth && auth.user_id) {
-            triggerApiCallAttendance(auth.user_id, year, grade);
+            const defaultForm = defaultFormId ? defaultFormId : selectedVendor?.default_form && selectedVendor?.default_form !== 'default' ? selectedVendor?.default_form : 'fid_0';
+            triggerApiCallAttendance(auth.user_id, year, grade, defaultForm);
+
+            setFormIdLocal(defaultForm);
         }
-    }, [auth, selectedVendor]);
-    console.log('vendors 2', vendors)
+    }, [auth, selectedVendor, defaultFormId]);
+
 
     const triggerApiCallAttendance = async (id, year, newGrade) => {
         try {

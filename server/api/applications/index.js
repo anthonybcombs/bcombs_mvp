@@ -1339,6 +1339,7 @@ export const getCustomFormApplicants = async ({ form_id, is_archived = 0 }) => {
         ca.student_status,
         ca.notes,
         u.last_login,
+        u.last_verification_sent,
         u.is_profile_filled
       FROM custom_application ca
       LEFT JOIN application_user au ON au.custom_app_id=ca.app_id
@@ -1499,6 +1500,7 @@ export const getCustomApplicationByVendorId = async (vendor) => {
           CONVERT(ca.form_contents USING utf8) as form_contents,
           ca.class_teacher,
           u.last_login,
+          u.last_verification_sent,
           u.is_profile_filled
         FROM custom_application ca
         LEFT JOIN application_user au ON au.custom_app_id=ca.app_id
