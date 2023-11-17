@@ -554,7 +554,7 @@ const ExportFilter = ({
         let updatedApplication = [
           childName[0],
           childName[1],
-          formattedApplication?.age,
+          formattedApplication?.birthdate,
           formattedApplication?.gender,
           formattedApplication[menteePhoneKey] || '',
           formattedApplication[addressKey] || '',
@@ -567,7 +567,7 @@ const ExportFilter = ({
         rowKeys = [
           '(Child) Firstname',
           '(Child) Lastname',
-          '(Child) Age',
+          '(Child) Birthdate',
           '(Child) Gender',
           '(Child) Phone',
           '(Child) Address',
@@ -582,7 +582,7 @@ const ExportFilter = ({
       }
       else {
 
-
+        console.log('formattedApplication',formattedApplication)
        
         if(formattedApplication['child']) {
           let childFullName = getChildFromFormData(application?.form_contents?.formData)
@@ -591,6 +591,7 @@ const ExportFilter = ({
             ...formattedApplication,
             'child': childFullName
           }
+          console.log('formattedApplication 222',formattedApplication)
         }
 
         if(formattedApplication['Parent / Guardian Name']) {
@@ -896,7 +897,7 @@ const ExportFilter = ({
 
 
               delete level1.allergies_to_medicine;
-              delete level1.birthdate;
+              // delete level1.birthdate;
               delete level1.child_lives_with;
               delete level1.city;
 
@@ -928,13 +929,14 @@ const ExportFilter = ({
               delete level1.reasons_previous_hospitalizations;
               delete level1.current_classroom;
             }
-            console.log("export application level1 updated", level1);
+
             for (const key2 of Object.keys(level1)) {
 
               if (key2 == 'ch_id') { continue; }
               if (key2 == 'birthdate') {
                 const newDate = level1[key2] ? format(new Date(level1[key2]), DATE_FORMAT) : "";
-                formattedApplication = { ...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['birthdate'] : exportHeaders.child.main['birthdate'])]: newDate }
+             ///   formattedApplication = { ...formattedApplication, ['(Child) ' + (application.is_daycare ? exportHeaders.child.daycare['birthdate'] : exportHeaders.child.main['birthdate'])]: newDate }
+             formattedApplication = { ...formattedApplication, ['(Child) Birthdate']: newDate }
               } else if (key2 == 'has_suspended') {
                 const val = level1[key2] == 1 ? 'Yes' : level1[key2] == 0 ? 'No' : '';
                 formattedApplication = { ...formattedApplication, ['' + (application.is_daycare ? exportHeaders.child.daycare['has_suspended'] : exportHeaders.child.main['has_suspended'])]: val }
@@ -1006,6 +1008,7 @@ const ExportFilter = ({
       delete formattedApplication.undefined;
 
       if (reportType === 'biographical_data') {
+     
         let initialApplication = {
           // 'Id': formattedApplication['Id'],
           // 'Vendor': formattedApplication['Vendor'],
@@ -1018,6 +1021,9 @@ const ExportFilter = ({
           // 'Notes': formattedApplication['Notes'],
           ...formattedApplication
         }
+
+        console.log('formattedApplication 12123123',formattedApplication)
+        console.log('formattedApplication initialApplication',initialApplication)
         if (isLot) {
 
           initialApplication = {
@@ -1033,11 +1039,13 @@ const ExportFilter = ({
         exportApplications.push(initialApplication);
       }
       else {
+
         let initialApplication = {
           'Id': formattedApplication['Id'],
           'Vendor': formattedApplication['Vendor'],
           'Verification': formattedApplication['Verification'],
           'Student Status': formattedApplication['Student Status'],
+          '(Child) Birthdate': formattedApplication['(Child) Birthdate'],
           '(Child) Age': formattedApplication['(Child) Age'],
           'Class Teacher': formattedApplication['Class Teacher'],
           'Color Designation': formattedApplication['Color Designation'],
