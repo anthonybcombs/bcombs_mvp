@@ -22,6 +22,8 @@ import {
   addParent
 } from "../api/parents";
 
+import { ASSESSMENT_FORM_ID } from '../constants';
+
 
 
 const multer = require("multer");
@@ -2923,6 +2925,49 @@ router.post('/email/verify', async (req, res) => {
 
   } catch (error) {
     console.log('error', error)
+    return res.status(400).json({
+      message: 'Something went wrong'
+    })
+  }
+
+});
+
+router.get('/form/assessment', async (req, res) => {
+  const db = makeDb();
+  try {
+    const { studentId } = req.query;
+
+    //      CONVERT(ca.form_contents USING utf8) as form_contents,
+    const applications = await db.query(
+      `SELECT 
+        BIN_TO_UUID(form) as form,
+        CONVERT(form_contents USING utf8) as form_contents
+      FROM custom_application  WHERE form=UUID_TO_BIN(?)`,
+      [ASSESSMENT_FORM_ID]
+    );
+
+    for (const application of applications) {
+      application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
+     
+      application.form_contents = JSON.parse(application.form_contents);
+
+    }
+
+    const filteredResult = applications.find(form => {
+        let uniqueIdForm = form.form_contents.formData.find(formInput => formInput.label === 'Student ID');
+        uniqueIdForm = uniqueIdForm.fields &&  uniqueIdForm.fields[0];
+        let uniqueId = uniqueIdForm.value;
+        uniqueId = uniqueId.replace(/\"/g,"");
+        return uniqueId === studentId
+
+    });
+
+    return res.status(200).json({
+      data: filteredResult
+    })
+  
+  } catch (error) {
+    console.log('error',error)
     return res.status(400).json({
       message: 'Something went wrong'
     })

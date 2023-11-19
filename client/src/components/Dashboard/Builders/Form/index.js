@@ -26,6 +26,7 @@ import { isValidJSONString } from '../../../../helpers/Arrays'
 
 export default (props) => {
   const {
+    hideAction = false,
     form_id,
     form_contents: application_form_contents,
     isReadOnly = false,
@@ -572,7 +573,7 @@ export default (props) => {
             )
           }
           {
-            (!form_id && behavior !== 'print') && (
+            (!form_id && behavior !== 'print' && !hideAction) && (
               <>
                 <button type='button' className='print-button' onClick={handlePrint}>
                   {' '}
