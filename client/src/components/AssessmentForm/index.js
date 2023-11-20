@@ -147,15 +147,17 @@ const AssessmentForm = props => {
   return <AssessmentStyled
     theme={theme}
   >
-
-    <div>
-      <input
-        value={currentStudentId}
-        onChange={handleInputChange}
-        type="text"
-        placeholder="Enter Student ID"
-      />
-      <button disabled={isLoading} onClick={getStudentAssessment} type="button" style={{ width: '100%' }}>Search</button>
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ width: 665 }}>
+        <label style={{ fontWeight: 'bolder'}}>Student ID</label>
+        <input
+          value={currentStudentId}
+          onChange={handleInputChange}
+          type="text"
+          placeholder="Enter Student ID"
+        />
+        <button disabled={isLoading} onClick={getStudentAssessment} type="button" style={{ width: '100%' }}>Search</button>
+      </div>
     </div>
     {isLoading ? <Loading /> : currentForm && <div className="eventInfo">
       <Form
@@ -178,7 +180,7 @@ const AssessmentForm = props => {
         }}
         hideAction={true}
       />
-    </div> }
+    </div>}
 
   </AssessmentStyled>
 };

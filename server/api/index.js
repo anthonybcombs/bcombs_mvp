@@ -2868,6 +2868,23 @@ router.get('/qr/grade/page', async (req, res) => {
 
 });
 
+router.get('/qr/assessmentform', async (req, res) => {
+  try {
+    const targetUrl = `${process.env.APP_CLIENT_URL}/form/assessment`;
+    const qrCodeDataURL = await QRCode.toDataURL(targetUrl);
+    return res.status(200).json({
+      target_url: targetUrl,
+      qr_code: qrCodeDataURL
+    });
+
+  } catch (error) {
+    return res.status(400).json({
+      message: 'Something went wrong'
+    })
+  }
+
+});
+
 
 router.post('/email/verify', async (req, res) => {
   const db = makeDb();

@@ -610,7 +610,7 @@ export default (props) => {
           <>
             {
               (isSuccessfulSubmit && form_id) ? (
-                <ThankyouPage hasLoginField={hasLoginField} />
+                <ThankyouPage formId={form_id} hasLoginField={hasLoginField} />
               ) : (
                 (loading.getForm || loading.submitForm) ? (
                   <Loading />
