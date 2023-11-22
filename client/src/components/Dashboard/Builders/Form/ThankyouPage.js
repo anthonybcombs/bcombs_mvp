@@ -4,22 +4,10 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 
 import QRCodePReviewModal from '../../Grades/TestInput/QRCodePReviewModal';
 
-const ASSESSMENT_FORM_ID = '5657b60d-785f-11ee-adb5-824b66c683b0'
+import { ASSESSMENT_FORM_IDS } from '../../../../constants/forms';
 
-const getPageQrCode = async () => {
-  const response = await fetch(`${process.env.API_HOST}/api/qr/assessmentform`, {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
-    credentials: 'same-origin',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    redirect: 'follow',
-    referrerPolicy: 'no-referrer'
-  });
-  return response.json();
-}
+import { getPageQrCode } from '../../../../helpers/Forms';
+
 
 
 
@@ -72,7 +60,7 @@ export default ({ formId, hasLoginField }) => {
         Fill out form again
       </button>
       {`  `}
-      {formId === ASSESSMENT_FORM_ID && <button
+      {ASSESSMENT_FORM_IDS.includes(formId) && <button
         onClick={() => {
           setIsQRCodePreviewModalVisible(true)
         }}
@@ -82,7 +70,7 @@ export default ({ formId, hasLoginField }) => {
 
 
 
-      {isQRCodePreviewModalVisible && (formId === ASSESSMENT_FORM_ID) && <QRCodePReviewModal
+      {isQRCodePreviewModalVisible && (ASSESSMENT_FORM_IDS.includes(formId)) && <QRCodePReviewModal
         isImagePreviewModalVisible={isQRCodePreviewModalVisible}
         setIsImagePreviewModalVisible={setIsQRCodePreviewModalVisible}
         qrCodeUrl={qrCode}
