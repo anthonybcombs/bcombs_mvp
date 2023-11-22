@@ -43,14 +43,13 @@ export default (props) => {
 
   const isApplication = !form_id
 
-  const { auth, loading, form: { selectedForm: { form_contents, vendor }, submitForm } } = useSelector(
-    ({ auth, loading, form }) => {
-      return { auth, loading, form }
+  const { auth, applications, loading, form: { selectedForm: { form_contents, vendor }, submitForm } } = useSelector(
+    ({ applications, auth, loading, form }) => {
+
+      return { applications, auth, loading, form }
     }
   )
-  console.log('vvvvevndorrrrrrrrr form', form)
-  console.log('vvvvevndorrrrrrrrr form_contents', form_contents)
-  console.log('vvvvevndorrrrrrrrr vendor', vendor)
+
 
   const isSuccessfulSubmit = submitForm.message === 'successfully submitted your application form'
 
@@ -607,6 +606,8 @@ export default (props) => {
           }
         </div>
         <div className={`form-content ${isApplication ? 'read-only' : ''}`}>
+
+          {applications?.error?.message && <div style={{ color: 'red' }}>{applications?.error?.message}</div>}
           <>
             {
               (isSuccessfulSubmit && form_id) ? (

@@ -128,6 +128,7 @@ const submitFormToDatabase = application => {
         variables: { application }
       })
 
+      console.log('submitFormToDatabase data', data)
       return resolve(data.submitCustomApplicationForm)
     } catch (error) {
       reject(error)
@@ -347,10 +348,20 @@ export function* submitForm({ application }) {
     yield put(setSubmitFormLoading(true))
     const response = yield call(submitFormToDatabase, application)
     yield put(setSubmitFormLoading(false))
-    yield put({
-      type: actionType.REQUEST_SUBMIT_FORM_COMPLETED,
-      payload: response
-    })
+
+    if(response?.messageType === 'error') {
+      yield put({
+        type: actionType.REQUEST_SUBMIT_FORM_COMPLETED,
+        error: response
+      })
+    }
+    else {
+      yield put({
+        type: actionType.REQUEST_SUBMIT_FORM_COMPLETED,
+        payload: response
+      })
+    }
+  
   } catch (err) {
     yield put(setSubmitFormLoading(false))
     yield put({

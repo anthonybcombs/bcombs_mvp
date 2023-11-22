@@ -1623,13 +1623,30 @@ const resolvers = {
         // TEST ID = C110001
         try {
           const uniqueIdForm = application.form_contents.formData.find(item => item.label === 'Student ID');
+          const studentInfo = application.form_contents.formData.find(item => item.label === 'Name');
+
+          let studentFirstname = studentInfo && studentInfo.fields[1].value;
+          let studentLastname = studentInfo && studentInfo.fields[3].value;
+
+          studentFirstname = studentFirstname.replace(/"/g, "");
+          studentLastname = studentLastname.replace(/"/g, "")
 
           let uniqueId = uniqueIdForm.fields[0].value;
-          uniqueId = uniqueId.replace(/"/g,"")
+          uniqueId = uniqueId.replace(/"/g, "")
 
           const currentChild = await getChildByChildId(uniqueId);
-          
-          if(currentChild) {
+          console.log('currentChild',currentChild)
+          console.log('currentChild studentFirstname',studentFirstname)
+          console.log('currentChild studentLastname',studentLastname)
+          if (currentChild) {
+
+           
+            if ((currentChild.firstname !== studentFirstname) || (currentChild.lastname !== studentLastname)) {
+              return {
+                messageType: "error",
+                message: "Student ID and Name Mismatch"
+              }
+            }
 
           }
           else {
