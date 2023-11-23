@@ -2970,7 +2970,7 @@ router.get('/form/assessment', async (req, res) => {
 
     }
 
-    const filteredResult = applications.find(form => {
+    let filteredResult = applications.filter(form => {
         let uniqueIdForm = form.form_contents.formData.find(formInput => formInput.label === 'Student ID');
         uniqueIdForm = uniqueIdForm.fields &&  uniqueIdForm.fields[0];
         let uniqueId = uniqueIdForm.value;
@@ -2978,6 +2978,10 @@ router.get('/form/assessment', async (req, res) => {
         return uniqueId === studentId
 
     });
+
+    if(filteredResult.length > 0) {
+      filteredResult = filteredResult[filteredResult.length - 1];
+    } 
 
     return res.status(200).json({
       data: filteredResult
