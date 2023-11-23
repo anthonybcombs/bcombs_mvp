@@ -2322,7 +2322,7 @@ export default function index() {
               flexDirection: 'columns'
             }}>
               <select
-
+                disabled={loading.application}
                 style={{
                   "marginLeft": "20px",
                   "fontSize": "1.5em",
@@ -2420,7 +2420,7 @@ export default function index() {
           ) : null
         }
 
-  {`  `}
+        {`  `}
         {ASSESSMENT_FORM_IDS.includes(selectedForm) && <button
           id="qrCodeButton"
           onClick={() => {
