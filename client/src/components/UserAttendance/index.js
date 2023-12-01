@@ -346,37 +346,6 @@ export default function UserAttendance(props) {
               ref={register({ required: true })}
             />
           </div>
-          <div>
-            <div style={style.label}>Firstname</div>
-            <input
-              type="text"
-              value={currentChild?.firstname}
-              id="firstname"
-              name="firstname"
-              data-testid="attendance-input-firstname"
-              placeholder=""
-              onChange={({ target }) => {
-                handleInputChange("firstname", target.value);
-              }}
-              ref={register({ required: true })}
-            />
-          </div>
-          <div>
-            <div style={style.label}>Lastname</div>
-            <input
-              type="text"
-              value={currentChild?.lastname}
-              id="lastname"
-              name="lastname"
-              data-testid="attendance-input-firstname"
-              placeholder=""
-              onChange={({ target }) => {
-                handleInputChange("lastname", target.value);
-              }}
-              ref={register({ required: true })}
-            />
-          </div>
-
           <div style={style.danger}>
             {userMessage}
           </div>
@@ -384,6 +353,40 @@ export default function UserAttendance(props) {
           <button disabled={isFindingUser} onClick={handleFindUser} type="button" >
             {isFindingUser ? 'Please Wait...' : 'Find User'}
           </button>
+          <div>
+            <div style={style.label}>Firstname</div>
+            <input
+              disabled={true}
+              type="text"
+              value={currentChildDetails?.firstname}
+              id="firstname"
+              name="firstname"
+              data-testid="attendance-input-firstname"
+              placeholder=""
+            // onChange={({ target }) => {
+            //   handleInputChange("firstname", target.value);
+            // }}
+            // ref={register({ required: true })}
+            />
+          </div>
+          <div>
+            <div style={style.label}>Lastname</div>
+            <input
+              disabled={true}
+              type="text"
+              value={currentChildDetails?.lastname}
+              id="lastname"
+              name="lastname"
+              data-testid="attendance-input-firstname"
+              placeholder=""
+            // onChange={({ target }) => {
+            //   handleInputChange("lastname", target.value);
+            // }}
+            // ref={register({ required: true })}
+            />
+          </div>
+
+
 
 
           <div style={style.success}>

@@ -3,7 +3,7 @@ import { Link, useLocation, useParams, redirectTo } from '@reach/router';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { format } from 'date-fns';
+import { addHours, format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -871,9 +871,9 @@ export default function index() {
 				setTimeout(() => {
 					// ${vendor_id ? `?vendor=${vendor_id}` : ''}
 
-					if(isCreateEvent && vendor_id) {
+					if (isCreateEvent && vendor_id) {
 
-						const currentVendorId = name === 'custom' ?  searchParams?.vendor && parseInt(searchParams.vendor): parseInt(vendor_id)
+						const currentVendorId = name === 'custom' ? searchParams?.vendor && parseInt(searchParams.vendor) : parseInt(vendor_id)
 						window.location.replace(`/dashboard/attendance/events?vendorId=${currentVendorId}`);
 					}
 					else {
@@ -999,18 +999,23 @@ export default function index() {
 			};
 		});
 		const isAll = searchParams && searchParams.type === 'all';
-		
+
+		const defaultStartTime = format(new Date(), 'HH:mm');
+		const defaultEndTime = format(addHours(new Date(),1), 'HH:mm');
+
 		const payload = {
 			attendance_list: attendanceList,
 			app_group_id: name === 'custom' ? isAll ? appGroupIds[0] : searchParams && searchParams.appGroupId : appGroupId,
 			attendance_type: name === 'custom' ? 'forms' : 'bcombs',
 			...attendanceDetails,
+			attendance_start_time: attendanceDetails?.attendance_start_time ||  defaultStartTime,
+			attendance_end_time: attendanceDetails?.attendance_end_time ||  defaultEndTime,
 			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
 			create_event: isCreateEvent,
-			vendorId2: name === 'custom' ?  searchParams?.vendor && parseInt(searchParams.vendor): parseInt(vendor_id),
+			vendorId2: name === 'custom' ? searchParams?.vendor && parseInt(searchParams.vendor) : parseInt(vendor_id),
 			form_id: name === 'custom' ? searchParams?.formId : null
-	
-			};
+
+		};
 
 
 		dispatch(requestUpdateAttendance(payload));
@@ -1538,7 +1543,7 @@ export default function index() {
 					{viewMode === 'grid' ? (
 						<div className="gridView">
 							{filteredApplicationList.map(app => {
-					
+
 								const currentChild = app && app.form_contents ? getNameFromCustomForm(app.form_contents) : {
 									lastname: app.child?.lastname,
 									firstname: app.child?.firstname
@@ -1728,12 +1733,12 @@ export default function index() {
 								{attendance.isAttendanceUpdateLoading ? 'Please Wait...' : 'Save'}
 							</button>
 						)}
-				
+
 						<button onClick={() => {
 							setIsCreateEvent(true);
 							setIsConfirmationVisible(true);
 						}} type="button" style={{ marginTop: 8, marginBottom: 8 }}>
-							
+
 							{attendance && attendance.isAttendanceUpdateLoading ? 'Please Wait...' : 'Save with QR'}
 						</button>
 					</div>
