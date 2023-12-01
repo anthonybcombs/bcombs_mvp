@@ -26,6 +26,7 @@ import { isValidJSONString } from '../../../../helpers/Arrays'
 
 export default (props) => {
   const {
+    hideAction = false,
     form_id,
     form_contents: application_form_contents,
     isReadOnly = false,
@@ -42,14 +43,13 @@ export default (props) => {
 
   const isApplication = !form_id
 
-  const { auth, loading, form: { selectedForm: { form_contents, vendor }, submitForm } } = useSelector(
-    ({ auth, loading, form }) => {
-      return { auth, loading, form }
+  const { auth, applications, loading, form: { selectedForm: { form_contents, vendor }, submitForm } } = useSelector(
+    ({ applications, auth, loading, form }) => {
+
+      return { applications, auth, loading, form }
     }
   )
-  console.log('vvvvevndorrrrrrrrr form', form)
-  console.log('vvvvevndorrrrrrrrr form_contents', form_contents)
-  console.log('vvvvevndorrrrrrrrr vendor', vendor)
+
 
   const isSuccessfulSubmit = submitForm.message === 'successfully submitted your application form'
 
@@ -572,7 +572,7 @@ export default (props) => {
             )
           }
           {
-            (!form_id && behavior !== 'print') && (
+            (!form_id && behavior !== 'print' && !hideAction) && (
               <>
                 <button type='button' className='print-button' onClick={handlePrint}>
                   {' '}
@@ -606,10 +606,12 @@ export default (props) => {
           }
         </div>
         <div className={`form-content ${isApplication ? 'read-only' : ''}`}>
+
+          {applications?.error?.message && <div style={{ color: 'red' }}>{applications?.error?.message}</div>}
           <>
             {
               (isSuccessfulSubmit && form_id) ? (
-                <ThankyouPage hasLoginField={hasLoginField} />
+                <ThankyouPage formId={form_id} hasLoginField={hasLoginField} />
               ) : (
                 (loading.getForm || loading.submitForm) ? (
                   <Loading />

@@ -205,6 +205,11 @@ const AsyncUserGrades = Loadable({
 });
 
 
+const AsyncAssessmentForm = Loadable({
+  loader: () => import("./components/AssessmentForm"),
+  loading: Loading
+});
+
 
 export default function App() {
   const dispatch = useDispatch();
@@ -265,6 +270,7 @@ export default function App() {
               <AsyncApplicationForm path="application/:vendor_id" />
               <AsyncApplicationForm path="application/:vendor_id/lot" />
               <AsyncDaycareApplicationForm path="application/:vendor_id/daycare" />
+              <AsyncAssessmentForm path="form/assessment" />
               <AsyncForm path="form/:form_id" />
 
          

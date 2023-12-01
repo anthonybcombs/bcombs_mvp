@@ -11,11 +11,12 @@ const ImagePreviewModalStyled = styled.div`
     text-align: center;
   }
 `
-
+const defaultUrl = `${process.env.HOST}/user/grades`;
 const QRCodePReviewModal = ({
     isImagePreviewModalVisible,
     setIsImagePreviewModalVisible,
-    qrCodeUrl
+    qrCodeUrl,
+    targetUrl = defaultUrl
 }) => {
 
     return <ImagePreviewModalStyled>
@@ -35,7 +36,7 @@ const QRCodePReviewModal = ({
                     }} />
 
                     <div style={{ padding: 12 }}>
-                        <a href={`${process.env.HOST}/user/grades`} target="_blank">View Page</a>
+                        <a href={targetUrl} target="_blank">View Page</a>
                     </div>
                     <div>
                         <button

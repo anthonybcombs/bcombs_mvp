@@ -15,7 +15,8 @@ export default function Applications(
     applicationHistory: [],
     customActiveApplications: [],
     customArchiveApplications: [],
-    selectedbuilderapplication: null
+    selectedbuilderapplication: null,
+    error: null
   },
   action
 ) {
@@ -53,7 +54,16 @@ export default function Applications(
         return { ...state, customActiveApplications: [...action.payload ]};
     case actionType.REQUEST_GET_CUSTOM_APPLICATION_BY_ID_COMPLETED:
       return { ...state, selectedbuilderapplication: action.payload };
-  
+    case actionType.REQUEST_SUBMIT_FORM: 
+      return {
+        ...state, 
+        error: null
+      }
+    case actionType.REQUEST_SUBMIT_FORM_COMPLETED: 
+      return {
+        ...state, 
+        error: action.error
+      }
 
     default:
       return state;

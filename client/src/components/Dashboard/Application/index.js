@@ -75,7 +75,15 @@ import AdminFormModal from '../Admin/modal/index';
 import { REQUEST_CUSTOM_APPLICATION_HISTORY_COMPLETED } from "../../../redux/actions/Constant";
 
 
+import QRCodePReviewModal from '../Grades/TestInput/QRCodePReviewModal';
+
+
 import { DEFAULT_VENDOR } from "../../../constants/vendors";
+
+import { ASSESSMENT_FORM_IDS } from '../../../constants/forms';
+
+import { getPageQrCode } from '../../../helpers/Forms';
+
 
 const ApplicationFormStyled = styled.form`
   @media all {
@@ -342,6 +350,25 @@ const ApplicationStyled = styled.div`
   margin: auto;
   padding: 0rem 3em 2rem;
 
+  #qrCodeButton {
+    background-color: #f26e21;
+    border-color: #f26e21;
+    padding: 10px 32px;
+
+    display: block;
+    color: white;
+    border-radius: 5px;
+
+    margin: 0 15px;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: pre;
+}
+
+
   .copy-vendor-btn {
     margin-left: 20px;
   }
@@ -550,6 +577,9 @@ export default function index() {
 
   const [isSettingDefaultVendorLoading, setIsSettingDefaultVendorLoading] = useState(false);
 
+  const [qrCode, setQrCode] = useState('');
+  const [qrTargetUrl, setQrTargetUrl] = useState('');
+  const [isQRCodePreviewModalVisible, setIsQRCodePreviewModalVisible] = useState(false);
 
 
 
@@ -625,7 +655,19 @@ export default function index() {
   const [currentForm, setCurrentForm] = useState(null);
 
   // const defaultVendor = vendors && vendors[0];
+  useEffect(() => {
+    const triggerGetQrCode = async () => {
+      try {
+        const response = await getPageQrCode();
+        setQrCode(response?.qr_code || '');
+        setQrTargetUrl(response?.target_url || '')
+      } catch (err) {
+        console.log('triggerGetQrCode err', err)
+      }
+    };
 
+    triggerGetQrCode();
+  }, []);
 
   useEffect(() => {
     if (auth.user_id) {
@@ -2276,11 +2318,11 @@ export default function index() {
           vendors && vendors.length > 0 && (
             <div style={{
               marginLeft: 12,
-              display: 'flex', 
+              display: 'flex',
               flexDirection: 'columns'
             }}>
               <select
-
+                disabled={loading.application}
                 style={{
                   "marginLeft": "20px",
                   "fontSize": "1.5em",
@@ -2377,6 +2419,26 @@ export default function index() {
             </div>
           ) : null
         }
+
+        {`  `}
+        {ASSESSMENT_FORM_IDS.includes(selectedForm) && <button
+          id="qrCodeButton"
+          onClick={() => {
+            setIsQRCodePreviewModalVisible(true)
+          }}
+        >
+          View QR Code
+        </button>}
+
+
+
+        {isQRCodePreviewModalVisible && (ASSESSMENT_FORM_IDS.includes(selectedForm)) && <QRCodePReviewModal
+          isImagePreviewModalVisible={isQRCodePreviewModalVisible}
+          setIsImagePreviewModalVisible={setIsQRCodePreviewModalVisible}
+          qrCodeUrl={qrCode}
+          targetUrl={qrTargetUrl}
+
+        />}
       </div>
 
       <div id="application">

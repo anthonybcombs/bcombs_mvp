@@ -42,12 +42,12 @@ import {
   removeEvents
 } from "../../api/events";
 import { getFamilyMembers } from "../../api/familymembers";
-import { 
+import {
   addUpdateStudentCumulativeGrades,
   getStudentCumulativeGradeVendor,
   getStudentCumulativeGradeParent,
   getStudentCumulativeGrade,
-  getGrades ,
+  getGrades,
   addUpdateStudentTest,
   getStudentStandardizedTest,
   removeStudentTest,
@@ -120,15 +120,17 @@ import {
   updateApplicationUser,
   getAppReceivedReminder
 } from "../../api/applications";
-import { 
-  addChild, 
-  getChildInformation, 
+import {
+  addChild,
+  getChildInformation,
   addDaycareChild,
   addChildChildRelationship,
-  getChildChildRelationship } from "../../api/child";
-import { 
-  addParent, 
-  getParentByApplication, 
+  getChildChildRelationship,
+  getChildByChildId
+} from "../../api/child";
+import {
+  addParent,
+  getParentByApplication,
   addDaycareParent,
   addParentChildRelationship,
   updateParentChildRelationship,
@@ -137,8 +139,8 @@ import {
   updateParentSharingByVendor
 
 } from "../../api/parents";
-  
-import { getChildAttendance ,getChildEventAttendance,updateChildAttendance, updateAttendanceByChild, getAttendanceByEventId } from '../../api/attendance';
+
+import { getChildAttendance, getChildEventAttendance, updateChildAttendance, updateAttendanceByChild, getAttendanceByEventId } from '../../api/attendance';
 
 import { getUserFromDatabase } from "../../api";
 
@@ -157,6 +159,8 @@ import {
   triggerCronSetReminder
 } from "../../api/cron";
 import { exists } from "fs";
+
+import { ASSESSMENT_FORM_ID } from '../../constants';
 
 const util = require('util');
 
@@ -210,7 +214,7 @@ const resolvers = {
     },
     async getEvents(root, { email }, context) {
       let response = await getUserEvents(email);
-      console.log('Get Events Response,',response)
+      console.log('Get Events Response,', response)
       return response;
     },
     async getUserList(root, { keyword }, context) {
@@ -232,31 +236,31 @@ const resolvers = {
 
       const admins = await getVendorAdminsByUser(user);
 
-      for(let vendor of vendors) {
+      for (let vendor of vendors) {
 
-        console.log("current user 22" , user);
+        console.log("current user 22", user);
         console.log('vendor user 22', vendor.vendor_user);
 
-        vendor.forms = (user == vendor.vendor_user) ?  vendor.forms ? vendor.forms : []
-        :
-        vendor.forms ? vendor.forms.filter((f) => {
-          let isExists = admins.some(x => x.form == f.form_id);
+        vendor.forms = (user == vendor.vendor_user) ? vendor.forms ? vendor.forms : []
+          :
+          vendor.forms ? vendor.forms.filter((f) => {
+            let isExists = admins.some(x => x.form == f.form_id);
 
-          if(isExists) {
-            return isExists;
-          } else {
-            isExists = (f.user == user);          
-            return isExists;
-          }
-        }) : []
+            if (isExists) {
+              return isExists;
+            } else {
+              isExists = (f.user == user);
+              return isExists;
+            }
+          }) : []
       }
-     
+
       vendors = vendors.filter((vendor, index, self) => (
         index === self.findIndex((a) => (
           a.id === vendor.id
         ))
       ));
-     
+
       return vendors;
     },
     async getUserVendorForms(root, { user }, context) {
@@ -265,17 +269,17 @@ const resolvers = {
 
       let response = [];
 
-      for(const vendor of vendors) {
+      for (const vendor of vendors) {
 
         response.push({
-          name: `${vendor.name} ${vendor.name !== 'LOT® Form' ? '(Bcombs Form)' : ''}`, 
+          name: `${vendor.name} ${vendor.name !== 'LOT® Form' ? '(Bcombs Form)' : ''}`,
           id: vendor.id,
           is_form: false
         })
 
-        const forms = await getVendorCustomApplicationForms({vendor: vendor.id});
+        const forms = await getVendorCustomApplicationForms({ vendor: vendor.id });
 
-        for(const form of forms) {
+        for (const form of forms) {
           response.push({
             name: form && form.form_contents && form.form_contents.formTitle ? form.form_contents.formTitle : "Untitled Form",
             id: form.form_id,
@@ -290,7 +294,7 @@ const resolvers = {
       const vendors = await getVendorById2(id2);
       return vendors;
     },
-    async getVendorById(root, {id}, context) {
+    async getVendorById(root, { id }, context) {
       const vendors = await getVendorById(id);
       return vendors;
     },
@@ -308,19 +312,19 @@ const resolvers = {
         application.child = child.length > 0 ? child[0] : {};
 
         let relationships = [];
-        
-        for(const appParent of application.parents) {
+
+        for (const appParent of application.parents) {
           let tempRel = await getParentChildRelationship({
             parent: appParent.parent_id,
             child: application.child.ch_id
           });
-  
-          if(tempRel.length > 0) relationships.push(tempRel[0]);
+
+          if (tempRel.length > 0) relationships.push(tempRel[0]);
         }
 
         application.relationships = relationships;
         application.chRelationships = await getChildChildRelationship(application.child.ch_id);
-        
+
         const userApp = await getAppReceivedReminder({
           app_id: application.app_id,
           is_customform: false
@@ -400,12 +404,12 @@ const resolvers = {
       return response;
     },
     async getVendorAppGroups(root, { vendor }, context) {
-      console.log('getVendorAppGroups',vendor)
+      console.log('getVendorAppGroups', vendor)
       const response = await getVendorAppGroupsByVendorId(vendor);
-      console.log('getVendorAppGroups response',response)
+      console.log('getVendorAppGroups response', response)
       return response;
     },
-    async getAllFormAppGroupsByVendor(root,{ vendor },context) {
+    async getAllFormAppGroupsByVendor(root, { vendor }, context) {
       const response = await getAppGroupsByVendor(vendor);
       return response;
     },
@@ -445,43 +449,43 @@ const resolvers = {
         admins.push(...va);
       }
 
-      console.log("this is the admins *********************" , admins);
+      console.log("this is the admins *********************", admins);
       return admins;
     },
-    async getFormAppGroup(root, {form}, contenxt) {
+    async getFormAppGroup(root, { form }, contenxt) {
       return await getVendorAppGroupsByFormId(form);
     },
     async getParentChildRelationship(root, { relationships }, context) {
       let resRelationships = [];
-      for(const relationship of relationships) {
+      for (const relationship of relationships) {
         const temp = await getParentChildRelationship(relationship);
 
-        if(temp.length > 0)
+        if (temp.length > 0)
           resRelationships.push(temp[0])
       }
 
       return resRelationships;
     },
     async getCustomApplicationsByFormId(root, { form_id }, context) {
-      
+
       const application = await getCustomApplicationFormByFormId(form_id);
       return application;
     },
     async getVendorCustomApplicationForms(root, { filter }, context) {
       console.log('form filter', filter);
       let forms = [];
-      if(filter?.categories.length > 0) {
-        for(const category of filter.categories) {
-          const filterForm = await getVendorCustomApplicationForms({vendor: filter.vendor, category: category});
+      if (filter?.categories.length > 0) {
+        for (const category of filter.categories) {
+          const filterForm = await getVendorCustomApplicationForms({ vendor: filter.vendor, category: category });
           forms.push(...filterForm);
         }
       } else {
-        forms = await getVendorCustomApplicationForms({vendor: filter.vendor});
+        forms = await getVendorCustomApplicationForms({ vendor: filter.vendor });
       }
 
       const admins = await getVendorAdminsByUser(filter.currentUser);
 
-      if(!filter.isOwner) {
+      if (!filter.isOwner) {
         let formIds = [];
         admins.map(a => {
           formIds.push(a.form);
@@ -489,9 +493,9 @@ const resolvers = {
 
         let selectedForms = [];
         forms.map(f => {
-          if(formIds.includes(f.form_id)) {
+          if (formIds.includes(f.form_id)) {
             selectedForms.push(f);
-          } else if(filter.currentUser && (filter.currentUser == f.user)) {
+          } else if (filter.currentUser && (filter.currentUser == f.user)) {
             selectedForms.push(f)
           }
         })
@@ -502,9 +506,9 @@ const resolvers = {
       return forms;
     },
     async getCustomFormApplicants(root, { form_id }, context) {
-      let applications = await getCustomFormApplicants({form_id: form_id});
-    
-      for(let application of applications) {
+      let applications = await getCustomFormApplicants({ form_id: form_id });
+
+      for (let application of applications) {
         const userApp = await getAppReceivedReminder({
           app_id: application.app_id,
           is_customform: true
@@ -516,8 +520,8 @@ const resolvers = {
 
       return applications;
     },
-    async getCustomFormApplicantById(root, {app_id}, contenxt) {
-      const application = await getCustomFormApplicantById({app_id: app_id});
+    async getCustomFormApplicantById(root, { app_id }, contenxt) {
+      const application = await getCustomFormApplicantById({ app_id: app_id });
       return application;
     },
 
@@ -534,26 +538,26 @@ const resolvers = {
       console.log('Get Event Attendance App Grp Id', application_group_id)
       return await getChildEventAttendance(application_group_id);
     },
-    async getCustomApplicationByVendor(root, {vendor}, contex) {
+    async getCustomApplicationByVendor(root, { vendor }, contex) {
       console.log('getCustomApplicationByVendor venndorrrrr', vendor)
       const response = await getCustomApplicationByVendorId(vendor);
       console.log('getCustomApplicationByVendor response', response)
       return response;
     },
-    async getStudentCumulative(root,{ app_group_id,user_id }, context) {
+    async getStudentCumulative(root, { app_group_id, user_id }, context) {
       const response = await getStudentCumulativeGrade({
         app_group_id,
         user_id
       });
       return response;
     },
-    async getStudentCumulativeGradeByVendor(root,{ vendor_id }, context) {
+    async getStudentCumulativeGradeByVendor(root, { vendor_id }, context) {
       const response = await getStudentCumulativeGradeVendor({
         vendor_id
       });
       return response;
     },
-    async getStudentCumulativeGradeByParent(root,{ parent_id }, context) {
+    async getStudentCumulativeGradeByParent(root, { parent_id }, context) {
       const response = await getStudentCumulativeGradeParent({
         parent_id
       });
@@ -562,7 +566,7 @@ const resolvers = {
     async getStudentCumulativeGradeByUser(root, { child_id }, context) {
       return await getStudentCumulativeByChildId(child_id)
     },
-    async getStudentTest(root, { child_id }, context ) {
+    async getStudentTest(root, { child_id }, context) {
       return await getStudentStandardizedTest(child_id)
     },
     async getStudentRecords(root, { child_id, application_type = 'bcombs' }, context) {
@@ -577,7 +581,7 @@ const resolvers = {
     async getVendorApplicationReminder(root, { vendor_id }, context) {
       return await getVendorApplicationReminder(vendor_id);
     },
-    async getParentByVendor(root, { vendor_id, app_group_id = null , form_type = null, vendor_mode = false }, context) {
+    async getParentByVendor(root, { vendor_id, app_group_id = null, form_type = null, vendor_mode = false }, context) {
       const vendors = await getParentByVendorId({
         vendorId: vendor_id,
         appGroupId: app_group_id,
@@ -586,7 +590,7 @@ const resolvers = {
       });
       return vendors;
     },
-    triggerCronSetReminder(root, args, context ) {
+    triggerCronSetReminder(root, args, context) {
       triggerCronSetReminder();
       return "triggerCronSetReminder triggerd";
     }
@@ -676,19 +680,19 @@ const resolvers = {
 
       for (let application of applications) {
 
-        
+
         const tempChildId = application.child?.ch_id
 
         //save first child image
-        if(application && 
-          application.child && 
+        if (application &&
+          application.child &&
           application.child.image) {
 
           const buf = Buffer.from(
             application.child.image.replace(/^data:image\/\w+;base64,/, ""),
             "base64"
           )
-          
+
           const s3Payload = {
             Bucket: currentS3BucketName,
             Key: `file/${tempChildId}.jpg`,
@@ -702,14 +706,14 @@ const resolvers = {
 
           application.child.image = s3Payload.Key;
         }
-        
+
         const child = await addDaycareChild(application.child);
         const parents = application.parents;
 
         application.class_teacher = "";
         application.child = child.ch_id;
 
-        saveChilds.push({...child, tempId: tempChildId});
+        saveChilds.push({ ...child, tempId: tempChildId });
 
         // newChilds.push({
         //   tempId: tempChildId,
@@ -723,15 +727,15 @@ const resolvers = {
 
           const tempParentId = parent?.parent_id;
 
-          
-          if(parent &&  
+
+          if (parent &&
             parent.image) {
-  
+
             const buf = Buffer.from(
               parent.image.replace(/^data:image\/\w+;base64,/, ""),
               "base64"
             )
-            
+
             const s3Payload = {
               Bucket: currentS3BucketName,
               Key: `file/${tempParentId}.jpg`,
@@ -740,12 +744,12 @@ const resolvers = {
               ContentType: "image/jpeg",
               ACL: "public-read"
             };
-  
+
             uploadFile(s3Payload);
-  
+
             parent.image = s3Payload.Key;
           }
-          
+
           const newParent = await addDaycareParent(parent);
 
           console.log("newParent", newParent);
@@ -776,7 +780,7 @@ const resolvers = {
             let parentInfo = {
               ...parent,
               email: parent.email_address,
-              dateofbirth:parent.birthdate
+              dateofbirth: parent.birthdate
             };
             console.log("Parent Info", parentInfo);
             await executeAddUserProfile(parentInfo);
@@ -793,7 +797,7 @@ const resolvers = {
             return item.child == tempChildId && item.parent == tempParentId;
           });
 
-          if(tempRel.length > 0) {
+          if (tempRel.length > 0) {
             await addParentChildRelationship({
               child: child.ch_id,
               parent: newParent.parent_id,
@@ -812,18 +816,18 @@ const resolvers = {
         }
       }
 
-      if(saveChilds.length > 1) {
-        for(let i = 0; i < saveChilds.length; i++) {
-          for(let k = 0; k < saveChilds.length; k++) {
-            if( i != k ) {
+      if (saveChilds.length > 1) {
+        for (let i = 0; i < saveChilds.length; i++) {
+          for (let k = 0; k < saveChilds.length; k++) {
+            if (i != k) {
               const tempChildId = saveChilds[i].tempId;
               const tempChildId2 = saveChilds[k].tempId;
-    
-              const tempRel =  chRelationships.filter((item) => {
+
+              const tempRel = chRelationships.filter((item) => {
                 return item.child == tempChildId && item.child2 == tempChildId2;
               });
-    
-              if(tempRel.length > 0) {
+
+              if (tempRel.length > 0) {
                 await addChildChildRelationship({
                   child: saveChilds[i].ch_id,
                   child2: saveChilds[k].ch_id,
@@ -850,15 +854,15 @@ const resolvers = {
         const tempChildId = application.child?.ch_id
 
         //save first child image
-        if(application && 
-          application.child && 
+        if (application &&
+          application.child &&
           application.child.image) {
 
           const buf = Buffer.from(
             application.child.image.replace(/^data:image\/\w+;base64,/, ""),
             "base64"
           )
-          
+
           const s3Payload = {
             Bucket: currentS3BucketName,
             Key: `file/${tempChildId}.jpg`,
@@ -887,17 +891,17 @@ const resolvers = {
         application = await createApplication(application);
 
         for (let parent of parents) {
-          
+
           const tempParentId = parent?.parent_id;
 
-          if(parent &&  
+          if (parent &&
             parent.image) {
-  
+
             const buf = Buffer.from(
               parent.image.replace(/^data:image\/\w+;base64,/, ""),
               "base64"
             )
-            
+
             const s3Payload = {
               Bucket: currentS3BucketName,
               Key: `file/${tempParentId}.jpg`,
@@ -906,9 +910,9 @@ const resolvers = {
               ContentType: "image/jpeg",
               ACL: "public-read"
             };
-  
+
             uploadFile(s3Payload);
-  
+
             parent.image = s3Payload.Key;
           }
 
@@ -942,7 +946,7 @@ const resolvers = {
             let parentInfo = {
               ...parent,
               email: parent.email_address,
-              dateofbirth:parent.birthdate
+              dateofbirth: parent.birthdate
             };
             console.log("Parent Info", parentInfo);
             await executeAddUserProfile(parentInfo);
@@ -981,44 +985,44 @@ const resolvers = {
         const previousApplication = await getApplicationByAppId(
           application.app_id
         );
-        if(application.class_teacher && application.class_teacher != previousApplication.class_teacher) {
+        if (application.class_teacher && application.class_teacher != previousApplication.class_teacher) {
           let selectedAppGroup = await getAppGroupById(application.class_teacher);
 
           console.log("selectedAppGroup", selectedAppGroup);
           selectedAppGroup = selectedAppGroup.length > 0 ? selectedAppGroup[0] : {};
 
-          const applications = await getApplicationByAppGroup({app_grp_id: application.class_teacher, is_form: application.is_form});
+          const applications = await getApplicationByAppGroup({ app_grp_id: application.class_teacher, is_form: application.is_form });
           const totalApplication = applications.length + 1;
 
           console.log("totalApplication", totalApplication);
           console.log("selectedAppGroup.size", selectedAppGroup.size);
-          
-          if(totalApplication > selectedAppGroup.size) {
+
+          if (totalApplication > selectedAppGroup.size) {
             response.message = "Sorry, you currently have more members added to your group, please make sure you have enough available count";
             response.messageType = "error"
             return response;
           }
         }
 
-        if(application && application.is_form) {
+        if (application && application.is_form) {
           await updateApplicationUser({
             custom_app_id: application.app_id,
             received_reminder: application.received_reminder ? 1 : 0,
-            received_update: 0 
-           })
+            received_update: 0
+          })
         } else {
           await updateApplicationUser({
             application: application.app_id,
             received_reminder: application.received_reminder ? 1 : 0,
-            received_update: 0 
-           })
+            received_update: 0
+          })
         }
 
-        
+
         response = await updateApplication(application);
         if (!response.error) {
           return {
-            messageType: "info", 
+            messageType: "info",
             message: "application updated"
           };
         } else {
@@ -1115,13 +1119,13 @@ const resolvers = {
 
       const currentAppGroups = await getAppGroupByPool(appGroup.pool_id);
 
-      for(const ap of currentAppGroups) {
-        
+      for (const ap of currentAppGroups) {
+
         const isExist = vendors.filter(v => v.app_grp_id == ap.app_grp_id);
 
         console.log("ap ap", ap);
         console.log("isExist", isExist);
-        if(isExist && isExist.length > 0) {
+        if (isExist && isExist.length > 0) {
           // do not delete
         } else {
           ap.id = ap.app_grp_id;
@@ -1129,13 +1133,13 @@ const resolvers = {
         }
       }
 
-      for(const vendor of vendors) {
-        if(vendor.app_grp_id) {
-          const applications = await getApplicationByAppGroup({app_grp_id: vendor.app_grp_id, is_form: vendor.is_form});
+      for (const vendor of vendors) {
+        if (vendor.app_grp_id) {
+          const applications = await getApplicationByAppGroup({ app_grp_id: vendor.app_grp_id, is_form: vendor.is_form });
           const totalApplication = applications.length;
 
           console.log("totalApplication", totalApplication);
-          if(totalApplication > appGroup.size) {
+          if (totalApplication > appGroup.size) {
             let response = await getUserGroups(appGroup.email);
             response.message = "Sorry, you currently have more members added to your group, please make sure you have enough available count";
             response.status = "failed"
@@ -1145,7 +1149,7 @@ const resolvers = {
       }
 
       for (const vendor of vendors) {
-        if(!vendor.app_grp_id) {
+        if (!vendor.app_grp_id) {
           // add addgroup
           const fields = {
             user_id: appGroup.user_id,
@@ -1209,7 +1213,7 @@ const resolvers = {
         tc_signatures: tc_signatures,
         child: application.child,
         parents: application.parents,
-    
+
       });
 
       await updateApplication({
@@ -1222,8 +1226,8 @@ const resolvers = {
       });
 
 
-      if(application.relationships) {
-        for(const relationship of application.relationships) {
+      if (application.relationships) {
+        for (const relationship of application.relationships) {
           await updateParentChildRelationship(relationship);
         }
       }
@@ -1243,11 +1247,11 @@ const resolvers = {
         const col = {
           application: application.app_id,
           received_reminder: 0,
-          received_update: application.received_update ? 1 : 0 
+          received_update: application.received_update ? 1 : 0
         };
 
         updateApplicationUser(col);
-        
+
         updateApplication({
           verification: "waiting_for_verification",
           student_status: "resubmitted",
@@ -1292,7 +1296,7 @@ const resolvers = {
           vendor: admin.vendor,
           name: admin.name,
           form: form.isCustomForm ? form.form_id : null,
-          isLotForm: !!(form.form_id ==  'lot') ? 1 : 0
+          isLotForm: !!(form.form_id == 'lot') ? 1 : 0
         });
       }
 
@@ -1328,14 +1332,14 @@ const resolvers = {
         console.log("vendor", vendor);
         let va = await getVendorAdmins(vendor.id);
 
-        for(let x of va) {
-          if(x.form) {
+        for (let x of va) {
+          if (x.form) {
             let form = await getCustomApplicationFormByFormId(x.form);
             console.log('formDetails', form.form_contents.formTitle);
-            if(form && form.form_contents && form.form_contents.formTitle)
+            if (form && form.form_contents && form.form_contents.formTitle)
               x.formTitle = form.form_contents.formTitle;
           }
-          console.log('x.is_lotform',x.is_lotform)
+          console.log('x.is_lotform', x.is_lotform)
           x.isLotForm = x.is_lotform;
         }
 
@@ -1401,7 +1405,7 @@ const resolvers = {
           vendor: admin.vendor,
           name: admin.name,
           form: form.isCustomForm ? form.form_id : null,
-          isLotForm: !!(form.form_id ==  'lot') ? 1 : 0
+          isLotForm: !!(form.form_id == 'lot') ? 1 : 0
         });
       }
 
@@ -1411,10 +1415,10 @@ const resolvers = {
       for (const vendor of vendors) {
         let va = await getVendorAdmins(vendor.id);
 
-        for(let x of va) {
-          if(x.form) {
+        for (let x of va) {
+          if (x.form) {
             let form = await getCustomApplicationFormByFormId(x.form);
-            if(form && form.form_contents && form.form_contents.formTitle)
+            if (form && form.form_contents && form.form_contents.formTitle)
               x.formTitle = form.form_contents.formTitle;
           }
         }
@@ -1428,7 +1432,7 @@ const resolvers = {
       // return response;
     },
     async addParentChildRelationship(root, { relationships }, context) {
-      for(const relationship of relationships) {
+      for (const relationship of relationships) {
         await addParentChildRelationship(relationship);
       }
 
@@ -1438,7 +1442,7 @@ const resolvers = {
       }
     },
     async updateParentChildRelationship(root, { relationships }, context) {
-      for(const relationship of relationships) {
+      for (const relationship of relationships) {
         await updateParentChildRelationship(relationship);
       }
 
@@ -1461,7 +1465,7 @@ const resolvers = {
       });
 
       const hasNameField = !!(nameType.length > 0);
-      if(staticImageTypeIndex > -1) {
+      if (staticImageTypeIndex > -1) {
 
         const buf = Buffer.from(
           formData[staticImageTypeIndex]?.fields[0]?.imageString.replace(/^data:image\/\w+;base64,/, ""),
@@ -1480,10 +1484,10 @@ const resolvers = {
         console.log('Image form key', s3Payload?.Key)
 
         formData[staticImageTypeIndex].fields[0].value = s3Payload?.Key;
-     
+
       }
 
-      
+
       const updatedApplication = {
         ...application,
         form_contents: {
@@ -1494,19 +1498,19 @@ const resolvers = {
 
       // console.log('updatedApplication',updatedApplication)
 
-      if(!hasNameField) {
+      if (!hasNameField) {
 
         const res = {
           messageType: "error",
           message: "prime field name is required",
-        } 
+        }
 
         return res
       }
 
       let formContentsString = updatedApplication.form_contents ? JSON.stringify(updatedApplication.form_contents) : "{}";
       updatedApplication.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
-      
+
       // console.log("formContentsString", formContentsString.length);
       // console.log("custom application", updatedApplication.form_contents.length);
 
@@ -1518,7 +1522,7 @@ const resolvers = {
         messageType: "info",
         message: "successfully created your application form",
         form
-      } 
+      }
 
       console.log("res", res);
       return res;
@@ -1530,7 +1534,7 @@ const resolvers = {
       nameType = formData.filter((item) => {
         return item.type == "name"
       });
-      
+
 
       const staticImageTypeIndex = formData.findIndex((item) => {
         return item.type === "staticImage"
@@ -1540,19 +1544,19 @@ const resolvers = {
 
       const hasNameField = !!(nameType.length > 0);
 
-      if(!hasNameField) {
+      if (!hasNameField) {
 
         const res = {
           messageType: "error",
           message: "prime field name is required",
-        } 
+        }
 
         return res
       }
 
-      if(staticImageTypeIndex > -1) {
+      if (staticImageTypeIndex > -1) {
 
-        if(formData[staticImageTypeIndex]?.fields[0]?.imageString) {
+        if (formData[staticImageTypeIndex]?.fields[0]?.imageString) {
           const buf = Buffer.from(
             formData[staticImageTypeIndex]?.fields[0]?.imageString.replace(/^data:image\/\w+;base64,/, ""),
             "base64"
@@ -1565,17 +1569,17 @@ const resolvers = {
             ContentType: "image/jpeg",
             ACL: "public-read"
           };
-  
+
           await uploadFile(s3Payload);
           console.log('Image form key', s3Payload?.Key)
-  
+
           formData[staticImageTypeIndex].fields[0].value = s3Payload?.Key;
 
         }
 
       }
 
-         
+
       const updatedApplication = {
         ...application,
         form_contents: {
@@ -1584,7 +1588,7 @@ const resolvers = {
         }
       }
 
-      
+
       let formContentsString = updatedApplication.form_contents ? JSON.stringify(updatedApplication.form_contents) : "{}";
       updatedApplication.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
@@ -1598,7 +1602,7 @@ const resolvers = {
         messageType: "info",
         message: "successfully update your application form",
         form: form
-      } 
+      }
 
       console.log("res", res);
       return res;
@@ -1613,315 +1617,362 @@ const resolvers = {
     },
     async submitCustomApplicationForm(root, { application }, context) {
 
-     try{
-      let loginType;
-      let nameType;
-      let email;
-      let password;
-      let primeFiles = [];
-      let firstname = '';
-      let middlename = '';
-      let lastname = '';
+      const customFormId = ASSESSMENT_FORM_ID
 
-      console.log("application", application);
+      if (customFormId === application.form) {
+        // TEST ID = C110001
+        try {
+          const uniqueIdForm = application.form_contents.formData.find(item => item.label === 'Student ID');
+          const studentInfo = application.form_contents.formData.find(item => item.label === 'Name');
 
-      let formData = application?.form_contents?.formData;
-      let formTitle = application?.form_contents?.formTitle;
+          let studentFirstname = studentInfo && studentInfo.fields[1].value;
+          let studentLastname = studentInfo && studentInfo.fields[3].value;
 
-      console.log("formdata", formData);
+          studentFirstname = studentFirstname.replace(/"/g, "");
+          studentLastname = studentLastname.replace(/"/g, "")
 
-      loginType = formData.filter((item) => {
-        return item.type == "login"
-      });
+          let uniqueId = uniqueIdForm.fields[0].value;
+          uniqueId = uniqueId.replace(/"/g, "")
 
-      nameType = formData.filter((item) => {
-        return item.type == "name"
-      });
+          const currentChild = await getChildByChildId(uniqueId);
+          console.log('currentChild',currentChild)
+          console.log('currentChild studentFirstname',studentFirstname)
+          console.log('currentChild studentLastname',studentLastname)
+          if (currentChild) {
 
-      primeFiles = formData.filter((item) => {
-        return item.type == "primeFile"
-      });
+           
+            if ((currentChild.firstname !== studentFirstname) || (currentChild.lastname !== studentLastname)) {
+              return {
+                messageType: "error",
+                message: "Student ID and Name Mismatch"
+              }
+            }
 
-      console.log('nameType loginType 1111',loginType)
-      console.log('nameType loginType',loginType)
+          }
+          else {
+            return {
+              messageType: "error",
+              message: "Child not exist!"
+            }
+          }
+        }
+        catch (err) {
+          console.log('uniqueIdForm err', err)
+        }
 
-      //const hasLoginField = !!(loginType.length > 0);
-      const hasLoginField = loginType
-
-      // const hasNameField = !!(nameType.length > 0);
-      const hasNameField = nameType
-
-      //loginType = loginType.length > 0 ? loginType[0] : {};
-      loginType = loginType ? loginType[0] : {};
-
-      // nameType = nameType.length > 0 ? nameType[0] : {};
-      nameType = nameType ? nameType[0] : {};
-      
-      console.log('nameType hasLoginField',hasLoginField)
-      console.log('nameType loginType',loginType)
-
-      if(hasLoginField) {
-        email = loginType?.fields.filter((item) => {
-          return item.type == "email"
-        });
-  
-        password = loginType?.fields.filter((item) => {
-          return item.type == "password"
-        });
-  
-        email = email && email.length > 0 ? email[0] : "";
-        password = password && password.length > 0 ? password[0] : "";
-      } 
-      
-      if (hasNameField) {
-        firstname = nameType?.fields.filter((item) => {
-          return item.label == "First Name"
-        });
-
-        middlename = nameType?.fields.filter((item) => {
-          return item.label == "Middle Name"
-        });
-
-        lastname = nameType?.fields.filter((item) => {
-          return item.label == "Last Name"
-        });
-
-        console.log('nameType', nameType);
-
-        console.log('nameType firstname', firstname);
-        console.log('nameType middlename', middlename);
-        console.log('nameType lastname', lastname);
-
-        // firstname = firstname.length > 0 ? firstname[0] : "";
-        // lastname = lastname.length > 0 ? lastname[0] : "";
-        // middlename = middlename.length > 0 ? middlename[0] : "";
-        // firstname = firstname ? firstname : "";
-        // lastname = lastname ? lastname : "";
-        // middlename = middlename ? middlename : "";
-      } else {
-        return {
-          messageType: "error",
-          message: "Prime field name is required"
-        } 
       }
 
-      //check if there is file
-      console.log("primeFiles", primeFiles);
+      try {
+        let loginType;
+        let nameType;
+        let email;
+        let password;
+        let primeFiles = [];
+        let firstname = '';
+        let middlename = '';
+        let lastname = '';
 
-      for(let primeFile of primeFiles) {
-        if(primeFile?.fields.length > 0) {
-          console.log("why i'm not here");
-          let fileContent = primeFile.fields[0]?.value;
-          if(fileContent) {
-            fileContent = fileContent ? JSON.parse(fileContent): {};
+        console.log("application", application);
 
-            console.log("fileContent", fileContent);
-            if(fileContent && fileContent.data) {
-  
-              console.log("why i'm not here2");
+        let formData = application?.form_contents?.formData;
+        let formTitle = application?.form_contents?.formTitle;
+
+        console.log("formdata", formData);
+
+        loginType = formData.filter((item) => {
+          return item.type == "login"
+        });
+
+        nameType = formData.filter((item) => {
+          return item.type == "name"
+        });
+
+        primeFiles = formData.filter((item) => {
+          return item.type == "primeFile"
+        });
+
+        console.log('nameType loginType 1111', loginType)
+        console.log('nameType loginType', loginType)
+
+        //const hasLoginField = !!(loginType.length > 0);
+        const hasLoginField = loginType
+
+        // const hasNameField = !!(nameType.length > 0);
+        const hasNameField = nameType
+
+        //loginType = loginType.length > 0 ? loginType[0] : {};
+        loginType = loginType ? loginType[0] : {};
+
+        // nameType = nameType.length > 0 ? nameType[0] : {};
+        nameType = nameType ? nameType[0] : {};
+
+        console.log('nameType hasLoginField', hasLoginField)
+        console.log('nameType loginType', loginType)
+
+        if (hasLoginField) {
+          email = loginType?.fields.filter((item) => {
+            return item.type == "email"
+          });
+
+          password = loginType?.fields.filter((item) => {
+            return item.type == "password"
+          });
+
+          email = email && email.length > 0 ? email[0] : "";
+          password = password && password.length > 0 ? password[0] : "";
+        }
+
+        if (hasNameField) {
+          firstname = nameType?.fields.filter((item) => {
+            return item.label == "First Name"
+          });
+
+          middlename = nameType?.fields.filter((item) => {
+            return item.label == "Middle Name"
+          });
+
+          lastname = nameType?.fields.filter((item) => {
+            return item.label == "Last Name"
+          });
+
+          console.log('nameType', nameType);
+
+          console.log('nameType firstname', firstname);
+          console.log('nameType middlename', middlename);
+          console.log('nameType lastname', lastname);
+
+          // firstname = firstname.length > 0 ? firstname[0] : "";
+          // lastname = lastname.length > 0 ? lastname[0] : "";
+          // middlename = middlename.length > 0 ? middlename[0] : "";
+          // firstname = firstname ? firstname : "";
+          // lastname = lastname ? lastname : "";
+          // middlename = middlename ? middlename : "";
+        } else {
+          return {
+            messageType: "error",
+            message: "Prime field name is required"
+          }
+        }
+
+        //check if there is file
+        console.log("primeFiles", primeFiles);
+
+        for (let primeFile of primeFiles) {
+          if (primeFile?.fields.length > 0) {
+            console.log("why i'm not here");
+            let fileContent = primeFile.fields[0]?.value;
+            if (fileContent) {
+              fileContent = fileContent ? JSON.parse(fileContent) : {};
+
+              console.log("fileContent", fileContent);
+              if (fileContent && fileContent.data) {
+
+                console.log("why i'm not here2");
+                const buf = Buffer.from(
+                  fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
+                  "base64"
+                );
+
+                const s3Payload = {
+                  Bucket: currentS3BucketName,
+                  Key: `file/${primeFile.id}/${fileContent.filename}`,
+                  Body: buf,
+                  ContentEncoding: "base64",
+                  ContentType: fileContent.contentType,
+                  ACL: "public-read"
+                };
+
+                await uploadFile(s3Payload);
+
+                fileContent.url = s3Payload.Key;
+                fileContent.data = "";
+
+                console.log("fileContent url", fileContent.url);
+
+                primeFile.fields[0].value = JSON.stringify(fileContent);
+
+                console.log("update primefile", util.inspect(primeFile, false, null, true));
+
+                formData = formData.map((item) => {
+                  if (item.id == primeFile.id) {
+                    item = primeFile
+                  }
+                  return item;
+                });
+
+                const formContents = {
+                  formTitle: formTitle,
+                  formData: formData
+                }
+
+                application.form_contents = formContents;
+
+                console.log("formContents", util.inspect(formContents, false, null, true));
+
+                // let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
+                // formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+                // await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
+              }
+            }
+
+          }
+        }
+
+
+
+        let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
+        application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+        if (hasNameField) {
+          console.log('firstname', firstname)
+          console.log('lastname', firstname)
+          console.log('middlename', firstname)
+          firstname.value = firstname && firstname[0]?.value.slice(1, -1);
+          lastname.value = lastname && lastname[0]?.value.slice(1, -1);
+          middlename.value = middlename && middlename[0]?.value.slice(1, -1);
+
+          const chObj = {
+            firstname: firstname.value,
+            lastname: lastname.value,
+            middlename: middlename.value
+          }
+
+          console.log('chObj', chObj);
+
+          const child = await addChild(chObj);
+
+          console.log('added child', child);
+
+          application.child = child.ch_id;
+
+        }
+
+        const newApplication = await submitCustomApplication(application);
+
+        if (newApplication && newApplication.app_id && hasLoginField && hasLoginField.length > 0) {
+          console.log("hasLoginFielddddddd", hasLoginField)
+          email.value = email && email.value && typeof email.value === 'string' && email.value.slice(1, -1);
+          password.value = password && password.value && typeof password.value === 'string' && password.value.slice(1, -1);
+
+          const checkEmail = await checkUserEmail(email.value);
+
+          console.log("email", email); console.log("password", password);
+
+          if (checkEmail && checkEmail.is_exist) {
+            console.log("Parent Status: ", checkEmail.status);
+          } else {
+            let userType = await getUserTypes();
+            userType = userType.filter(type => {
+              return type.name === "USER";
+            })[0];
+
+            let user = {
+              username: email.value,
+              email: email.value,
+              password: password.value,
+              type: userType
+            };
+
+            console.log("user:", user);
+            let addUser = await executeSignUp(user);
+            console.log("addUser:", user);
+            let userInfo = {
+              email: email.value,
+              firstname: firstname.value,
+              lastname: lastname.value,
+            };
+
+            await executeAddUserProfile(userInfo);
+          }
+
+          const newUser = await getUserFromDatabase(email.value);
+          await addApplicationUser({
+            user_id: newUser.id,
+            custom_app_id: newApplication.app_id
+          });
+        }
+
+        console.log("primeFiles", primeFiles);
+
+        for (let primeFile of primeFiles) {
+          if (primeFile?.fields.length > 0) {
+            let fileContent = primeFile.fields[0]?.file;
+            if (fileContent) {
               const buf = Buffer.from(
                 fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
                 "base64"
               );
-  
+
               const s3Payload = {
                 Bucket: currentS3BucketName,
-                Key: `file/${primeFile.id}/${fileContent.filename}`,
+                Key: `user/${newApplication.app_id}/${primeFile.id}/${fileContent.filename}`,
                 Body: buf,
                 ContentEncoding: "base64",
                 ContentType: fileContent.contentType,
                 ACL: "public-read"
               };
-  
+
               await uploadFile(s3Payload);
-  
+
               fileContent.url = s3Payload.Key;
               fileContent.data = "";
-  
+
               console.log("fileContent url", fileContent.url);
-  
-              primeFile.fields[0].value = JSON.stringify(fileContent);
-  
+
+              primeFile.fields[0].file = fileContent;
+
               console.log("update primefile", util.inspect(primeFile, false, null, true));
-  
+
               formData = formData.map((item) => {
-                if(item.id == primeFile.id) {
+                if (item.id == primeFile.id) {
                   item = primeFile
                 }
                 return item;
               });
-              
+
               const formContents = {
                 formTitle: formTitle,
                 formData: formData
               }
-  
-              application.form_contents = formContents;
-  
+
               console.log("formContents", util.inspect(formContents, false, null, true));
-  
-              // let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
-              // formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
-  
-              // await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
+
+              let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
+              formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+              await updateSubmitCustomApplication({ app_id: newApplication.app_id, form_contents: formContentsString })
             }
           }
-
-        }
-      }
-
-      let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
-      application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
-
-      if(hasNameField) {
-        console.log('firstname',firstname)
-        console.log('lastname',firstname)
-        console.log('middlename',firstname)
-        firstname.value = firstname && firstname[0]?.value.slice(1, -1);
-        lastname.value = lastname && lastname[0]?.value.slice(1, -1);
-        middlename.value = middlename && middlename[0]?.value.slice(1, -1);
-
-        const chObj = {
-          firstname: firstname.value,
-          lastname: lastname.value,
-          middlename: middlename.value
         }
 
-        console.log('chObj', chObj);
-
-        const child = await addChild(chObj);
-
-        console.log('added child', child);
-
-        application.child = child.ch_id;
-
-      }
-
-      const newApplication = await submitCustomApplication(application);
-
-      if(newApplication && newApplication.app_id && hasLoginField && hasLoginField.length > 0) {
-        console.log("hasLoginFielddddddd",hasLoginField)
-        email.value = email &&  email.value && typeof email.value === 'string' &&  email.value.slice(1, -1);
-        password.value = password && password.value && typeof password.value === 'string' && password.value.slice(1, -1);
-        
-        const checkEmail = await checkUserEmail(email.value);
-
-        console.log("email", email); console.log("password", password);
-
-        if(checkEmail && checkEmail.is_exist) {
-          console.log("Parent Status: ", checkEmail.status);
-        } else {
-          let userType = await getUserTypes();
-          userType = userType.filter(type => {
-            return type.name === "USER";
-          })[0];
-
-          let user = {
-            username: email.value,
-            email: email.value,
-            password: password.value,
-            type: userType
-          };
-
-          console.log("user:", user);
-          let addUser = await executeSignUp(user);
-          console.log("addUser:", user);
-          let userInfo = {
-            email: email.value,
-            firstname: firstname.value,
-            lastname: lastname.value,
-          };
-
-          await executeAddUserProfile(userInfo);
+        return {
+          messageType: "info",
+          message: "successfully submitted your application form"
         }
 
-        const newUser = await getUserFromDatabase(email.value);
-        await addApplicationUser({
-          user_id: newUser.id,
-          custom_app_id: newApplication.app_id
-        });
       }
-
-      console.log("primeFiles", primeFiles);
-
-      for(let primeFile of primeFiles) {
-        if(primeFile?.fields.length > 0) {
-          let fileContent = primeFile.fields[0]?.file;
-          if(fileContent) {
-            const buf = Buffer.from(
-              fileContent?.data.replace(/^data:image\/\w+;base64,/, ""),
-              "base64"
-            );
-
-            const s3Payload = {
-              Bucket: currentS3BucketName,
-              Key: `user/${newApplication.app_id}/${primeFile.id}/${fileContent.filename}`,
-              Body: buf,
-              ContentEncoding: "base64",
-              ContentType: fileContent.contentType,
-              ACL: "public-read"
-            };
-
-            await uploadFile(s3Payload);
-
-            fileContent.url = s3Payload.Key;
-            fileContent.data = "";
-
-            console.log("fileContent url", fileContent.url);
-
-            primeFile.fields[0].file = fileContent;
-
-            console.log("update primefile", util.inspect(primeFile, false, null, true));
-
-            formData = formData.map((item) => {
-              if(item.id == primeFile.id) {
-                item = primeFile
-              }
-              return item;
-            });
-            
-            const formContents = {
-              formTitle: formTitle,
-              formData: formData
-            }
-
-            console.log("formContents", util.inspect(formContents, false, null, true));
-
-            let formContentsString = formContents ? JSON.stringify(formContents) : "{}";
-            formContentsString = Buffer.from(formContentsString, "utf-8").toString("base64");
-
-            await updateSubmitCustomApplication({app_id: newApplication.app_id, form_contents: formContentsString})
-          }
-        }
+      catch (err) {
+        console.log('Error', err)
       }
-
-      return {
-        messageType: "info",
-        message: "successfully submitted your application form"
-      } 
-
-     }
-     catch(err) {
-       console.log('Error', err)
-     }
     },
-    async updateSubmitCustomApplication(root, {application}, context) {
+    async updateSubmitCustomApplication(root, { application }, context) {
 
-      const previousApplication = await getCustomFormApplicantById({app_id: application.app_id});
+      const previousApplication = await getCustomFormApplicantById({ app_id: application.app_id });
 
-      if(application.class_teacher && application.class_teacher != previousApplication.class_teacher) {
+      if (application.class_teacher && application.class_teacher != previousApplication.class_teacher) {
         let selectedAppGroup = await getAppGroupById(application.class_teacher);
 
         console.log("selectedAppGroup", selectedAppGroup);
         selectedAppGroup = selectedAppGroup.length > 0 ? selectedAppGroup[0] : {};
 
-        const applications = await getApplicationByAppGroup({app_grp_id: application.class_teacher, is_form: true});
+        const applications = await getApplicationByAppGroup({ app_grp_id: application.class_teacher, is_form: true });
         const totalApplication = applications.length + 1;
 
         console.log("totalApplication", totalApplication);
         console.log("selectedAppGroup.size", selectedAppGroup.size);
-        
-        if(totalApplication > selectedAppGroup.size) {
+
+        if (totalApplication > selectedAppGroup.size) {
           const response = {};
           response.message = "Sorry, you currently have more members added to your group, please make sure you have enough available count";
           response.messageType = "error"
@@ -1941,15 +1992,15 @@ const resolvers = {
       //check if there is file
       console.log("primeFiles", primeFiles);
 
-      for(let primeFile of primeFiles) {
-        if(primeFile?.fields.length > 0) {
+      for (let primeFile of primeFiles) {
+        if (primeFile?.fields.length > 0) {
           console.log("why i'm not here");
           let fileContent = primeFile.fields[0]?.value;
 
-          fileContent = fileContent ? JSON.parse(fileContent): {};
+          fileContent = fileContent ? JSON.parse(fileContent) : {};
 
           console.log("fileContent", fileContent);
-          if(fileContent && fileContent.data) {
+          if (fileContent && fileContent.data) {
 
             console.log("why i'm not here2");
             const buf = Buffer.from(
@@ -1978,12 +2029,12 @@ const resolvers = {
             console.log("update primefile", util.inspect(primeFile, false, null, true));
 
             formData = formData.map((item) => {
-              if(item.id == primeFile.id) {
+              if (item.id == primeFile.id) {
                 item = primeFile
               }
               return item;
             });
-            
+
             const formContents = {
               formTitle: formTitle,
               formData: formData
@@ -1998,7 +2049,7 @@ const resolvers = {
 
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
-      
+
       await updateSubmitCustomApplication(application);
 
       const params = {
@@ -2012,7 +2063,7 @@ const resolvers = {
       const col = {
         custom_app_id: application.app_id,
         received_reminder: 0,
-        received_update: application.received_update ? 1 : 0 
+        received_update: application.received_update ? 1 : 0
       };
 
       updateApplicationUser(col);
@@ -2032,23 +2083,23 @@ const resolvers = {
       }
     },
 
-    async updateAttendance(root, {attendance}, context) {
-      console.log('UpdateAttendance',attendance)
+    async updateAttendance(root, { attendance }, context) {
+      console.log('UpdateAttendance', attendance)
       return await updateChildAttendance(attendance)
     },
 
     async updateUserAttendanceFilterConfig(root, { user_attendance_filter_config }, context) {
-        console.log('user_attendance_filter_config',user_attendance_filter_config)
-        return executeUpdateUserAttendanceConfig(user_attendance_filter_config);
+      console.log('user_attendance_filter_config', user_attendance_filter_config)
+      return executeUpdateUserAttendanceConfig(user_attendance_filter_config);
     },
-    async addUpdateStudentCumulative(root,{ studentCumulative },context){
-      console.log('ADDPDATE STUDENT CUMULATIVE',studentCumulative)
+    async addUpdateStudentCumulative(root, { studentCumulative }, context) {
+      console.log('ADDPDATE STUDENT CUMULATIVE', studentCumulative)
       return await addUpdateStudentCumulativeGrades(studentCumulative)
     },
-    async addUpdateStudentStandardizedTest(root, { studentStandardizedTest },context) {
-        return await addUpdateStudentTest(studentStandardizedTest)
+    async addUpdateStudentStandardizedTest(root, { studentStandardizedTest }, context) {
+      return await addUpdateStudentTest(studentStandardizedTest)
     },
-    async deleteStudentStandardizedTest(root,{ studentTestIds = [] }, context) {
+    async deleteStudentStandardizedTest(root, { studentTestIds = [] }, context) {
       console.log('Student Test Ids', studentTestIds)
       return await removeStudentTest(studentTestIds)
     },
@@ -2056,11 +2107,11 @@ const resolvers = {
       console.log('child', child)
       return await updateChildDetails(child)
     },
-    async addArchivedGroup(root, {  archivedGroup  }, context) {
-      return await addArchivedGroupByVendor( archivedGroup)
+    async addArchivedGroup(root, { archivedGroup }, context) {
+      return await addArchivedGroupByVendor(archivedGroup)
     },
-    async removeGroupFromArchive(root, { archivedGroupIds = [],vendorId }, context) {
-      return await deleteArchivedGroup( archivedGroupIds,vendorId)
+    async removeGroupFromArchive(root, { archivedGroupIds = [], vendorId }, context) {
+      return await deleteArchivedGroup(archivedGroupIds, vendorId)
     },
     async createGroupReminder(root, { groupReminder }, context) {
 
@@ -2077,17 +2128,17 @@ const resolvers = {
         form: groupReminder.is_customForm ? groupReminder.form : null,
         date_reminder: groupReminder.date,
         is_customForm: groupReminder.is_customForm ? 1 : 0,
-        fields: groupReminder.is_customForm ? 
-        JSON.stringify(groupReminder.custom_fields)
-        :
-        JSON.stringify(groupReminder.form_fields),
+        fields: groupReminder.is_customForm ?
+          JSON.stringify(groupReminder.custom_fields)
+          :
+          JSON.stringify(groupReminder.form_fields),
         form_name: groupReminder.form_name
       }
 
       const reminder = await createGroupReminder(reminderInput);
 
-      if(reminder && reminder.vendor_reminder_id) {
-        for(const appGroup of appGroups) {
+      if (reminder && reminder.vendor_reminder_id) {
+        for (const appGroup of appGroups) {
           await createAppGroupReminder({
             app_group: appGroup,
             vendor_reminder: reminder.vendor_reminder_id
@@ -2098,28 +2149,28 @@ const resolvers = {
       return await getVendorApplicationReminder(groupReminder.vendor_id);
     },
     async updateVendorLogo(root, { vendorLogo }, context) {
-      return await updateLogo({logo: vendorLogo.logo, vendor_id: vendorLogo.vendor_id || ''})
+      return await updateLogo({ logo: vendorLogo.logo, vendor_id: vendorLogo.vendor_id || '' })
     },
 
-    async createUpdateChildAttendance(root, { user }, context) { 
+    async createUpdateChildAttendance(root, { user }, context) {
 
       return await updateAttendanceByChild(user)
     },
 
-    
-    async updateParentVendorShare(root, data, context) { 
+
+    async updateParentVendorShare(root, data, context) {
       return await updateParentSharingByVendor(data)
     },
 
-    async updateDefaultVendor(root, { vendor_id, user_id}, context) {
-      return await setDefaultVendor({ vendor_id, user_id})
+    async updateDefaultVendor(root, { vendor_id, user_id }, context) {
+      return await setDefaultVendor({ vendor_id, user_id })
     },
 
-    async updateDefaultVendorForms(root, { vendor_id, form_id}, context) {
+    async updateDefaultVendorForms(root, { vendor_id, form_id }, context) {
       return await setDefaultVendorForms({ vendor_id, form_id })
     }
 
-    
+
   }
 };
 
