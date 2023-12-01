@@ -1034,7 +1034,7 @@ router.get("/invitation/calendar/:id/:status", async (req, res) => {
 
 router.post("/child/attendance/search", async (req, res) => {
   const db = makeDb();
-  const { firstname, lastname, childId, eventId, attendanceType } = req.body;
+  const { childId, eventId, attendanceType } = req.body;
   let child = null;
   let childAttendance = null;
   try {
@@ -1042,9 +1042,9 @@ router.post("/child/attendance/search", async (req, res) => {
     child = await db.query(
       `SELECT BIN_TO_UUID(c.ch_id) as ch_id, c.firstname, c.lastname, c.new_childId
       FROM child c
-      WHERE c.new_childId=? AND c.firstname=? AND c.lastname=?
+      WHERE c.new_childId=? 
      `,
-      [childId, firstname, lastname]
+      [childId]
     );
 
     child = child && child[0] && {
