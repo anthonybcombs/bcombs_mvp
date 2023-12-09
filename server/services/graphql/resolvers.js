@@ -1623,7 +1623,7 @@ const resolvers = {
         // TEST ID = C110001
         try {
           const uniqueIdForm = application.form_contents.formData.find(item => item.label === 'Student ID');
-          const studentInfo = application.form_contents.formData.find(item => item.label === 'Name');
+          const studentInfo = application.form_contents.formData.find(item => item.label === 'Student');
 
           let studentFirstname = studentInfo && studentInfo.fields[1].value;
           let studentLastname = studentInfo && studentInfo.fields[3].value;
