@@ -187,16 +187,18 @@ const AssessmentForm = props => {
       setIsLoading(true);
       const response = await getAssessmentForm(currentStudentId);
 
+      console.log('responseeee',response)
       const formContents = response?.data?.form_contents?.formData;
 
       let instructor = formContents.find(item => item.label === 'Instructor');
       instructor = instructor && {
         name: `${removeExtraCharacters(instructor?.fields[1]?.value || '')} ${removeExtraCharacters(instructor?.fields[2]?.value || '')}`
       }
-      let student = formContents.find(item => item.label === 'Name');
+
+      let student = formContents.find(item => item.label === 'Student');
 
       student = student && {
-        name: `${removeExtraCharacters(student?.fields[1]?.value || '')} ${removeExtraCharacters(student?.fields[2]?.value || '')}`
+        name: `${removeExtraCharacters(student?.fields[1]?.value || '')} ${removeExtraCharacters(student?.fields[3]?.value || '')}`
       }
 
       let date = formContents.find(item => item.label === 'Date');
@@ -205,10 +207,10 @@ const AssessmentForm = props => {
         value: `${date?.fields[0]?.value || ''}-${date?.fields[1]?.value || ''}-${date?.fields[2]?.value || ''}`
       }
 
-      let instrument = formContents.filter(item => item.label === 'Instrument');
+      let instrument = formContents.filter(item => item.label === 'Instrument' || item.label === 'Instrument Type');
 
       if (instrument.length > 0) {
-
+        console.log('instrument[0]',instrument[0])
         let name = instrument[0]?.fields[0]?.value;
         name = removeExtraCharacters(name);
         let type = instrument[1]?.fields[0]?.value;
@@ -256,8 +258,9 @@ const AssessmentForm = props => {
 
       });
 
+
       questions = questions.map(item => {
-        let value = item.fields[0].value.replace(/\\/g, '');
+        let value = item.fields[0]?.value && item.fields[0].value.replace(/\\/g, '');
         value = value && JSON.parse(value)
         value = typeof value === 'object' ? Object.values(value)[0] : '';
         return {
@@ -267,7 +270,7 @@ const AssessmentForm = props => {
       });
 
       let comment = formContents.find(item => item.label.includes('Comment and Suggestion for Improvement'));
-
+      console.log('comment',comment)
       comment = comment && {
         value: `${removeExtraCharacters(comment?.fields[0]?.value || '')}`
       }
@@ -289,6 +292,7 @@ const AssessmentForm = props => {
 
       setCurrentForm(response?.data || null);
     } catch (err) {
+      console.log('errrrr', err)
       setCurrentForm(null);
     }
     finally {
@@ -297,6 +301,7 @@ const AssessmentForm = props => {
   }
   const theme = useContext(ThemeContext);
 
+  console.log('assessment',assessment)
   return <AssessmentStyled
     theme={theme}
   >

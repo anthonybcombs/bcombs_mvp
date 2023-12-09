@@ -59,6 +59,13 @@ const parentFields = {
     // create_profile: 'Create Profile'
 }
 
+const instructorFields = {
+
+    firstname: 'Instructor Firstname',
+    lastname: 'Instructor Lastname',
+    // create_profile: 'Create Profile'
+}
+
 
 const customFormParentField = {
     'Parent Title': 'title',
@@ -262,7 +269,7 @@ const ImportExportApplication = props => {
                 if (item.type !== 'terms') {
                     let fields = [];
                     const title = item.label.toLowerCase();
-                    if (title === 'parent') {
+                    if (title === 'parent'  || title === 'instructor') {
                         fields = item.fields.map(item2 => `${item.label} ${item2.label}`)
                     }
                     else {
@@ -346,9 +353,17 @@ const ImportExportApplication = props => {
                 if (formType === 'custom') {
                     let formattedImportData = importedData.map((data, index) => {
                         const item = data.reduce((accum, data2, index2) => {
+                            const currentKey = removeCarriageReturn(importedColumns[index2]);
+
+                            if(accum.hasOwnProperty(currentKey)) {
+                                return {
+                                    ...accum,
+                                    [`${currentKey} 2`]: data2
+                                }  
+                            }
                             return {
                                 ...accum,
-                                [removeCarriageReturn(importedColumns[index2])]: data2
+                                [currentKey]: data2
                             }
                         }, {});
 
@@ -394,7 +409,7 @@ const ImportExportApplication = props => {
                                     let value = item && item[currentKey]
 
                                     if (formData.type === 'name') {
-                                        value = convertToQuotedString(item[formData.label === 'Parent' ? `Parent ${field.label}` : field.label]);
+                                        value = convertToQuotedString(item[(formData.label === 'Parent' || formData.label === 'Instructor') ? `${formData.label} ${field.label}` : field.label]);
                                     }
 
                                     else if ((field.tag.includes('multipleChoice')) && value) {
@@ -524,6 +539,7 @@ const ImportExportApplication = props => {
     const handleUploadCustomForm = async () => {
         try {
 
+            console.log('currentFormPayload',currentFormPayload)
             if (currentFormPayload) {
                 let updatedPayload = [...(currentFormPayload || [])];
 
@@ -535,7 +551,7 @@ const ImportExportApplication = props => {
                         if (isCreateProfile) {
 
                             const loginForms = item.form_contents.formData.find(frm => frm.type === 'login');
-                            const nameForms = item.form_contents.formData.find(frm => frm.label.toLowerCase() === 'parent' || frm.type === 'name');
+                            const nameForms = item.form_contents.formData.find(frm => (frm.label.toLowerCase() === 'parent' || frm.label.toLowerCase() === 'instructor') || frm.type === 'name');
     
                             if (loginForms && nameForms) {
                                 const loginDetails = loginForms?.fields?.reduce((accum, field) => {
@@ -587,8 +603,6 @@ const ImportExportApplication = props => {
                     });
                 }
 
-
-                console.log('updatedPayload', updatedPayload)
 
                 setIsUploadLoading(true);
                 await importCustomForm(updatedPayload, formType);
