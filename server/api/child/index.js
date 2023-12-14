@@ -350,7 +350,8 @@ export const addChild = async ({
   insect_allergies = '',
   other_allergies = '',
   current_medications = '',
-  health_insurance_information = ''
+  health_insurance_information = '',
+  new_childId
 }) => {
   const db = makeDb();
   let result = {};
@@ -437,7 +438,8 @@ export const addChild = async ({
         insect_allergies,
         other_allergies,
         current_medications,
-        health_insurance_information
+        health_insurance_information,
+        new_childId
       ) VALUES (UUID_TO_BIN(UUID()), 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
@@ -445,7 +447,7 @@ export const addChild = async ({
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         firstname,
         lastname,
@@ -516,7 +518,8 @@ export const addChild = async ({
         insect_allergies,
         other_allergies,
         current_medications,
-        health_insurance_information
+        health_insurance_information,
+        new_childId
       ]
     )
 
@@ -629,7 +632,8 @@ export const updateChild = async ({
   insect_allergies = '',
   other_allergies = '',
   current_medications = '',
-  health_insurance_information = ''
+  health_insurance_information = '',
+  new_childId
 }) => {
 
   const db = makeDb();
@@ -733,7 +737,7 @@ export const updateChild = async ({
         other_allergies=?,
         current_medications=?,
         health_insurance_information=?
-
+        new_childId=?
         WHERE ch_id=UUID_TO_BIN(?)
       `,
       [
@@ -830,6 +834,7 @@ export const updateChild = async ({
         other_allergies,
         current_medications,
         health_insurance_information,
+        new_childId,
         ch_id
       ]
     );
