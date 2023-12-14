@@ -736,7 +736,7 @@ export const updateChild = async ({
         insect_allergies=?,
         other_allergies=?,
         current_medications=?,
-        health_insurance_information=?
+        health_insurance_information=?,
         new_childId=?
         WHERE ch_id=UUID_TO_BIN(?)
       `,
