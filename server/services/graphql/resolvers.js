@@ -126,7 +126,8 @@ import {
   addDaycareChild,
   addChildChildRelationship,
   getChildChildRelationship,
-  getChildByChildId
+  getChildByChildId,
+  updateChildUniqueId
 } from "../../api/child";
 import {
   addParent,
@@ -2058,6 +2059,10 @@ const resolvers = {
 
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+      if(previousApplication && uniqueId) {
+        await updateChildUniqueId(previousApplication.child, uniqueId)
+      }
 
       await updateSubmitCustomApplication(application);
 

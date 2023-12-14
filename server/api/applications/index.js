@@ -472,7 +472,7 @@ export const updateApplication = async ({
         ]
       );
     }
-    
+
     if (class_teacher && currentApplication && currentApplication[0]) {
       let previousClassTeacher = currentApplication && currentApplication[0] && currentApplication[0].class_teacher;
       previousClassTeacher = previousClassTeacher && previousClassTeacher.split(',');
@@ -1397,6 +1397,7 @@ export const getCustomFormApplicantById = async ({ app_id, is_archived = 0 }) =>
         BIN_TO_UUID(form) as form,
         BIN_TO_UUID(vendor) as vendor,
         BIN_TO_UUID(app_id) as app_id,
+        BIN_TO_UUID(child) as child,
         CONVERT(form_contents USING utf8) as form_contents,
         application_date,
         archived_date,

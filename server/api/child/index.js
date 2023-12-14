@@ -1023,3 +1023,28 @@ export const getGroupByChildId = async (childId) => {
   }
 };
 
+
+
+export const updateChildUniqueId = async (childId, childUniqueId) => {
+  const db = makeDb();
+  let result;
+
+  try {
+    result = await db.query(
+      `
+        UPDATE child SET
+        new_childId=UUID_TO_BIN(?)
+        WHERE ch_id=UUID_TO_BIN(?)
+      `,
+      [
+        childUniqueId,
+        childId
+      ]
+    )
+  } catch (error) {
+    console.log("error getchildname", error)
+  } finally {
+    await db.close();
+    return result;
+  }
+}
