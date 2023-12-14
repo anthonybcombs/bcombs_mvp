@@ -1033,7 +1033,7 @@ export const updateChildUniqueId = async (childId, childUniqueId) => {
     result = await db.query(
       `
         UPDATE child SET
-        new_childId=UUID_TO_BIN(?)
+        new_childId=?
         WHERE ch_id=UUID_TO_BIN(?)
       `,
       [
