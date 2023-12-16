@@ -162,7 +162,7 @@ const Checked = <span style={{ textDecoration: 'underline' }}>✔</span>
 
 const AssessmentForm = props => {
   const [currentForm, setCurrentForm] = useState(null);
-  const [currentStudentId, setCurrentStudentId] = useState('C110001');
+  const [currentStudentId, setCurrentStudentId] = useState('');
   const [assessment, setAssessment] = useState({
     assessment: []
   });
@@ -185,9 +185,7 @@ const AssessmentForm = props => {
   const getStudentAssessment = async () => {
     try {
       setIsLoading(true);
-      const response = await getAssessmentForm(currentStudentId);
-
-      console.log('responseeee',response)
+      const response = await getAssessmentForm(currentStudentId.toUpperCase());
       const formContents = response?.data?.form_contents?.formData;
 
       let instructor = formContents.find(item => item.label === 'Instructor');
