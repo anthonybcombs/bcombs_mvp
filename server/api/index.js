@@ -22,7 +22,7 @@ import {
   addParent
 } from "../api/parents";
 
-import { ASSESSMENT_FORM_ID } from '../constants';
+import { ASSESSMENT_FORM_ID, UNIQUE_ID_LABELS } from '../constants';
 
 
 
@@ -1522,6 +1522,17 @@ router.post("/application/import", async (req, res) => {
           return item.type == "name" && item.label !== 'Parent'
         });
 
+        let uniqueIdType = application.form_contents.formData.find((item) => {
+          return  UNIQUE_ID_LABELS.includes(item.label)
+        });
+
+      
+        uniqueIdType = uniqueIdType.fields &&  uniqueIdType.fields[0];
+        let uniqueId = uniqueIdType.value;
+        uniqueId = uniqueId.replace(/\"/g,"");
+  
+
+  
         const formContentString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
         application.form_contents = Buffer.from(formContentString, "utf-8").toString("base64");
 
@@ -1568,7 +1579,8 @@ router.post("/application/import", async (req, res) => {
           const childObj = {
             firstname: firstnameValue,
             lastname: lastnameValue,
-            middlename: middlenameValue
+            middlename: middlenameValue,
+            new_childId: uniqueId
           }
 
 
@@ -2971,7 +2983,8 @@ router.get('/form/assessment', async (req, res) => {
     }
 
     let filteredResult = applications.filter(form => {
-        let uniqueIdForm = form.form_contents.formData.find(formInput => formInput.label === 'Student ID');
+
+        let uniqueIdForm = form.form_contents.formData.find(formInput => UNIQUE_ID_LABELS.includes(formInput.label));
         uniqueIdForm = uniqueIdForm.fields &&  uniqueIdForm.fields[0];
         let uniqueId = uniqueIdForm.value;
         uniqueId = uniqueId.replace(/\"/g,"");
