@@ -160,6 +160,7 @@ export default function index({
     { name: "Missed opportunity", value: "missed_opportunity" },
     { name: "Pending Resubmission", value: "pending_resubmission" },
     { name: "Resubmitted", value: "resubmitted" },
+    { name: "Completed", value: "completed" },
   ]
 
   const CLASS_TEACHER_OPTIONS = [
