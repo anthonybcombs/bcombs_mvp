@@ -466,6 +466,9 @@ export default function index({
     else if (student_status == "resubmitted") {
       studentStatusVal = "Resubmitted";
     }
+    else if (student_status == "completed") {
+      studentStatusVal = "Completed";
+    }
     else {
       studentStatusVal = "In process";
     }
