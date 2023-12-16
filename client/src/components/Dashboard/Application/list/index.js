@@ -661,6 +661,7 @@ export default function index({
       selector: "new_childId",
       sortable: true,
       cell: row => {
+        console.log('row', row)
         return <div>{row?.child?.new_childId}</div>
       }
     },
