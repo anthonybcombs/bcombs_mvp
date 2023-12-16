@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPrint, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { useReactToPrint } from 'react-to-print'
 import { format } from "date-fns";
+import unionBy from 'lodash.unionBy'
 
 import FormStyled from './styles'
 import FORM_DATA from './sample.json'
@@ -26,13 +27,14 @@ import { isValidJSONString } from '../../../../helpers/Arrays'
 
 export default (props) => {
   const {
+    baseFormData = null,
     hideAction = false,
     form_id,
     form_contents: application_form_contents,
     isReadOnly = false,
     onChangeToEdit,
     form,
-    application_date = 'Most Up to date Appli 2cation',
+    application_date = 'Most Up to date Application',
     vendor: applicationVendor,
     onGetUpdatedApplication,
     onSubmitApplication,
@@ -96,7 +98,18 @@ export default (props) => {
       const newAddresses = formData.filter(e => e.type === 'address')
       setAddresses(newAddresses)
 
-      const fields = hasWizard ? groupFieldsByPageBreak(formData) : formData
+      console.log('baseFormData',baseFormData)
+
+      console.log('baseFormData formData',formData)
+
+      const updatedFormData = baseFormData?.formData ?  unionBy(formData, baseFormData?.formData, 'id') :  formData;
+      
+      console.log('updatedFormData baseFormData',baseFormData)
+      console.log('updatedFormData formData',formData)
+      console.log('updatedFormData',updatedFormData)
+
+      const fields = hasWizard ? groupFieldsByPageBreak(updatedFormData) : updatedFormData
+      console.log('fieldssss',fields)
       setFormFields(fields)
       setForm(true)
     }
@@ -308,8 +321,8 @@ export default (props) => {
     // Apply logic and PRAY
     const { include, items } = logic || {}
     if (include && !isApplication) {
-      const newItems = items ? JSON.parse(items) : ''
-      const newValue = value ? JSON.parse(value) : ''
+      const newItems = isValidJSONString(items) ? JSON.parse(items) : ''
+      const newValue = isValidJSONString(value) ? JSON.parse(value) : ''
       const [name] = Object.keys(newValue)
       const selectedLogic = newItems.find(e => e.name === name)
       if (selectedLogic) {
@@ -394,7 +407,7 @@ export default (props) => {
 
           if (typeof newVal === 'object') {
             console.log('newValv', newVal)
-            parsedValue = newVal ? JSON.parse(newVal) : {};
+            parsedValue = isValidJSONString(newVal) ? JSON.parse(newVal) : {};
             newFielderrors[id] = parsedValue?.value ? [] : ['Electronic Signature is required']
           }
           else if (tag === 'checkbox') {
@@ -559,6 +572,7 @@ export default (props) => {
 
   const hasLoginField = !!(flattenFields().find(e => e.type === 'login'))
 
+  console.log('actualFormFields',actualFormFields)
   return (
     <FormStyled ref={componentRef}>
       <div id='form' >

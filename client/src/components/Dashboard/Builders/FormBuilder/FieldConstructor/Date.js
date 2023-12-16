@@ -4,6 +4,9 @@ import FieldConstructor from '../../FormBuilder/FieldConstructor'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
+
+import { isValidJSONString } from '../../../../../helpers/Arrays'
+
 export default ({ isReadOnly = false, showLabel, settings, label, fields, type, id: groupId, onChange, fieldError, onCheckError, historyFields, format }) => {
   const fieldId = `${type}_${groupId}`
   const handleAnswer = (date) => {
@@ -64,7 +67,7 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
   const newDate = ansFields.find(e => !e.value) ? '' : ansFields.map(e => e.value).join()
   const hasError = !!fields.find(e => fieldError[e.id])
   const isRequired = !!fields.find(e => e.required)
-  const formatObj = format ? JSON.parse(format) : {}
+  const formatObj = isValidJSONString(format) ? JSON.parse(format) : {}
   const color = formatObj?.color || '#000'
 
   return (
@@ -115,7 +118,7 @@ export default ({ isReadOnly = false, showLabel, settings, label, fields, type, 
             fields.map((field, index) => {
               const { placeholder } = field
               const historyValue = historyFields.find(e => e.id === field.id)?.value
-              const className = historyValue && JSON.parse(historyValue) !== field.value ? 'highlights' : ''
+              const className = isValidJSONString(historyValue) && JSON.parse(historyValue) !== field.value ? 'highlights' : ''
 
               return FieldConstructor[field.tag]({
                 ...field,

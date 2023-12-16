@@ -651,10 +651,18 @@ export default function index({
       cell: row => row.is_daycare ? "-" : row?.child?.grade_desc
     },
     {
-      name: "Age (Bdate)",
+      name: "Age",
       selector: "birthDate",
       sortable: true,
       cell: row => getAgeBdate(row.child)
+    },
+    {
+      name: "ID",
+      selector: "new_childId",
+      sortable: true,
+      cell: row => {
+        return <div>{row?.child?.new_childId}</div>
+      }
     },
     {
       name: "Verified Account",
@@ -995,6 +1003,8 @@ export default function index({
     setShowExportFilter(false);
   };
 
+
+  console.log('dataaaaaa',data)
   return (
     <ApplicationListStyled>
       <div id="applicationList">

@@ -538,6 +538,7 @@ export default function index() {
           const application = JSON.parse(row.details);
           const childInformationObj = {
             profile: {
+              new_childId: application.child.new_childId,
               image: "",
               application_date: `History Update: ${format(new Date(row.updated_at ? row.updated_at : ""), "LLL dd, yyyy p")}`,
               first_name: application.child.firstname ? application.child.firstname : "",
@@ -757,6 +758,7 @@ export default function index() {
 
       const childInformationObj = {
         profile: {
+          new_childId: application.child.new_childId,
           image: "",
           application_date: 'Most Up to date Application',
           first_name: application.child.firstname ? application.child.firstname : "",
@@ -1326,14 +1328,13 @@ export default function index() {
   const DATE_TIME_FORMAT2 = "yyyy-MM-dd";
 
   const onSubmitSaveApplication = () => {
-    console.log('PAYLOADDDDDDDDD childInformation2222', format(
-      new Date(childInformation.profile.date_of_birth),
-      DATE_TIME_FORMAT2))
+
     try {
       let payload = {
         app_id: selectedApplication.app_id,
         student_status: 'resubmitted',
         child: {
+          new_childId: childInformation.profile.new_childId,
           firstname: childInformation.profile.first_name,
           lastname: childInformation.profile.last_name,
           age: getAge(childInformation.profile.date_of_birth),
@@ -1439,11 +1440,11 @@ export default function index() {
         received_reminder: !!selectedApplication?.received_reminder,
         received_update: !!selectedApplication?.received_update
       };
-      console.log('requestSaveApplication payload', payload)
+ 
       dispatch(requestSaveApplication(payload));
     }
     catch (e) {
-      console.log('ERRORRRRRRRRRRRR', e)
+      console.log('Error', e)
     }
    
   }
@@ -1485,13 +1486,11 @@ export default function index() {
       // tempTermsWaiver.section2.checked = false;
       // tempTermsWaiver.section3.checked = false;
     } else {
-      console.log('selectedApplication2222', selectedApplication)
-      console.log('selectedApplication2222 tempTermsWaiver', tempTermsWaiver)
+
       tempTermsWaiver.section1.signature = selectedApplication.section1_signature;
       tempTermsWaiver.section2.signature = selectedApplication.section2_signature;
       tempTermsWaiver.section3.signature = selectedApplication.section3_signature;
-      console.log('selectedApplication2222', selectedApplication)
-
+ 
       tempTermsWaiver.section1.checked = !!selectedApplication.section1_signature;
       tempTermsWaiver.section2.checked = !!selectedApplication.section2_signature;
       tempTermsWaiver.section3.checked = !!selectedApplication.section3_signature;
@@ -1531,7 +1530,7 @@ export default function index() {
       }])
     }
   }
-  console.log('selectedApplication', selectedApplication)
+
 
   return (
     <MyApplicationStyled>

@@ -76,6 +76,7 @@ const customFormParentField = {
 }
 
 const childFields = {
+    new_childId: 'UniqueID',
     firstname: 'Child Firstname',
     lastname: 'Child Lastname',
     nickname: 'Child Nickname',
@@ -300,7 +301,7 @@ const ImportExportApplication = props => {
                 return currentFormContents[key].fields
             }, []).flat().filter(field => field);
 
-
+            currentColumns = [...currentColumns];
             setColumns(currentColumns);
             setContent(currentFormContents);
         }
@@ -314,7 +315,7 @@ const ImportExportApplication = props => {
             }, []).flat();
 
 
-            let totalColumns = [...childColumns, ...parentColumns]
+            let totalColumns = ['UniqueID',...childColumns, ...parentColumns];
             //  totalColumns = createProfileFeature ? [...totalColumns, 'Create Profile'] : totalColumns;
 
 
@@ -518,6 +519,7 @@ const ImportExportApplication = props => {
 
                     });
 
+                    console.log('formattedApplication',formattedApplication)
                     console.log('formattedApplicationnnn', JSON.stringify({
                         data: formattedApplication
                     }))
@@ -602,6 +604,8 @@ const ImportExportApplication = props => {
                         }
                     });
                 }
+
+                console.log('updatedPayloadddd',updatedPayload)
 
 
                 setIsUploadLoading(true);
