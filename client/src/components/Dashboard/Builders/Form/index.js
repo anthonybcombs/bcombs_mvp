@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPrint, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { useReactToPrint } from 'react-to-print'
 import { format } from "date-fns";
-import unionBy from 'lodash.unionBy'
+import unionBy from 'lodash.unionby'
 
 import FormStyled from './styles'
 import FORM_DATA from './sample.json'
