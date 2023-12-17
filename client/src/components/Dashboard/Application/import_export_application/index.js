@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CSVLink, CSVDownload } from "react-csv";
 import styled from "styled-components";
+import { format } from 'date-fns';
 
 function removeCarriageReturn(inputString) {
     return inputString.replace(/\r/g, '');
@@ -595,12 +596,14 @@ const ImportExportApplication = props => {
                             ...item,
                             child: {
                                 ...item.child,
+                                birthdate: format(new Date(item.child.birthdate),'yyyy-MM-dd'),
                                 has_suspended: item.child.has_suspended && item.child.has_suspended.toLowerCase() === 'yes' ? 1 : 0,
                                 create_profile: isCreateProfile
                             },
                             parents: {
                                 ...item.parents,
                                 age: removeCarriageReturn(item.parents.age), // LAST FIELD FROM CSV
+                                birthdate: format(new Date(item.parents.birthdate),'yyyy-MM-dd'),
                                 create_profile: isCreateProfile
                             },
                             vendor,
