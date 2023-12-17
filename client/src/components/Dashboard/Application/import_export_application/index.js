@@ -409,6 +409,8 @@ const ImportExportApplication = props => {
 
                                     let value = item && item[currentKey]
 
+                                    console.log('formData.type',formData.type)
+
                                     if (formData.type === 'name') {
                                         value = convertToQuotedString(item[(formData.label === 'Parent' || formData.label === 'Instructor') ? `${formData.label} ${field.label}` : field.label]);
                                     }
@@ -422,11 +424,13 @@ const ImportExportApplication = props => {
                                         }
 
                                     }
-                                    else if (field.type === 'text' && formData.type === 'date') {
-                                        const dateValue = item[parentKey] && item[parentKey].split('-');
+                                    else if (/* field.type === 'text' &&  */formData.type === 'date') {
+                                        const dateValue = item[parentKey] && item[parentKey].split(/[-/]/);
+            
                                         if (Array.isArray(dateValue) && dateValue.length > 0) {
                                             if (field.label === 'YYYY') {
-                                                value = dateValue[2]
+                                                value = dateValue[2];
+                                                value = removeCarriageReturn(value);
                                             }
                                             else if (field.label === 'DD') {
                                                 value = dateValue[1]
@@ -605,7 +609,7 @@ const ImportExportApplication = props => {
                     });
                 }
 
-                console.log('updatedPayloadddd',updatedPayload)
+                console.log('updatedPayload',updatedPayload)
 
 
                 setIsUploadLoading(true);
