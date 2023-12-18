@@ -565,10 +565,10 @@ export default function index({
 
     if (!child || (!child.age && child <= -1)) return "";
 
-    let birthdate = child.birthdate && format(new Date(child.birthdate), DATE_FORMAT);
+    // let birthdate = child.birthdate && format(new Date(child.birthdate), DATE_FORMAT);
     return (
       <div>
-        {child.age}&nbsp; ({birthdate})
+        {child.age}
       </div>
     );
   };

@@ -229,7 +229,6 @@ const ImportExportApplication = props => {
     const [isImportSuccess, setIsImportSuccess] = useState(false);
     const applicationName = `${formType === 'custom' && !isLot ? form?.form_contents?.formTitle || 'Custom Form' : isLot ? 'LOT Form' : 'Mentoring Application'}`;
 
-    console.log('form', form)
 
     let currentFormData = form?.form_contents?.formData ? form?.form_contents?.formData.map(item => {
         let fields = item.fields;
@@ -316,7 +315,7 @@ const ImportExportApplication = props => {
             }, []).flat();
 
 
-            let totalColumns = ['UniqueID',...childColumns, ...parentColumns];
+            let totalColumns = [...childColumns, ...parentColumns];
             //  totalColumns = createProfileFeature ? [...totalColumns, 'Create Profile'] : totalColumns;
 
 

@@ -83,7 +83,9 @@ import { DEFAULT_VENDOR } from "../../../constants/vendors";
 import { ASSESSMENT_FORM_IDS } from '../../../constants/forms';
 
 import { getPageQrCode } from '../../../helpers/Forms';
+import { isUUID } from '../../../helpers/Applications';
 import form from "../../Calendar/big-calendar/search/form.js";
+
 
 
 const ApplicationFormStyled = styled.form`
@@ -866,12 +868,23 @@ export default function index() {
     } else {
       setExportFilename(selectedVendor?.name);
 
-      if (selectedVendor?.default_form && selectedVendor?.default_form !== 'default') {
-        dispatch(requestGetCustomApplications(selectedVendor?.default_form || ''));
+      if(isUUID(selectedForm)) {
+
+        const tempForm = formList.find((form) => {
+          return form.form_id == selectedForm;
+        });
+        setCurrentForm(tempForm);
+  
       }
       else {
-        dispatch(requestGetApplications(selectedVendor?.id || ''));
+        if (selectedVendor?.default_form && selectedVendor?.default_form !== 'default') {
+          dispatch(requestGetCustomApplications(selectedVendor?.default_form || ''));
+        }
+        else {
+          dispatch(requestGetApplications(selectedVendor?.id || ''));
+        }
       }
+  
 
     }
 
@@ -1435,7 +1448,6 @@ export default function index() {
 
   const onSubmitSaveApplication = () => {
 
-    console.log(';childInformation',childInformation)
     let payload = {
       app_id: selectedApplication.app_id,
       child: {
