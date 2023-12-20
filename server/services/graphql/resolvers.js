@@ -2061,7 +2061,12 @@ const resolvers = {
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
       if(previousApplication && uniqueId) {
-        await updateChildUniqueId(previousApplication.child, uniqueId)
+
+        let child = await getChildInformation(applpreviousApplicationication.child);
+        if(child && child.new_childId) {
+          await updateChildUniqueId(child.new_childId, uniqueId)
+        }
+
       }
 
       await updateSubmitCustomApplication(application);

@@ -1034,7 +1034,7 @@ export const updateChildUniqueId = async (childId, childUniqueId) => {
       `
         UPDATE child SET
         new_childId=?
-        WHERE ch_id=UUID_TO_BIN(?)
+        WHERE new_childId=?
       `,
       [
         childUniqueId,
