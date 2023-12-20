@@ -2063,8 +2063,8 @@ const resolvers = {
       if(previousApplication && uniqueId) {
 
         let child = await getChildInformation(previousApplication.child);
-        if(child && child.new_childId) {
-          await updateChildUniqueId(child.new_childId, uniqueId)
+        if(child && child[0]) {
+          await updateChildUniqueId(child[0].new_childId, uniqueId)
         }
 
       }
