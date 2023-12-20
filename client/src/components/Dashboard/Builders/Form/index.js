@@ -25,9 +25,40 @@ import ThankyouPage from './ThankyouPage'
 
 import { isValidJSONString } from '../../../../helpers/Arrays'
 
+const UNIQUE_ID_FORM_NAMES = ['Student ID','Unique ID'];
+const UNIQUE_ID_FORMS = {
+  "id": "a38a430d-55ce-4338-a5d2-c2b7ee338ce0",
+  "label": "Student ID",
+  "type": "singleLineText",
+  "fields": [
+      {
+          "id": "input0_a38a430d-55ce-4338-a5d2-c2b7ee338ce0",
+          "label": "Single Line Text",
+          "type": "text",
+          "tag": "input",
+          "placeholder": "",
+          "column": "3",
+          "value": ""
+      }
+  ],
+  "groupType": "standard",
+  "settings": {},
+  "isActive": false,
+  "allowAddField": true,
+  "gridMax": 3,
+  "includeLogic": false,
+  "includeValidation": true,
+  "hasSettings": true,
+  "supportMultiple": false,
+  "showLabel": true,
+  "format": "{\"presetColors\":[\"#ff007b\",\"#8f5772\",\"#a5a4b7\",\"#1d13d2\"]}"
+};
+
 export default (props) => {
   const {
+    child,
     baseFormData = null,
+    editMode = false,
     hideAction = false,
     form_id,
     form_contents: application_form_contents,
@@ -40,7 +71,8 @@ export default (props) => {
     onSubmitApplication,
     onSelectLatest,
     isFormHistory,
-    historyList
+    historyList,
+    selectedApplication
   } = props
 
   const isApplication = !form_id
@@ -98,18 +130,25 @@ export default (props) => {
       const newAddresses = formData.filter(e => e.type === 'address')
       setAddresses(newAddresses)
 
-      console.log('baseFormData',baseFormData)
-
-      console.log('baseFormData formData',formData)
-
-      const updatedFormData = baseFormData?.formData ?  unionBy(formData, baseFormData?.formData, 'id') :  formData;
+      let updatedFormData = baseFormData?.formData ?  unionBy(formData, baseFormData?.formData, 'id') :  formData;
       
-      console.log('updatedFormData baseFormData',baseFormData)
-      console.log('updatedFormData formData',formData)
-      console.log('updatedFormData',updatedFormData)
+
+      if(editMode) {
+        const uniqueIdIndexFormIndex = updatedFormData.findIndex(item => UNIQUE_ID_FORM_NAMES.includes(item.label));
+    
+        if(uniqueIdIndexFormIndex === -1) {
+          let currentUniqueIdForms = { ...UNIQUE_ID_FORMS };
+          currentUniqueIdForms.fields[0].value = child?.new_childId;
+          updatedFormData = [ UNIQUE_ID_FORMS, ...updatedFormData];
+        }
+        else {
+          updatedFormData[uniqueIdIndexFormIndex].fields[0].value = child?.new_childId;
+        }
+      }
 
       const fields = hasWizard ? groupFieldsByPageBreak(updatedFormData) : updatedFormData
-      console.log('fieldssss',fields)
+
+
       setFormFields(fields)
       setForm(true)
     }
@@ -573,6 +612,7 @@ export default (props) => {
   const hasLoginField = !!(flattenFields().find(e => e.type === 'login'))
 
   console.log('actualFormFields',actualFormFields)
+
   return (
     <FormStyled ref={componentRef}>
       <div id='form' >

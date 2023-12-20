@@ -2277,7 +2277,7 @@ export default function index() {
   let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
   console.log('vendors', vendors)
 
-  console.log('currentForm',currentForm)
+  console.log('applications',applications)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2744,6 +2744,7 @@ export default function index() {
             <Loading />
           ) : (
             <Form
+              editMode={true}
               baseFormData={currentForm?.form_contents}
               historyList={customApplicationHistory}
               key={applicationFormKey}
