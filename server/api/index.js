@@ -14,7 +14,7 @@ import { removeDuplicatesByKey } from '../helpers/array';
 import { sendMigratedAccount, bookDemoSchedule } from "../helpers/email";
 
 import { submitCustomApplication, addApplicationUser, createApplication } from '../api/applications';
-import { addChild, getGroupByChildId } from '../api/child';
+import { addChild, getGroupByChildId, updateChild } from '../api/child';
 import { checkUserEmail, executeSignUp, executeAddUserProfile } from '../api/users';
 import { getUserTypes } from "../api/userTypes/";
 
@@ -1647,9 +1647,18 @@ router.post("/application/import", async (req, res) => {
 
         console.log('application.child', application.child)
 
-        const child = await addChild({ ...application.child });
+        let child = {}
+
+        if(application.child.ch_id) {
+          child = application.child;
+          await updateChild(application.child)
+        }
+        else {
+          child = await addChild({ ...application.child });
+        }
+
         const parents = application.parents;
-        const currentChild = { ...application.child };
+        // const currentChild = { ...application.child };
 
         application.class_teacher = "";
         application.child = child && child.ch_id;
@@ -1659,55 +1668,62 @@ router.post("/application/import", async (req, res) => {
           newId: child.ch_id
         })
 
-        application = await createApplication(application);
+        if(application.child && !application.child.application_id) {
+          application = await createApplication(application);
+        }
+   
 
         const tempParentId = null;
         parents.application = application.app_id;
-        const newParent = await addParent(parents);
-        let checkEmail = await checkUserEmail(parents.email_address);
 
-        if (checkEmail && checkEmail.is_exist && checkEmail.status !== 'Email is available to use') {
-          console.log("Parent Status: ", checkEmail.status);
-        } else {
-
-          let user = {
-            username: parents.firstname + "" + parents.lastname,
-            email: parents.email_address,
-            password: parents.password,
-            type: userType
-          };
-
-
-          console.log('parents.create_profile', parents.create_profile)
-          if (parents.create_profile) {
-            await executeSignUp(user);
-
-            let parentInfo = {
-              ...parents,
+        if(application.child && !application.child.ch_id) {
+          const newParent = await addParent(parents);
+          let checkEmail = await checkUserEmail(parents.email_address);
+  
+          if (checkEmail && checkEmail.is_exist && checkEmail.status !== 'Email is available to use') {
+            console.log("Parent Status: ", checkEmail.status);
+          } else {
+  
+            let user = {
+              username: parents.firstname + "" + parents.lastname,
               email: parents.email_address,
-              dateofbirth: parents.birthdate
+              password: parents.password,
+              type: userType
             };
-
-            await executeAddUserProfile(parentInfo);
-          }
-
-          // if (currentChild && currentChild.create_profile && currentChild.password) {
-          //   let childUser = {
-          //     username: currentChild.firstname + "" + currentChild.lastname,
-          //     email: currentChild.email_address,
-          //     password: currentChild.password,
-          //     type: userType
-          //   };
-
-          //   console.log('childUser', childUser)
-          //   const resp = await executeSignUp(childUser);
-          //   console.log('childUser resp', resp)
-          // }
-
-          newParents.push({
-            tempId: tempParentId,
-            newId: newParent?.parent_id
-          })
+  
+  
+            console.log('parents.create_profile', parents.create_profile)
+            if (parents.create_profile) {
+              await executeSignUp(user);
+  
+              let parentInfo = {
+                ...parents,
+                email: parents.email_address,
+                dateofbirth: parents.birthdate
+              };
+  
+              await executeAddUserProfile(parentInfo);
+            }
+  
+            // if (currentChild && currentChild.create_profile && currentChild.password) {
+            //   let childUser = {
+            //     username: currentChild.firstname + "" + currentChild.lastname,
+            //     email: currentChild.email_address,
+            //     password: currentChild.password,
+            //     type: userType
+            //   };
+  
+            //   console.log('childUser', childUser)
+            //   const resp = await executeSignUp(childUser);
+            //   console.log('childUser resp', resp)
+            // }
+  
+            newParents.push({
+              tempId: tempParentId,
+              newId: newParent?.parent_id
+            })
+        }
+ 
 
           const parentUser = await getUserFromDatabase(parents.email_address);
 
