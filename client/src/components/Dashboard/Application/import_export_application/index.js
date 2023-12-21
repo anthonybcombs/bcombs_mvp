@@ -7,6 +7,21 @@ function removeCarriageReturn(inputString) {
     return inputString.replace(/\r/g, '');
 }
 
+function formatDate(inputDate = '') {
+    // Use toISOString to get the date in ISO format and then substring to extract the date portion
+    return inputDate.substring(0, 10);
+}
+
+function isValidDate(dateString) {
+    // Check if the given string can be successfully converted to a Date object
+    const parsedDate = new Date(dateString);
+    return !isNaN(parsedDate.getTime());
+}
+
+
+function parseValues(str) {
+    return str.replace(/^"(.*)"$/, '$1').replace(/\\/g, '');
+}
 
 function convertToQuotedString(inputString) {
     return '"' + inputString + '"';
@@ -34,7 +49,6 @@ const importCustomForm = async (data, formType) => {
 
 
 const parentFields = {
-
     firstname: 'Parent Firstname',
     lastname: 'Parent Lastname',
     phone_type: 'Parent Phone Type',
@@ -60,23 +74,24 @@ const parentFields = {
     // create_profile: 'Create Profile'
 }
 
-const instructorFields = {
+// const instructorFields = {
 
-    firstname: 'Instructor Firstname',
-    lastname: 'Instructor Lastname',
-    // create_profile: 'Create Profile'
-}
+//     firstname: 'Instructor Firstname',
+//     lastname: 'Instructor Lastname',
+//     // create_profile: 'Create Profile'
+// }
 
 
-const customFormParentField = {
-    'Parent Title': 'title',
-    'Parent First Name': 'first name',
-    'Parent Middle Name': 'middle name',
-    'Parent Last Name': 'last name'
-
-}
+// const customFormParentField = {
+//     'Parent Title': 'title',
+//     'Parent First Name': 'first name',
+//     'Parent Middle Name': 'middle name',
+//     'Parent Last Name': 'last name'
+// }
 
 const childFields = {
+    application_id: 'Application ID',
+    ch_id: 'Child ID',
     new_childId: 'UniqueID',
     firstname: 'Child Firstname',
     lastname: 'Child Lastname',
@@ -218,17 +233,22 @@ const ImportExportApplicationStyled = styled.div`
 `;
 
 const ImportExportApplication = props => {
-    const { vendor, form, formType = 'mentoring', isLot = false, createProfileFeature = false, refreshData } = props;
+    const { vendor, form, formType = 'mentoring', isLot = false, createProfileFeature = false, selectedApplications, refreshData } = props;
 
     const [columns, setColumns] = useState([]);
     const [content, setContent] = useState(null);
+
+    const [existingData, setExistingData] = useState([]);
+
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [currentFormPayload, setCurrentFormPayload] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isCreateProfile, setIsCreateProfile] = useState(false);
+    const [exportWithData, setExportWithData] = useState(false);
     const [isImportSuccess, setIsImportSuccess] = useState(false);
     const applicationName = `${formType === 'custom' && !isLot ? form?.form_contents?.formTitle || 'Custom Form' : isLot ? 'LOT Form' : 'Mentoring Application'}`;
 
+    console.log('selectedApplications', selectedApplications)
 
     let currentFormData = form?.form_contents?.formData ? form?.form_contents?.formData.map(item => {
         let fields = item.fields;
@@ -270,7 +290,7 @@ const ImportExportApplication = props => {
                 if (item.type !== 'terms') {
                     let fields = [];
                     const title = item.label.toLowerCase();
-                    if (title === 'parent'  || title === 'instructor') {
+                    if (title === 'parent' || title === 'instructor') {
                         fields = item.fields.map(item2 => `${item.label} ${item2.label}`)
                     }
                     else {
@@ -318,7 +338,7 @@ const ImportExportApplication = props => {
             let totalColumns = [...childColumns, ...parentColumns];
             //  totalColumns = createProfileFeature ? [...totalColumns, 'Create Profile'] : totalColumns;
 
-
+            console.log('totalColumnssss', totalColumns)
 
             setColumns([...totalColumns]);
 
@@ -346,7 +366,7 @@ const ImportExportApplication = props => {
                 importedData = importedData.filter(item => {
                     return !item.every(val => !val)
                 })
-  
+
                 console.log('formattedRows', formattedRows)
                 console.log('formattedRows importedColumns', importedColumns)
                 console.log('formattedRows importedData', importedData)
@@ -356,11 +376,11 @@ const ImportExportApplication = props => {
                         const item = data.reduce((accum, data2, index2) => {
                             const currentKey = removeCarriageReturn(importedColumns[index2]);
 
-                            if(accum.hasOwnProperty(currentKey)) {
+                            if (accum.hasOwnProperty(currentKey)) {
                                 return {
                                     ...accum,
                                     [`${currentKey} 2`]: data2
-                                }  
+                                }
                             }
                             return {
                                 ...accum,
@@ -409,7 +429,7 @@ const ImportExportApplication = props => {
 
                                     let value = item && item[currentKey]
 
-                                    console.log('formData.type',formData.type)
+                                    console.log('formData.type', formData.type)
 
                                     if (formData.type === 'name') {
                                         value = convertToQuotedString(item[(formData.label === 'Parent' || formData.label === 'Instructor') ? `${formData.label} ${field.label}` : field.label]);
@@ -426,7 +446,7 @@ const ImportExportApplication = props => {
                                     }
                                     else if (/* field.type === 'text' &&  */formData.type === 'date') {
                                         const dateValue = item[parentKey] && item[parentKey].split(/[-/]/);
-            
+
                                         if (Array.isArray(dateValue) && dateValue.length > 0) {
                                             if (field.label === 'YYYY') {
                                                 value = dateValue[2];
@@ -498,11 +518,11 @@ const ImportExportApplication = props => {
 
 
                         Object.keys(childFields).forEach((key, index) => {
-                            childPayload[key] = childInfo[index];
+                            childPayload[key] = parseValues(childInfo[index]);
                         });
 
                         Object.keys(parentFields).forEach((key, index) => {
-                            parentPayload[key] = parentInfo[index];
+                            parentPayload[key] = parseValues(parentInfo[index]);
                         });
 
                         console.log('payload!!!! child', childPayload)
@@ -523,7 +543,7 @@ const ImportExportApplication = props => {
 
                     });
 
-                    console.log('formattedApplication',formattedApplication)
+                    console.log('formattedApplication', formattedApplication)
                     console.log('formattedApplicationnnn', JSON.stringify({
                         data: formattedApplication
                     }))
@@ -545,7 +565,7 @@ const ImportExportApplication = props => {
     const handleUploadCustomForm = async () => {
         try {
 
-            console.log('currentFormPayload',currentFormPayload)
+            console.log('currentFormPayload', currentFormPayload)
             if (currentFormPayload) {
                 let updatedPayload = [...(currentFormPayload || [])];
 
@@ -558,7 +578,7 @@ const ImportExportApplication = props => {
 
                             const loginForms = item.form_contents.formData.find(frm => frm.type === 'login');
                             const nameForms = item.form_contents.formData.find(frm => (frm.label.toLowerCase() === 'parent' || frm.label.toLowerCase() === 'instructor') || frm.type === 'name');
-    
+
                             if (loginForms && nameForms) {
                                 const loginDetails = loginForms?.fields?.reduce((accum, field) => {
                                     return {
@@ -591,18 +611,19 @@ const ImportExportApplication = props => {
                             create_profile: isCreateProfile
                         }
                     }) : currentFormPayload.map(item => {
+                        console.log('formatDate(item.child.birthdate)', item)
                         return {
                             ...item,
                             child: {
                                 ...item.child,
-                                birthdate: format(new Date(item.child.birthdate),'yyyy-MM-dd'),
+                                birthdate: isValidDate(item?.child?.birthdate) ? format(new Date(formatDate(item.child.birthdate)), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
                                 has_suspended: item.child.has_suspended && item.child.has_suspended.toLowerCase() === 'yes' ? 1 : 0,
                                 create_profile: isCreateProfile
                             },
                             parents: {
                                 ...item.parents,
                                 age: removeCarriageReturn(item.parents.age), // LAST FIELD FROM CSV
-                                birthdate: format(new Date(item.parents.birthdate),'yyyy-MM-dd'),
+                                birthdate: isValidDate(item?.parents?.birthdate) ? format(new Date(formatDate(item.parents.birthdate)), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
                                 create_profile: isCreateProfile
                             },
                             vendor,
@@ -611,22 +632,22 @@ const ImportExportApplication = props => {
                     });
                 }
 
-                console.log('updatedPayload',updatedPayload)
+                console.log('updatedPayload', updatedPayload)
 
 
-                setIsUploadLoading(true);
-                await importCustomForm(updatedPayload, formType);
-                setIsUploadLoading(false);
-                setIsImportSuccess(true);
+                // setIsUploadLoading(true);
+                // await importCustomForm(updatedPayload, formType);
+                // setIsUploadLoading(false);
+                // setIsImportSuccess(true);
             }
         } catch (e) {
             console.log('handleUploadCustomForm e', e)
         }
         finally {
-            refreshData();
-            setTimeout(() => {
-                setIsModalVisible(false);
-            }, 2000);
+            // refreshData();
+            // setTimeout(() => {
+            //     setIsModalVisible(false);
+            // }, 2000);
         }
     }
 
@@ -637,6 +658,46 @@ const ImportExportApplication = props => {
 
     const handleCreateProfileChange = () => {
         setIsCreateProfile(!isCreateProfile);
+    }
+
+
+    const handleExportWithDataChange = e => {
+
+        const { checked } = e.target;
+
+        if (checked) {
+
+            const data = selectedApplications.map(item => {
+                let childData = Object.keys(childFields).reduce((accum, key) => {
+                    if (key === 'application_id') {
+                        return [
+                            ...accum,
+                            item.id
+                        ]
+                    }
+                    return [
+                        ...accum,
+                        item.child[key]
+                    ]
+                }, []);
+
+                let parentData = Object.keys(parentFields).reduce((accum, key) => {
+                    return [
+                        ...accum,
+                        item?.parents[0] && item.parents[0][key]
+                    ]
+                }, []);
+
+
+                return [...childData, ...parentData]
+            });
+            setExistingData(data)
+
+        }
+        else {
+            setExistingData([]);
+        }
+        setExportWithData(checked);
     }
 
 
@@ -664,7 +725,7 @@ const ImportExportApplication = props => {
                         <br />
                         <div>
                             <label style={{ color: 'orange' }}>Note:</label>
-                           
+
                         </div>
                         {formType === 'mentoring' && <div style={{ paddingTop: 12 }}>
 
@@ -694,6 +755,13 @@ const ImportExportApplication = props => {
                             </div>}
                         <br />
 
+                        {
+                            <div>
+                                <label>Export with Data</label>
+                                <input type="checkbox" onChange={handleExportWithDataChange} checked={exportWithData} />
+                            </div>}
+                        <br />
+
                         {isImportSuccess && <div style={{ color: 'green', paddingBottom: 12 }}>Data has been imported successfully!</div>}
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -719,11 +787,12 @@ const ImportExportApplication = props => {
                                 onClick={() => {
                                 }}
 
-                                data={[columns]}
+                                data={[columns, ...existingData]}
 
                                 filename={applicationName}>
                                 <span >Download {applicationName} CSV</span>
                             </CSVLink>
+
                         </div>
                     </div>
 
