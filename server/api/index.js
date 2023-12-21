@@ -19,7 +19,7 @@ import { checkUserEmail, executeSignUp, executeAddUserProfile } from '../api/use
 import { getUserTypes } from "../api/userTypes/";
 
 import {
-  addParent
+  addParent, updateParent
 } from "../api/parents";
 
 import { ASSESSMENT_FORM_ID, UNIQUE_ID_LABELS } from '../constants';
@@ -1523,16 +1523,16 @@ router.post("/application/import", async (req, res) => {
         });
 
         let uniqueIdType = application.form_contents.formData.find((item) => {
-          return  UNIQUE_ID_LABELS.includes(item.label)
+          return UNIQUE_ID_LABELS.includes(item.label)
         });
 
-      
-        uniqueIdType = uniqueIdType.fields &&  uniqueIdType.fields[0];
-        let uniqueId = uniqueIdType.value;
-        uniqueId = uniqueId.replace(/\"/g,"");
-  
 
-  
+        uniqueIdType = uniqueIdType.fields && uniqueIdType.fields[0];
+        let uniqueId = uniqueIdType.value;
+        uniqueId = uniqueId.replace(/\"/g, "");
+
+
+
         const formContentString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
         application.form_contents = Buffer.from(formContentString, "utf-8").toString("base64");
 
@@ -1645,16 +1645,25 @@ router.post("/application/import", async (req, res) => {
 
         const tempChildId = null;
 
-        console.log('application.child', application.child)
+        console.log('application.child', application)
 
-        let child = {}
+        let child = {};
 
-        if(application.child.ch_id) {
-          child = application.child;
+        let isChildUpdate = false;
+        if (application.child.ch_id) {
+          console.log('testt update')
+          child = { ...application.child };
           await updateChild(application.child)
+          isChildUpdate = true;
         }
         else {
+
           child = await addChild({ ...application.child });
+          newChilds.push({
+            tempId: tempChildId,
+            newId: child.ch_id
+          })
+
         }
 
         const parents = application.parents;
@@ -1663,48 +1672,51 @@ router.post("/application/import", async (req, res) => {
         application.class_teacher = "";
         application.child = child && child.ch_id;
 
-        newChilds.push({
-          tempId: tempChildId,
-          newId: child.ch_id
-        })
 
-        if(application.child && !application.child.application_id) {
+        if (application.child && !isChildUpdate) {
           application = await createApplication(application);
         }
-   
+
 
         const tempParentId = null;
         parents.application = application.app_id;
 
-        if(application.child && !application.child.ch_id) {
-          const newParent = await addParent(parents);
+        if (application.child) {
+          let newParent = null;
+          if (isChildUpdate) {
+            newParent = await updateParent(parents);
+          }
+          else {
+            newParent = await addParent(parents);
+          }
+
           let checkEmail = await checkUserEmail(parents.email_address);
-  
+
           if (checkEmail && checkEmail.is_exist && checkEmail.status !== 'Email is available to use') {
             console.log("Parent Status: ", checkEmail.status);
           } else {
-  
+
             let user = {
               username: parents.firstname + "" + parents.lastname,
               email: parents.email_address,
               password: parents.password,
               type: userType
             };
-  
-  
+
+
             console.log('parents.create_profile', parents.create_profile)
             if (parents.create_profile) {
               await executeSignUp(user);
-  
+
               let parentInfo = {
                 ...parents,
                 email: parents.email_address,
                 dateofbirth: parents.birthdate
               };
-  
+
               await executeAddUserProfile(parentInfo);
             }
-  
+
             // if (currentChild && currentChild.create_profile && currentChild.password) {
             //   let childUser = {
             //     username: currentChild.firstname + "" + currentChild.lastname,
@@ -1712,23 +1724,23 @@ router.post("/application/import", async (req, res) => {
             //     password: currentChild.password,
             //     type: userType
             //   };
-  
+
             //   console.log('childUser', childUser)
             //   const resp = await executeSignUp(childUser);
             //   console.log('childUser resp', resp)
             // }
-  
+
             newParents.push({
               tempId: tempParentId,
               newId: newParent?.parent_id
             })
-        }
- 
+          }
+
 
           const parentUser = await getUserFromDatabase(parents.email_address);
 
 
-          if (parentUser) {
+          if (parentUser && !child.ch_id) {
             await addApplicationUser({
               user_id: parentUser.id,
               app_id: application.app_id
@@ -2933,7 +2945,7 @@ router.post('/email/verify', async (req, res) => {
       };
 
       const managementResponse = await getAuth0ManagementToken();
-  
+
       if (managementResponse) {
         const resp = await fetch(resendVerificationEmailEndpoint, {
           method: 'POST',
@@ -2993,31 +3005,31 @@ router.get('/form/assessment', async (req, res) => {
 
     for (const application of applications) {
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-     
+
       application.form_contents = JSON.parse(application.form_contents);
 
     }
 
     let filteredResult = applications.filter(form => {
 
-        let uniqueIdForm = form.form_contents.formData.find(formInput => UNIQUE_ID_LABELS.includes(formInput.label));
-        uniqueIdForm = uniqueIdForm.fields &&  uniqueIdForm.fields[0];
-        let uniqueId = uniqueIdForm.value;
-        uniqueId = uniqueId.replace(/\"/g,"");
-        return uniqueId === studentId
+      let uniqueIdForm = form.form_contents.formData.find(formInput => UNIQUE_ID_LABELS.includes(formInput.label));
+      uniqueIdForm = uniqueIdForm.fields && uniqueIdForm.fields[0];
+      let uniqueId = uniqueIdForm.value;
+      uniqueId = uniqueId.replace(/\"/g, "");
+      return uniqueId === studentId
 
     });
 
-    if(filteredResult.length > 0) {
+    if (filteredResult.length > 0) {
       filteredResult = filteredResult[filteredResult.length - 1];
-    } 
+    }
 
     return res.status(200).json({
       data: filteredResult
     })
-  
+
   } catch (error) {
-    console.log('error',error)
+    console.log('error', error)
     return res.status(400).json({
       message: 'Something went wrong'
     })
