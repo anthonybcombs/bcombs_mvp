@@ -248,7 +248,6 @@ const ImportExportApplication = props => {
     const [isImportSuccess, setIsImportSuccess] = useState(false);
     const applicationName = `${formType === 'custom' && !isLot ? form?.form_contents?.formTitle || 'Custom Form' : isLot ? 'LOT Form' : 'Mentoring Application'}`;
 
-    console.log('selectedApplications', selectedApplications)
 
     let currentFormData = form?.form_contents?.formData ? form?.form_contents?.formData.map(item => {
         let fields = item.fields;
@@ -635,19 +634,19 @@ const ImportExportApplication = props => {
                 console.log('updatedPayload', updatedPayload)
 
 
-                // setIsUploadLoading(true);
-                // await importCustomForm(updatedPayload, formType);
-                // setIsUploadLoading(false);
-                // setIsImportSuccess(true);
+                setIsUploadLoading(true);
+                await importCustomForm(updatedPayload, formType);
+                setIsUploadLoading(false);
+                setIsImportSuccess(true);
             }
         } catch (e) {
             console.log('handleUploadCustomForm e', e)
         }
         finally {
-            // refreshData();
-            // setTimeout(() => {
-            //     setIsModalVisible(false);
-            // }, 2000);
+            refreshData();
+            setTimeout(() => {
+                setIsModalVisible(false);
+            }, 2000);
         }
     }
 

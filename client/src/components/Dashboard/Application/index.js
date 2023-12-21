@@ -2421,6 +2421,7 @@ export default function index() {
             vendor={selectedVendor?.id}
             isLot={selectedForm === 'lot'}
             createProfileFeature={true}
+            selectedApplications={applications.activeapplications}
             refreshData={() => {
               handleGetForms(selectedForm)
             }}
