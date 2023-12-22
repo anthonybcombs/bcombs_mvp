@@ -1587,7 +1587,7 @@ router.post("/application/import", async (req, res) => {
           let child = null;
         
          
-          if(  application.child_id) {
+          if( application.child_id) {
             console.log('update triggered!')
             let currentChild = await getChildInformation(application.child_id);
             currentChild = currentChild && currentChild[0];
@@ -1607,7 +1607,7 @@ router.post("/application/import", async (req, res) => {
 
           application.child = child && child.ch_id;
  
-          if(!application.application_id) {
+          if(!application.application_id && !application.child_id) {
             const customApplication = await submitCustomApplication(application);
 
             if (application.account_details) {
@@ -1641,6 +1641,22 @@ router.post("/application/import", async (req, res) => {
                 console.log('Execute Signup on custom form', resp)
               }
             }
+          }
+          else {
+            const updatedApplication = {
+              ...application,
+              form_contents: {
+                ...(application?.form_contents),
+                formData: application.form_contents.formData
+              }
+            }
+    
+            let formContentsString = updatedApplication.form_contents ? JSON.stringify(updatedApplication.form_contents) : "{}";
+            updatedApplication.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+      
+      
+      
+            await updateCustomApplicationForm(updatedApplication);
           }
  
 
