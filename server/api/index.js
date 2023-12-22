@@ -1606,7 +1606,7 @@ router.post("/application/import", async (req, res) => {
           }
 
           application.child = child && child.ch_id;
-
+ 
           if(!application.application_id) {
             const customApplication = await submitCustomApplication(application);
 
