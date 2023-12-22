@@ -1585,7 +1585,7 @@ router.post("/application/import", async (req, res) => {
 
 
           let child = null;
-        
+          console.log('application',application)
          
           if( application.child_id) {
             console.log('update triggered!')
@@ -1646,19 +1646,21 @@ router.post("/application/import", async (req, res) => {
             const updatedApplication = {
               ...application,
               form_contents: {
-                ...(application?.form_contents),
+                formTitle: application.form_contents.formTitle,
                 formData: application.form_contents.formData
               }
             }
-    
-            let formContentsString = updatedApplication.form_contents ? JSON.stringify(updatedApplication.form_contents) : "{}";
-            updatedApplication.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
+
+            console.log('updatedApplication form_contents',updatedApplication.form_contents)
+          
+            // let formContentsString = updatedApplication.form_contents ? JSON.stringify(updatedApplication.form_contents) : "{}";
+            // updatedApplication.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
       
             
             console.log('updatedApplication',updatedApplication)
       
-            // await updateSubmitCustomApplication(updatedApplication);
-            await updateSubmitCustomApplication({ app_id: application.application_id, form_contents: formContentsString });
+         
+            await updateSubmitCustomApplication({ app_id: application.application_id, form_contents: application.form_contents });
           }
  
 
