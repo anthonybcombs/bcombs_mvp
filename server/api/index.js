@@ -1654,9 +1654,11 @@ router.post("/application/import", async (req, res) => {
             let formContentsString = updatedApplication.form_contents ? JSON.stringify(updatedApplication.form_contents) : "{}";
             updatedApplication.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
       
+            
+            console.log('updatedApplication',updatedApplication)
       
-      
-            await updateCustomApplicationForm(updatedApplication);
+            // await updateSubmitCustomApplication(updatedApplication);
+            // updateSubmitCustomApplication({ app_id: application.app_id, form_contents: formContentsString });
           }
  
 

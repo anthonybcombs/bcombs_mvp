@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
 import styled, { ThemeContext } from "styled-components";
 
+import { isValidJSONString } from '../../helpers/Arrays.js';
 import Loading from '../../helpers/Loading.js'
+
 
 const AssessmentStyled = styled.form`
  
@@ -231,17 +233,25 @@ const AssessmentForm = props => {
         }
       }
 
-      let absence = formContents.find(item => item.label.includes('absence'));
-
+      let absence = formContents.find(item => item.label && item.label.toLowerCase().includes('absence'));
 
       if (absence) {
-        absence = {
-          value: removeExtraCharacters(absence?.fields[0]?.value || '')
+        if(isValidJSONString(absence?.fields[0]?.value)) {
+          let value = JSON.parse(absence?.fields[0]?.value);
+          value = Object.values(value)[0];
+          absence = {
+            value: value
+          }
+        }
+        else {
+          absence = {
+            value: removeExtraCharacters(absence?.fields[0]?.value || '')
+          }
         }
 
       }
 
-      let expectation = formContents.find(item => item.label.includes('The student is __ expectations.'));
+      let expectation = formContents.find(item => item.label.includes('The student is ___ expectations'));
       if (expectation) {
         expectation = expectation?.fields[0]?.value;
         expectation = expectation && JSON.parse(expectation)
@@ -381,7 +391,7 @@ const AssessmentForm = props => {
 
         <div style={{ display: 'flex', flexDirection: 'row', marginTop: 20 }}>
 
-          <div>The student is {assessment?.expectation?.value === 'meeting' ? Checked : '__'} meeting {assessment?.expectation?.value === 'not meeting' ? Checked : '__'} not meeting {assessment?.expectation?.value === 'exceeding' ? Checked : '__'} exceeding expectations.</div>
+          <div>The student is {assessment?.expectation?.value === 'meeting' ? Checked : '___'} meeting {assessment?.expectation?.value === 'not meeting' ? Checked : '___'} not meeting {assessment?.expectation?.value === 'exceeding' ? Checked : '___'} exceeding expectations.</div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', marginTop: 20 }}>

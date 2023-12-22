@@ -1622,6 +1622,7 @@ const resolvers = {
    
       const uniqueIdForm = application.form_contents.formData.find(item => UNIQUE_ID_LABELS.includes(item.label));
       let uniqueId = uniqueIdForm &&  uniqueIdForm.fields && uniqueIdForm.fields[0] && uniqueIdForm.fields[0].value;
+
       uniqueId = uniqueId && uniqueId.replace(/"/g, "")
 
       if (customFormId === application.form) {
@@ -1630,8 +1631,9 @@ const resolvers = {
  
           const studentInfo = application.form_contents.formData.find(item => item.label === 'Student');
 
-          let studentFirstname = studentInfo && studentInfo.fields[1].value;
-          let studentLastname = studentInfo && studentInfo.fields[3].value;
+          let studentFirstname = studentInfo && (studentInfo.fields[1].value || '');
+          let studentLastname = studentInfo && ( studentInfo.fields[3].value || '');
+
 
           studentFirstname = studentFirstname.replace(/"/g, "");
           studentLastname = studentLastname.replace(/"/g, "")
