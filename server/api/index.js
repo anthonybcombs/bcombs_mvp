@@ -14,7 +14,7 @@ import { removeDuplicatesByKey } from '../helpers/array';
 import { sendMigratedAccount, bookDemoSchedule } from "../helpers/email";
 
 import { submitCustomApplication, addApplicationUser, createApplication } from '../api/applications';
-import { addChild, getGroupByChildId, updateChild } from '../api/child';
+import { addChild, getGroupByChildId, updateChild, getChildInformation } from '../api/child';
 import { checkUserEmail, executeSignUp, executeAddUserProfile } from '../api/users';
 import { getUserTypes } from "../api/userTypes/";
 
@@ -1576,7 +1576,7 @@ router.post("/application/import", async (req, res) => {
           let lastnameValue = lastname && lastname[0]?.value.slice(1, -1);
           let middlenameValue = middlename && middlename[0]?.value.slice(1, -1);
 
-          const childObj = {
+          let childObj = {
             firstname: firstnameValue,
             lastname: lastnameValue,
             middlename: middlenameValue,
@@ -1584,44 +1584,65 @@ router.post("/application/import", async (req, res) => {
           }
 
 
+          let child = null;
+        
+         
+          if(  application.child_id) {
+            console.log('update triggered!')
+            let currentChild = await getChildInformation(application.child_id);
+            currentChild = currentChild && currentChild[0];
 
-          const child = await addChild(childObj);
+            childObj = {
+              ...(currentChild || {}),
+              ...childObj
+            }
+            await updateChild(childObj)
+            child = childObj;
+          }
+
+          else {
+            console.log('add triggered!')
+            child = await addChild(childObj);
+          }
 
           application.child = child && child.ch_id;
 
-          const customApplication = await submitCustomApplication(application);
+          if(!application.application_id) {
+            const customApplication = await submitCustomApplication(application);
 
-          if (application.account_details) {
-
-            if (application.create_profile) {
-              let parent = {
-                username: application.account_details.firstname + "" + application.account_details.lastname,
-                email: application.account_details.email,
-                password: application.account_details.password,
-                type: userType
-              };
-
-              const resp = await executeSignUp(parent);
-
-              let parentInfo = {
-                ...parent,
-                email: parent.email,
-                dateofbirth: new Date()
-              };
-
-              await executeAddUserProfile(parentInfo);
-              const parentUser = await getUserFromDatabase(parent.email);
-
-              if (parentUser) {
-                await addApplicationUser({
-                  user_id: parentUser.id,
-                  custom_app_id: customApplication.app_id
-                });
+            if (application.account_details) {
+  
+              if (application.create_profile) {
+                let parent = {
+                  username: application.account_details.firstname + "" + application.account_details.lastname,
+                  email: application.account_details.email,
+                  password: application.account_details.password,
+                  type: userType
+                };
+  
+                const resp = await executeSignUp(parent);
+  
+                let parentInfo = {
+                  ...parent,
+                  email: parent.email,
+                  dateofbirth: new Date()
+                };
+  
+                await executeAddUserProfile(parentInfo);
+                const parentUser = await getUserFromDatabase(parent.email);
+  
+                if (parentUser) {
+                  await addApplicationUser({
+                    user_id: parentUser.id,
+                    custom_app_id: customApplication.app_id
+                  });
+                }
+  
+                console.log('Execute Signup on custom form', resp)
               }
-
-              console.log('Execute Signup on custom form', resp)
             }
           }
+ 
 
 
         } else {
