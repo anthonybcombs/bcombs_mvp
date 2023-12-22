@@ -2274,7 +2274,7 @@ export default function index() {
 
   // .sort((a, b) => a.name.localeCompare(b.name)
   let vendorOptions = vendors && vendors.length > 0 ? vendors : [];
-  let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
+  let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle?.localeCompare(b.form_contents?.formTitle)) : [];
   console.log('vendors', vendors)
 
   console.log('applications',applications)
