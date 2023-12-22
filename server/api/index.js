@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { removeDuplicatesByKey } from '../helpers/array';
 import { sendMigratedAccount, bookDemoSchedule } from "../helpers/email";
 
-import { submitCustomApplication, addApplicationUser, createApplication, updateCustomApplicationForm } from '../api/applications';
+import { submitCustomApplication, addApplicationUser, createApplication, updateSubmitCustomApplication } from '../api/applications';
 import { addChild, getGroupByChildId, updateChild, getChildInformation } from '../api/child';
 import { checkUserEmail, executeSignUp, executeAddUserProfile } from '../api/users';
 import { getUserTypes } from "../api/userTypes/";
@@ -1658,7 +1658,7 @@ router.post("/application/import", async (req, res) => {
             console.log('updatedApplication',updatedApplication)
       
             // await updateSubmitCustomApplication(updatedApplication);
-            // updateSubmitCustomApplication({ app_id: application.app_id, form_contents: formContentsString });
+            await updateSubmitCustomApplication({ app_id: application.application_id, form_contents: formContentsString });
           }
  
 
