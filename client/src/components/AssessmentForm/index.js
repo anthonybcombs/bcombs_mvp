@@ -1,12 +1,20 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styled, { ThemeContext } from "styled-components";
+// import unionBy from 'lodash.unionby';
+// import html2pdf from 'html2pdf.js';
+import generatePDF, { Resolution, Margin } from 'react-to-pdf';
+
 
 import { isValidJSONString } from '../../helpers/Arrays.js';
 import Loading from '../../helpers/Loading.js'
 
+import { requestGetFormById } from '../../redux/actions/FormBuilder';
+
+// CONSTANTS
+import { ASSESSMENT_FORM_IDS } from '../../constants/forms';
 
 const AssessmentStyled = styled.form`
- 
 
   justify-content: center;
   padding: 14px !important;
@@ -77,6 +85,13 @@ const AssessmentStyled = styled.form`
 
  
 
+`;
+
+const PrintableArea = styled.div`
+  display: flex;
+  justify-content: center;
+  width:100% !important;
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -95,7 +110,7 @@ const AssessmentStyled = styled.form`
     text-align: left;
     position: relative;
   }
-  
+
   .tableContainer {
     display: flex;
     flex-direction: row;
@@ -131,14 +146,14 @@ const AssessmentStyled = styled.form`
       padding: 12px;
     }
 
-    .detailsContainer{
-      display: flex;
-      flex-direction: column !important;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
+  .detailsContainer{
+    display: flex;
+    flex-direction: column !important;
+    justify-content: space-between;
+    margin-top: 20px;
   }
-`;
+}
+`
 
 
 const getAssessmentForm = async id => {
@@ -163,8 +178,18 @@ const removeExtraCharacters = (string = '') => string.replaceAll(/[\\"]/g, "")
 const Checked = <span style={{ textDecoration: 'underline' }}>✔</span>
 
 const AssessmentForm = props => {
+  const dispatch = useDispatch();
+
+  const { form: { selectedForm: { form_contents, vendor }, submitForm } } = useSelector(
+    ({ form }) => {
+      return { form }
+    }
+  );
+
+  const targetRef = useRef()
+
   const [currentForm, setCurrentForm] = useState(null);
-  const [currentStudentId, setCurrentStudentId] = useState('');
+  const [currentStudentId, setCurrentStudentId] = useState('C110007');
   const [assessment, setAssessment] = useState({
     assessment: []
   });
@@ -174,6 +199,10 @@ const AssessmentForm = props => {
   // useEffect(() => {
   //   getStudentAssessment();
   // }, []);
+
+  useEffect(() => {
+    dispatch(requestGetFormById({ form_id: ASSESSMENT_FORM_IDS[0] }));
+  }, [])
 
   const handleInputChange = e => {
     e.preventDefault();
@@ -188,11 +217,46 @@ const AssessmentForm = props => {
     try {
       setIsLoading(true);
       const response = await getAssessmentForm(currentStudentId.toUpperCase());
-      const formContents = response?.data?.form_contents?.formData;
+      const baseFormContents = form_contents?.formData || [];
+      let formContents = response?.data?.form_contents?.formData;
 
       let instructor = formContents.find(item => item.label === 'Instructor');
-      instructor = instructor && {
-        name: `${removeExtraCharacters(instructor?.fields[1]?.value || '')} ${removeExtraCharacters(instructor?.fields[2]?.value || '')}`
+
+
+      if (instructor) {
+        if (isValidJSONString(instructor?.fields[0]?.value)) {
+          let value = JSON.parse(instructor?.fields[0]?.value);
+
+          value = Object.values(value)[0];
+          instructor = {
+            name: value
+          }
+        }
+
+        // instructor = instructor && {
+        //   name: `${removeExtraCharacters(instructor?.fields[1]?.value || '')} ${removeExtraCharacters(instructor?.fields[2]?.value || '')}`
+        // }
+      }
+
+
+
+      let period_assessed = formContents.find(item => item.label === 'Period Assessed');
+
+      console.log('period_assessed', period_assessed)
+
+      if (period_assessed) {
+        if (isValidJSONString(period_assessed?.fields[0]?.value)) {
+          let value = JSON.parse(period_assessed?.fields[0]?.value);
+
+          value = Object.values(value)[0];
+
+          console.log('period_assessed', period_assessed)
+          period_assessed = {
+            name: value
+          }
+        }
+
+
       }
 
       let student = formContents.find(item => item.label === 'Student');
@@ -210,25 +274,33 @@ const AssessmentForm = props => {
       let instrument = formContents.filter(item => item.label === 'Instrument' || item.label === 'Instrument Type');
 
       if (instrument.length > 0) {
-        console.log('instrument[0]',instrument[0])
+
         let name = instrument[0]?.fields[0]?.value;
+
+        name = isValidJSONString(name) ? JSON.parse(name) : name;
+
+        name = typeof name === 'object' ? Object.values(name)[0] : name;
+
         name = removeExtraCharacters(name);
         let type = instrument[1]?.fields[0]?.value;
         type = type && JSON.parse(type)
-        type = typeof type === 'object' ? Object.values(type)[0] : '';
+        // type = typeof type === 'object' ? Object.values(type)[0] : '';
+
         instrument = {
           name,
           type
         }
+
       }
 
-      let student_registered = formContents.find(item => item.label.includes('student registered for Fall'))
+      let student_registered = formContents.find(item => item.label.includes('Is this student registered for the next session'))
       if (student_registered) {
+        const studentRegisteredLabel = student_registered?.label;
         student_registered = student_registered?.fields[0]?.value;
-
         student_registered = student_registered && JSON.parse(student_registered)
         student_registered = typeof student_registered === 'object' ? Object.values(student_registered)[0] : '';
         student_registered = {
+          label: studentRegisteredLabel,
           value: student_registered
         }
       }
@@ -236,7 +308,7 @@ const AssessmentForm = props => {
       let absence = formContents.find(item => item.label && item.label.toLowerCase().includes('absence'));
 
       if (absence) {
-        if(isValidJSONString(absence?.fields[0]?.value)) {
+        if (isValidJSONString(absence?.fields[0]?.value)) {
           let value = JSON.parse(absence?.fields[0]?.value);
           value = Object.values(value)[0];
           absence = {
@@ -278,7 +350,7 @@ const AssessmentForm = props => {
       });
 
       let comment = formContents.find(item => item.label.includes('Comment and Suggestion for Improvement'));
-      console.log('comment',comment)
+      console.log('comment', comment)
       comment = comment && {
         value: `${removeExtraCharacters(comment?.fields[0]?.value || '')}`
       }
@@ -288,6 +360,7 @@ const AssessmentForm = props => {
       setAssessment({
         ...assessment,
         student,
+        period_assessed,
         instructor,
         instrument,
         absence,
@@ -309,12 +382,45 @@ const AssessmentForm = props => {
   }
   const theme = useContext(ThemeContext);
 
-  console.log('assessment',assessment)
+  const handlePrint = () => {
+
+
+    generatePDF(targetRef, {
+      filename: 'assessment-form.pdf',
+      page: {
+        // margin is in MM, default is Margin.NONE = 0
+        margin: Margin.SMALL,
+        // default is 'A4'
+        format: 'A4',
+        // default is 'portrait'
+        orientation: 'portrait',
+      },
+      canvas: {
+        // default is 'image/jpeg' for better size performance
+        mimeType: 'image/png',
+        qualityRatio: 1
+      },
+      overrides: {
+        // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
+        pdf: {
+          compress: true
+        },
+        // see https://html2canvas.hertzen.com/configuration for more options
+        canvas: {
+          useCORS: true
+        }
+      },
+    })
+  }
+
+
+
+
   return <AssessmentStyled
     theme={theme}
   >
     <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <div style={{ width: 680 }}>
+      <div style={{ width: '90%' }}>
         <label style={{ fontWeight: 'bolder' }}>Student ID</label>
         <input
           value={currentStudentId}
@@ -325,8 +431,14 @@ const AssessmentForm = props => {
         <button disabled={isLoading} onClick={getStudentAssessment} type="button" style={{ width: '100%' }}>Search</button>
       </div>
     </div>
-    <div style={{ display: 'flex', justifyContent: 'center'}}>
-      {isLoading ? <Loading /> : currentForm && <div className="assessmentInfo" style={{ width: 680 }}>
+
+
+    {assessment?.questions && <div style={{ marginTop: 12, marginBottom: 12 }}>
+      <button onClick={handlePrint} type="button">Download as PDF</button>
+    </div>}
+
+    <PrintableArea ref={targetRef} id="printableArea" style={{ width: '100%' }}>
+      {isLoading ? <Loading /> : currentForm && <div className="assessmentInfo" style={{ width: '90%' }}>
 
         <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
           <h4>Community Music School</h4>
@@ -340,19 +452,26 @@ const AssessmentForm = props => {
         </div>
 
         <div className="detailsContainer">
-          <div>Instrument: {assessment?.instrument?.name}</div>
           <div>
-            Virtual: {assessment?.instrument?.type === 'Virtual' ? Checked : '_'}{`    `}
-            In-Person: {assessment?.instrument?.type === 'In-Person' ? Checked : '_'}
+
+            <div>
+              Instrument:
+              Virtual: {assessment?.instrument?.name === 'Virtual' ? Checked : '_'}{`    `}
+              In-Person: {assessment?.instrument?.name === 'In-Person' ? Checked : '_'}
+            </div>
           </div>
-          {/* <div>In-Person: {assessment?.instrument?.type === 'In-Person' ? '✔' : ''}</div> */}
+
+          <div>
+            <div>Period Assessed: {assessment?.period_assessed?.name || ''}</div>
+          </div>
+
         </div>
 
 
         <div className="detailsContainer">
           <div>How many absence: {assessment?.absence?.value || 0}</div>
-          <div>Is this student registered for Falll 2023: 
-            
+          <div>{assessment?.student_registered?.label}
+
             {assessment?.student_registered?.value === 'Yes' ? Checked : '_'} Yes {assessment?.student_registered?.value === 'No' ? '✔' : '_'} No</div>
         </div>
 
@@ -400,7 +519,7 @@ const AssessmentForm = props => {
           <div style={{ marginTop: 12 }}>{assessment?.comment?.value}</div>
         </div>
       </div>}
-    </div>
+    </PrintableArea>
 
   </AssessmentStyled>
 };

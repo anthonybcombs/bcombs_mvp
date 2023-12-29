@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CSVLink, CSVDownload } from "react-csv";
 import styled from "styled-components";
 import { format } from 'date-fns';
+import { isValidJSONString } from '../../../../helpers/Arrays';
 
 function removeCarriageReturn(inputString = '') {
     return inputString.replace(/\r/g, '');
@@ -19,14 +20,15 @@ function isValidDate(dateString) {
 }
 
 
-function parseValues(str) {
+function parseValues(str = '') {
+    str = str.replace(/"/g, '')
     return str.replace(/^"(.*)"$/, '$1').replace(/\\/g, '');
 }
 
 function convertToQuotedString(inputString) {
     return '"' + inputString + '"';
 }
-
+  
 const importCustomForm = async (data, formType) => {
 
     // Default options are marked with *
@@ -419,9 +421,7 @@ const ImportExportApplication = props => {
                     });
 
 
-                    console.log('formattedRows formattedImportData', formattedImportData)
-                    console.log('formattedRows currentFormData', currentFormData)
-
+    
                     const getCurrentData = (data, field) => {
                         return Object.keys(data).find(key => key && key.includes(field.label))
                     }
@@ -431,7 +431,7 @@ const ImportExportApplication = props => {
                         console.log('existingApplication',existingApplication)
                         const formContentWithValues = currentFormData.map(formData => {
 
-                            console.log('itemzzzz', item)
+                      
                             let parentKey = null;
 
                             if (formData.type === 'date') {
@@ -450,39 +450,50 @@ const ImportExportApplication = props => {
                                         return key && key.includes(field.label)
                                     });
 
-                    
+        
                                     let value = item && item[currentKey]
-                    
+
+               
                                     if (formData.type === 'name') {
                                         let key = (formData.label === 'Parent' || formData.label === 'Instructor') ? `${formData.label} ${field.label}` : field.label;
-          
-                              
-                                        value = convertToQuotedString(item[`${key}`]);
-               
+                                      
+                                        if(item[`"${key}"`]) {
+                                            value = parseValues(item[`"${key}"`]);
+                                        }
+                                        else {
+                                            value = parseValues(item[`${key}`]);
+                                        }
+                                        console.log('item',item)
+                                        value = convertToQuotedString(value);
+                          
                                     }
 
-                                    else if ((field.tag.includes('multipleChoice')) && value) {
+                                    else if ((field.tag.includes('multipleChoice') || field.tag.includes('dropdown')) && value) {
+                                   
 
-                                        value = field.options.find(opt => opt.label.includes(removeCarriageReturn(value)));
-
+                                        value = parseValues(value);
+               
+                                        value = field.options.find(opt => opt.label.includes(removeCarriageReturn(value)) ||  opt.name.includes(removeCarriageReturn(value)));
+                    
                                         if (typeof value === 'object') {
                                             value = JSON.stringify({ [value.name]: value.label });
                                         }
 
                                     }
+
                                     else if (/* field.type === 'text' &&  */formData.type === 'date') {
                                         const dateValue = item[parentKey] && item[parentKey].split(/[-/]/);
 
                                         if (Array.isArray(dateValue) && dateValue.length > 0) {
                                             if (field.label === 'YYYY') {
-                                                value = dateValue[2];
+                                                value = parseValues(dateValue[2]);
                                                 value = removeCarriageReturn(value);
                                             }
                                             else if (field.label === 'DD') {
-                                                value = dateValue[1]
+                                                value = parseValues(dateValue[1])
                                             }
                                             else if (field.label === 'MM') {
-                                                value = dateValue[0]
+                                                value = parseValues(dateValue[0])
                                             }
                                         }
 
@@ -557,8 +568,7 @@ const ImportExportApplication = props => {
                             parentPayload[key] = parseValues(parentInfo[index]);
                         });
 
-                        console.log('payload!!!! child', childPayload)
-                        console.log('payload!!!! parent', parentPayload)
+                
 
                         return {
                             child: {
@@ -597,7 +607,6 @@ const ImportExportApplication = props => {
     const handleUploadCustomForm = async () => {
         try {
 
-            console.log('currentFormPayload', currentFormPayload)
             if (currentFormPayload) {
                 let updatedPayload = [...(currentFormPayload || [])];
 
@@ -699,7 +708,6 @@ const ImportExportApplication = props => {
 
         if (checked) {
 
-            console.log('selectedApplications', selectedApplications)
             let data = [];
             if (formType === 'mentoring') {
                 data = selectedApplications.map(item => {
@@ -733,9 +741,17 @@ const ImportExportApplication = props => {
                     let fields = item.form_contents.formData.map(item2 => {
 
                         let values = []
+                      
+                        if(item2.type === 'dropDown' || item2.type === 'multipleChoice') {
+                    
+                            let value = isValidJSONString(item2.fields[0].value) ? JSON.parse(item2.fields[0].value) : item2.fields[0].value;
 
-                        if (item2.groupType === 'standard' && !['Student ID', 'Unique ID'].includes(item2.label)) {
-                            values = [parseValues(item2.fields[0].value || '')]
+                            value = Object.values(value)[0];
+                          
+                            values = [(value || '')];
+                        }
+                        else if (item2.groupType === 'standard' && !['Student ID', 'Unique ID'].includes(item2.label)) {
+                            values = [(item2.fields[0].value || '')]
                         }
                         else if (item2.groupType === 'prime') {
 
