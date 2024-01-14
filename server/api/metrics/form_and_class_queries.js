@@ -6,14 +6,14 @@ export async function getFormsByVendorId(db, vendorId, lotVendorIds = [], isLot 
         "order by vca.form_name;";
     let queryFormFormIdsParam = [vendorId];
     const response0 = await db.query(queryFormFormIds, queryFormFormIdsParam);
-    console.log('lotVendorIdssss',lotVendorIds)
-    const vendorIds = [ vendorId]
-    console.log('vendorIdsssss',vendorIds)
+    console.log('lotVendorIdssss', lotVendorIds)
+    const vendorIds = [vendorId]
+    console.log('vendorIdsssss', vendorIds)
     for (let application of response0) {
         application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-    
-        application.form_contents =  application.form_contents ? JSON.parse(application.form_contents) :  {};
-    
+
+        application.form_contents = application.form_contents ? JSON.parse(application.form_contents) : {};
+
         let appGroups = await db.query(
             `
             SELECT
@@ -36,9 +36,9 @@ export async function getFormsByVendorId(db, vendorId, lotVendorIds = [], isLot 
     // }
 
     let formArray = [
-        isLot ?  { key: 'lotid_0', name: 'Lot Application' } : { key: 'fid_0', name: 'Mentoring Application' },
+        isLot ? { key: 'lotid_0', name: 'Lot Application' } : { key: 'fid_0', name: 'Mentoring Application' },
     ];
-    
+
     for (let r0 = 0; r0 < response0.length; r0++) {
         if (response0[r0].form_contents) {
             formArray.push({ key: response0[r0].formId, name: response0[r0].form_contents.formTitle, is_custom_form: true });
@@ -55,14 +55,14 @@ export async function getFormsByVendorId(db, vendorId, lotVendorIds = [], isLot 
 export async function getClassesWithAttendanceByYearAndVendorAndFormId(db, year, vendorId, formId, lotVendorIds = []) {
     let classList = [{ key: 'id_0', name: 'All Groups' }];
     try {
-      
+
         let queryClause = getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lotVendorIds);
         let query = 'Select c2.name as class_name, BIN_TO_UUID(c2.app_grp_id) as class_id ' +
             queryClause.query +
             ' Group By c2.app_grp_id, c2.name Order By c2.name';
-            console.log('vendorIdddddddddd query',query)
+        console.log('vendorIdddddddddd query', query)
         const response0 = await db.query(query, queryClause.param);
-        console.log('vendorIdddddddddd response0',response0)
+        console.log('vendorIdddddddddd response0', response0)
         console.log('%%%% classes resp: ', response0);
         // if (!response0 || response0.length == 0) {
         //     return [];
@@ -76,12 +76,12 @@ export async function getClassesWithAttendanceByYearAndVendorAndFormId(db, year,
     } catch (err) {
         console.log('getClassesWithAttendanceByYearAndVendorAndFormId err', err)
     } finally {
-        console.log('classListtt',classList)
+        console.log('classListtt', classList)
         return classList;
     }
 }
 
-export function getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lotVendorIds = []) {
+export function getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lotVendorIds = [], classId = null) {
     let yearClause = '';
     let queryParamForClassesQuery = [];
     if (year && !isNaN(year)) { //allows 'tests' to span any year
@@ -95,10 +95,9 @@ export function getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lo
         "From attendance a2, vendor b2, vendor_app_groups c2 " +
         "where " + yearClause +
         "b2.id2 = ? and c2.vendor = b2.id  " // +
-      //   "a2.app_group_id = c2.app_grp_id ";
+    //   "a2.app_group_id = c2.app_grp_id ";
 
 
-        console.log('getClassesTableQuery',getClassesTableQuery)
     let queryParamForClassesQuery2 = [...queryParamForClassesQuery];
     queryParamForClassesQuery2.push(vendorId);
 
@@ -112,7 +111,7 @@ export function getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lo
         // "c2.app_grp_id = b.app_grp_id and "
         // "b2.id2 = ? and c2.vendor = b2.id and " +
         // "a2.app_group_id = c2.app_grp_id ";
-      
+
         getClassesTableQuery = "From attendance a2, vendor b2, vendor_app_groups c2 , child ch, application app " +
             "where " + yearClause +
             "(b2.id2 IN (" + lotVendorIds.join(',') + ") OR b2.id2 = ?)  and c2.vendor = b2.id and " +
@@ -120,7 +119,7 @@ export function getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lo
             // " a2.child_id = ch.ch_id and " +
             " ch.ch_id = app.child and " +
             "app.is_lot = 1 "
-      
+
 
 
     }

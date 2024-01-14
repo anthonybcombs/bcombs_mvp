@@ -21,15 +21,16 @@ import { requestAddUpdateStudentStandardizedTest, requestDeleteStudentStandardiz
 
 import { getOptionTestName } from '../../../../constants/options'
 
-export default ({ appGroupIds, applications = [], importData = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors, selectedChild, isParent = false, vendorId}) => {
+export default ({ appGroupIds, applications = [], importData = [], gradeList = [], childId, groupId, loading, groupType, requestList, onHasChanged, type, vendors, selectedChild, isParent = false, vendorId }) => {
   const dispatch = useDispatch()
   const { gradeInput } = useSelector(({ gradeInput }) => ({
     gradeInput
   }));
 
- 
+
   const attempOptions = Array(5).fill().map((e, i) => ({ value: i + 1, label: `${i + 1}` }))
   const testOptions = getOptionTestName(groupId);
+  console
   const gradeTakenOptions = [{ value: 1, label: '1st' }, { value: 2, label: '2nd' }, { value: 3, label: '3rd' }, ...Array(9).fill().map((e, i) => ({ value: i + 4, label: `${i + 4}th` }))]
 
   let initialColumns = {
@@ -49,18 +50,18 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     attachment: { type: 'obj', label: 'Attachment', sortable: false, filterable: false }
   }
 
-  if(isParent) {
+  if (isParent) {
     initialColumns = Object.keys(initialColumns).reduce((accum, key) => {
       //if(!key.includes('percentage')) {
-        return  {
-          ...accum,
-          [key]: {
-            ...initialColumns[key]
-          }
+      return {
+        ...accum,
+        [key]: {
+          ...initialColumns[key]
         }
+      }
       //}
       return accum;
-    },{});
+    }, {});
 
   }
 
@@ -172,10 +173,10 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
       mergeObj.attempt = attempt
     }
-    else if(key === 'score') {
+    else if (key === 'score') {
       value = parseInt(value);
 
-      if(value < 0 || value > 600) {
+      if (value < 0 || value > 600) {
         value = 0;
 
         mergeObj = { [key]: value }
@@ -197,7 +198,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   }
 
   const handleEnableEditConfirm = () => {
-  
+
     setRows(update(rows, {
       [rows.findIndex(e => e.id === selectedRowForEdit)]: { $merge: { enableEdit: true } }
     }))
@@ -242,11 +243,13 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     setColumnFilters(generateColumnFilters())
   }
 
+  console.log('filteredRows',filteredRows)
+
   const renderTableData = () => {
     const highlightFilters = filterFromHeaders?.highlight || []
     const { conditions } = FilterOptionsObj.highlight
 
- 
+
 
     return filteredRows.map((row, index) => {
       const colKeysArr = Object.entries(columns)
@@ -317,7 +320,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
                         style={highlightStyle}
                         value={
                           key === 'test_name'
-                            ? testOptions.find(e => e.value === row.test_name).label
+                            ? testOptions.find(e => e.value === row.test_name)?.label
                             : row[key] || '--'
                         }
                       />
@@ -344,7 +347,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
                         value={row[key]}
                         options={gradeTakenOptions}
                         onChange={(e) => handleInputChange(e, index, key)}
-                        style={{margin: '0 auto'}}
+                        style={{ margin: '0 auto' }}
                       />
                     )
                   }
@@ -480,7 +483,13 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     let currMax = {}
 
     data.forEach(e => {
-      const { standardized_test = [] } = gradeInput.gradeList.find(g => g.child_id === e.child_id) || {};
+      const { standardized_test = [] } = gradeInput.gradeList.find(g => {
+        if (e.hasOwnProperty('child_id')) {
+          return g.child_id === e.child_id
+        }
+        return g.child_id === e.app_id
+
+      }) || {};
 
       const attemptKey = `${e.child_id}_${e.grade_taken}_${e.test_name}`
       const attempt = currMax[attemptKey] || getGradeTestAttempt(standardized_test, e.grade_taken, e.test_name, e.child_id)
@@ -527,7 +536,21 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   }
 
   const handleSelectStudent = (data) => {
-    const newRows = [...rows, ...data]
+
+    // Add default data
+    console.log('handleSelectStudent data', data)
+    let updatedData = data.map(item => {
+      const gradeTaken = parseInt(item.grade_taken);
+      let currentTest = gradeList.find(grades => grades.child_id === item.child_id);
+      currentTest = currentTest?.standardized_test?.find(test => (item.child_id === test.child_id) && (gradeTaken === test.grade_taken))
+      return {
+        ...item,
+        ...currentTest
+      }
+    });
+
+    const newRows = [...rows, ...updatedData]
+   
     setRows(newRows)
     setFilteredRows(newRows)
     setColumnFilters(generateColumnFilters(newRows))
@@ -657,7 +680,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
   }, [gradeInput])
 
   useEffect(() => {
-   
+
     if (gradeInput.gradeList) {
       let newGradeList = (gradeInput.gradeList || []).filter(e => e.app_group_id)
       if (groupType === 'bcombs') {
@@ -665,14 +688,14 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
         if (type === 'all') {
           const currentVendor = Array.isArray(vendors) && vendors.find(item => item.id === vendorId);
-          
+
           if (currentVendor && currentVendor.app_groups) {
             const grpIds = currentVendor.app_groups.map(item => item.app_group_id);
             newGradeList = newGradeList.filter(item => grpIds.includes(item.app_group_id));
           }
 
         }
-      } else if(groupType === 'forms') {
+      } else if (groupType === 'forms') {
         newGradeList = newGradeList.filter(e => e.form_contents);
 
         if (newGradeList.length === 0) {
@@ -686,7 +709,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
       }
       // else {
       //   newGradeList = newGradeList.filter(item => appGroupIds.includes(item.app_group_id));
-  
+
       // }
 
       // newGradeList = newGradeList.flatMap(e => e.standardized_test)
@@ -727,6 +750,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     }
   }, [rows])
 
+  console.log('importData',importData)
 
   useEffect(() => {
     setRows(importData);
@@ -748,10 +772,10 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
     selectStudentRows = selectStudentRows.filter(e => !e.form_contents);
     if (type === 'all') {
       const currentVendor = Array.isArray(vendors) && vendors.find(item => item.id === vendorId);
-      if (currentVendor  && currentVendor.app_groups) {
+      if (currentVendor && currentVendor.app_groups) {
 
         const grpIds = currentVendor.app_groups.map(item => item.app_grp_id);
-        
+
         selectStudentRows = applications.filter(application => {
           const classTeachers = application.class_teacher && application.class_teacher.split(',');
           return classTeachers && classTeachers.some(grpId => grpIds.includes(grpId))
@@ -770,7 +794,7 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
 
           return {
             app_group_id: classTeachers && classTeachers[0],
-            child_id: application?.child?.ch_id || application?.app_id ,
+            child_id: application?.child?.ch_id || application?.app_id,
             standardized_test: [],
             cumulative_grades: [],
             form_contents: null,
@@ -782,10 +806,10 @@ export default ({ appGroupIds, applications = [], importData = [], childId, grou
       }
 
     }
-  } else if(groupType === 'forms') {
+  } else if (groupType === 'forms') {
     selectStudentRows = applications.filter(e => {
       if (type === 'all') {
-        const ids = e.app_group_id  && e.app_group_id.split(',');
+        const ids = e.app_group_id && e.app_group_id.split(',');
         return e.form_contents // && ids && ids.some(id => appGroupIds.includes(id))
       }
       return e.form_contents
