@@ -989,7 +989,7 @@ export default function index() {
 	
 				return {
 					app_id: app.app_id,
-					app_group_id: app.class_teacher,
+					app_group_id: searchParams?.formId || app.class_teacher,
 					attendance_status: app.attendance_status || '',
 					child_id: name === 'custom' ? app.app_id : app.child && app.child.ch_id,
 					vendor: app.vendor,
@@ -1053,7 +1053,6 @@ export default function index() {
 			}
 		}
 
-		console.log('Attendance Details',attendanceDetails)
 
 		setAttendanceDetails({
 			...payload,
