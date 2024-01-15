@@ -21,10 +21,19 @@ router.post("/", async (req, res) => {
             let queryParam = [vendorId, testName, dtLastTxt, dtNextTxt];
 
             if (formId && formId != 'fid_0' && formId !== 'lotid_0') {
-                fromClause = "From vendor_app_groups a2, student_standardized_test c ";
-                // whereClause = "where a2.form = UUID_TO_BIN(?) and b.app_grp_id = a2.app_grp_id and c.child_id = b.child_id ";
-                whereClause = "where a2.form = UUID_TO_BIN(?) ";
-                queryParam = [formId, testName, dtLastTxt, dtNextTxt];
+                if(classId === 'id_0') {
+                    fromClause = "From vendor_custom_application a2, student_standardized_test c ";
+                    // whereClause = "where a2.form = UUID_TO_BIN(?) and b.app_grp_id = a2.app_grp_id and c.child_id = b.child_id ";
+                    whereClause = "where a2.form_id = UUID_TO_BIN(?) ";
+                    queryParam = [formId, testName, dtLastTxt, dtNextTxt];
+                }
+                else {
+                    fromClause = "From vendor_app_groups a2, student_standardized_test c ";
+                    // whereClause = "where a2.form = UUID_TO_BIN(?) and b.app_grp_id = a2.app_grp_id and c.child_id = b.child_id ";
+                    whereClause = "where a2.form = UUID_TO_BIN(?) ";
+                    queryParam = [formId, testName, dtLastTxt, dtNextTxt];
+                }
+            
             }
             else if(formId === 'lotid_0') {
                 fromClause = "From  vendor a, vendor_app_groups a2, vendor_app_groups_to_student b, student_standardized_test c, child ch, application app ";
