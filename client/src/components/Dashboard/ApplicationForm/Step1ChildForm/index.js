@@ -53,9 +53,10 @@ export default function index({
   isLot = 0,
   app_programs = [],
   location_sites = [],
-  emptyFields = {}
+  emptyFields = {},
+  vendor_id
 }) {
-  console.log('emptyFields', emptyFields)
+  console.log('childInformation', childInformation)
   return (
     <ChildFormStyled>
       <ChildInformationFormStyled
@@ -69,6 +70,7 @@ export default function index({
         app_programs={app_programs}
         location_sites={location_sites} 
         isLot={isLot}
+        vendor_id={vendor_id}
       />
       <br />
       <br />

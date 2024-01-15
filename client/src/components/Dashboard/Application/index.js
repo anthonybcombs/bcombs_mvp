@@ -83,6 +83,9 @@ import { DEFAULT_VENDOR } from "../../../constants/vendors";
 import { ASSESSMENT_FORM_IDS } from '../../../constants/forms';
 
 import { getPageQrCode } from '../../../helpers/Forms';
+import { isUUID } from '../../../helpers/Applications';
+import form from "../../Calendar/big-calendar/search/form.js";
+
 
 
 const ApplicationFormStyled = styled.form`
@@ -669,6 +672,7 @@ export default function index() {
     triggerGetQrCode();
   }, []);
 
+
   useEffect(() => {
     if (auth.user_id) {
       //dispatch(requestUserGroup(auth.email));
@@ -762,6 +766,7 @@ export default function index() {
 
 
         let defaultVendor = null;
+        console.log('vendorzxczxczxcs',vendors)
         const hasDefaultVendor = vendors.find(item => item.is_default);
 
 
@@ -863,12 +868,23 @@ export default function index() {
     } else {
       setExportFilename(selectedVendor?.name);
 
-      if (selectedVendor?.default_form && selectedVendor?.default_form !== 'default') {
-        dispatch(requestGetCustomApplications(selectedVendor?.default_form || ''));
+      if(isUUID(selectedForm)) {
+
+        const tempForm = formList.find((form) => {
+          return form.form_id == selectedForm;
+        });
+        setCurrentForm(tempForm);
+  
       }
       else {
-        dispatch(requestGetApplications(selectedVendor?.id || ''));
+        if (selectedVendor?.default_form && selectedVendor?.default_form !== 'default') {
+          dispatch(requestGetCustomApplications(selectedVendor?.default_form || ''));
+        }
+        else {
+          dispatch(requestGetApplications(selectedVendor?.id || ''));
+        }
       }
+  
 
     }
 
@@ -945,6 +961,8 @@ export default function index() {
 
     return newItems;
   };
+
+
 
   const handleSelectedApplication = (application, view) => {
     if (view === 'builderForm') {
@@ -1025,7 +1043,8 @@ export default function index() {
         primary_language: application?.child?.primary_language ? application.child.primary_language : "",
         needed_days: application?.child?.needed_days ? application.child.needed_days : "",
         schedule_tour: application?.child?.schedule_tour ? application.child.schedule_tour : "",
-        voucher: application?.child?.voucher ? application.child.voucher : ""
+        voucher: application?.child?.voucher ? application.child.voucher : "",
+        new_childId: application?.child?.new_childId
 
       },
       general_information: {
@@ -1432,6 +1451,7 @@ export default function index() {
     let payload = {
       app_id: selectedApplication.app_id,
       child: {
+        new_childId: childInformation?.profile?.new_childId,
         firstname: childInformation.profile.first_name,
         lastname: childInformation.profile.last_name,
         age: getAge(childInformation.profile.date_of_birth),
@@ -1582,7 +1602,7 @@ export default function index() {
       ...payload,
       relationships: relationships
     };
-    console.log("Submit update application", payload);
+    console.log("childInformation Submit update application", payload);
 
     dispatch(requestSaveApplication(payload));
   };
@@ -2254,8 +2274,10 @@ export default function index() {
 
   // .sort((a, b) => a.name.localeCompare(b.name)
   let vendorOptions = vendors && vendors.length > 0 ? vendors : [];
-  let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle.localeCompare(b.form_contents?.formTitle)) : [];
+  let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle?.localeCompare(b.form_contents?.formTitle)) : [];
   console.log('vendors', vendors)
+
+  console.log('applications',applications)
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -2399,6 +2421,7 @@ export default function index() {
             vendor={selectedVendor?.id}
             isLot={selectedForm === 'lot'}
             createProfileFeature={true}
+            selectedApplications={applications.activeapplications}
             refreshData={() => {
               handleGetForms(selectedForm)
             }}
@@ -2722,6 +2745,8 @@ export default function index() {
             <Loading />
           ) : (
             <Form
+              editMode={true}
+              baseFormData={currentForm?.form_contents}
               historyList={customApplicationHistory}
               key={applicationFormKey}
               {...(isFormHistory ? selectedCustomFormHistory : selectedApplication)}

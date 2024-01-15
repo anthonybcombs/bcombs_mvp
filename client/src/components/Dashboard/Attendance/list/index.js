@@ -980,47 +980,50 @@ export default function index() {
 	const handleAttendanceSave = () => {
 		//reset();
 
-		const attendanceList = applicationList.map(app => {
+		if(isConfirmationVisible) {
+			const attendanceList = applicationList.map(app => {
 
-			// if (name === 'custom') {
-
-			// }
-
-			return {
-				app_id: app.app_id,
-				app_group_id: app.class_teacher,
-				attendance_status: app.attendance_status || '',
-				child_id: name === 'custom' ? app.app_id : app.child && app.child.ch_id,
-				vendor: app.vendor,
-				volunteer_hours: app.volunteer_hours ? parseFloat(app.volunteer_hours) : 0,
-				mentoring_hours: app.mentoring_hours ? parseFloat(app.mentoring_hours) : 0,
-				is_excused: app.excused ? 1 : 0,
-
+				// if (name === 'custom') {
+	
+				// }
+	
+				return {
+					app_id: app.app_id,
+					app_group_id: searchParams?.formId || app.class_teacher,
+					attendance_status: app.attendance_status || '',
+					child_id: name === 'custom' ? app.app_id : app.child && app.child.ch_id,
+					vendor: app.vendor,
+					volunteer_hours: app.volunteer_hours ? parseFloat(app.volunteer_hours) : 0,
+					mentoring_hours: app.mentoring_hours ? parseFloat(app.mentoring_hours) : 0,
+					is_excused: app.excused ? 1 : 0,
+	
+				};
+			});
+			const isAll = searchParams && searchParams.type === 'all';
+	
+			const defaultStartTime = format(new Date(), 'HH:mm');
+			const defaultEndTime = format(addHours(new Date(),1), 'HH:mm');
+	
+			
+			const payload = {
+				attendance_list: attendanceList,
+				app_group_id: name === 'custom' ? isAll ? appGroupIds[0] : searchParams && searchParams.appGroupId : appGroupId,
+				attendance_type: name === 'custom' ? 'forms' : 'bcombs',
+				...attendanceDetails,
+				attendance_start_time: attendanceDetails?.attendance_start_time ||  defaultStartTime,
+				attendance_end_time: attendanceDetails?.attendance_end_time ||  defaultEndTime,
+				attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
+				create_event: isCreateEvent,
+				vendorId2: name === 'custom' ? searchParams?.vendor && parseInt(searchParams.vendor) : parseInt(vendor_id),
+				form_id: name === 'custom' ? searchParams?.formId : null
+	
 			};
-		});
-		const isAll = searchParams && searchParams.type === 'all';
-
-		const defaultStartTime = format(new Date(), 'HH:mm');
-		const defaultEndTime = format(addHours(new Date(),1), 'HH:mm');
-
-		const payload = {
-			attendance_list: attendanceList,
-			app_group_id: name === 'custom' ? isAll ? appGroupIds[0] : searchParams && searchParams.appGroupId : appGroupId,
-			attendance_type: name === 'custom' ? 'forms' : 'bcombs',
-			...attendanceDetails,
-			attendance_start_time: attendanceDetails?.attendance_start_time ||  defaultStartTime,
-			attendance_end_time: attendanceDetails?.attendance_end_time ||  defaultEndTime,
-			attendance_date: format(new Date(attendanceDetails.attendance_date), 'yyyy-MM-dd'),
-			create_event: isCreateEvent,
-			vendorId2: name === 'custom' ? searchParams?.vendor && parseInt(searchParams.vendor) : parseInt(vendor_id),
-			form_id: name === 'custom' ? searchParams?.formId : null
-
-		};
-
-
-		dispatch(requestUpdateAttendance(payload));
-		setIsConfirmationVisible(false);
-
+	
+			dispatch(requestUpdateAttendance(payload));
+			setIsConfirmationVisible(false);
+	
+		}
+	
 	};
 
 	const handleAttedanceDetailChange = e => {
@@ -1380,10 +1383,10 @@ export default function index() {
 										</button>
 									</div>
 								)}
-								selected={null}
 								disabled={false}
-								selected={attendanceDetails.attendance_date}
+								selected={attendanceDetails?.attendance_date}
 								onChange={value => {
+	
 									setAttendanceDetails({
 										...attendanceDetails,
 										attendance_date: value,

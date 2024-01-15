@@ -55,15 +55,31 @@ router.post("/", async (req, res) => {
     }
 
     try {
-        const { id, year, vendorId, formId, lotVendorIds, isLot } = req.body;
+        const { id, year, vendorId, formId, lotVendorIds, isLot, classId } = req.body;
         const db = makeDb();
-        console.log('year ', year);
 
         let formArray = await getFormsByVendorId(db, vendorId, lotVendorIds, isLot);
         if (!formArray.length) {
             res.status(200).json({ classStats: [], formArray: [] });
             return;
         }
+
+        const studentClassesByForm = async formId => {
+            if (formId !== 'fid_0') {
+                const response = await db.query(`SELECT 
+                BIN_TO_UUID(app_grp_id) as app_grp_id,
+                BIN_TO_UUID(form) as form,
+                name,
+                id 
+                FROM vendor_app_groups
+                WHERE form=UUID_TO_BIN(?)`, [formId]);
+                return response;
+            }
+            return [];
+
+        }
+
+
         /*
         let queryFormFormIds =
             "select BIN_TO_UUID(vca.form_id) as formId, vca.form_name from vendor_custom_application as vca, vendor v " +
@@ -83,7 +99,16 @@ router.post("/", async (req, res) => {
         }
         */
 
-        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lotVendorIds);
+        let formClasses = await studentClassesByForm(formId);
+        formClasses = formClasses.map(opt => {
+            return {
+                key: opt.app_grp_id,
+                name: opt.name
+            }
+        });
+
+        let queryGroup = getSQLClauseForAttendanceAndClassData(year, vendorId, formId, lotVendorIds, classId);
+      
         let getClassesTableQuery = queryGroup.query;
         let queryParamForClassesQuery = queryGroup.param;
 
@@ -110,9 +135,21 @@ router.post("/", async (req, res) => {
 
         //let queryStudentPerClassParam = [dtLastTxt, dtNextTxt, vendorId];
         const isLotAdded = isLot ? ` and app.class_teacher LIKE concat('%',BIN_TO_UUID(c2.app_grp_id,'%'))  ` : ' ';
-        let queryStudentsPerClass =
+        // let queryStudentsPerClass =
+        //     "SELECT count(c.app_grp_id) as numStudentsInClass, a.class_id, a.class_name " +
+        //     "FROM vendor_app_groups_to_student c " +
+        //     "inner join ( " +
+        //     "Select distinct(c2.app_grp_id) as app_group_id, c2.id as class_id, c2.name as class_name " +
+        //     getClassesTableQuery +
+        //     isLotAdded +
+        //     "  group by c2.app_grp_id, c2.id " +
+        //     ") as a " +
+        //     "on a.app_group_id = c.app_grp_id " +
+        //     "where c.app_grp_id = a.app_group_id group by c.app_grp_id";
+
+         let queryStudentsPerClass =
             "SELECT count(c.app_grp_id) as numStudentsInClass, a.class_id, a.class_name " +
-            "FROM vendor_app_groups_to_student c " +
+            "FROM vendor_app_groups c " +
             "inner join ( " +
             "Select distinct(c2.app_grp_id) as app_group_id, c2.id as class_id, c2.name as class_name " +
             getClassesTableQuery +
@@ -127,9 +164,14 @@ router.post("/", async (req, res) => {
 
 
         const response = await db.query(queryStudentsPerClass, queryParamForClassesQuery);
-        console.log('Students per class: ', response);
+        let initialClassList = [{ key: 'id_none', name: 'No classes For Form' }];
+
+        if (formClasses.length > 0) {
+            initialClassList = [...initialClassList, ...formClasses]
+        }
+
         if (!response || response.length == 0) {
-            res.status(200).json({ classStats: [], classList: [{ key: 'id_none', name: 'No classes For Form' }], formArray: formArray });
+            res.status(200).json({ classStats: [], classList: initialClassList, formArray: formArray });
             return;
         }
 
@@ -144,11 +186,11 @@ router.post("/", async (req, res) => {
         let queryStudentsPerSession =
             "Select count(*) as numAttended, c2.id as class_id, c2.name as class_name " +
             getClassesTableQuery +
-            ' ' + isLotAddedToSession + 
+            ' ' + isLotAddedToSession +
             " and a2.attendance_status <> 'Absent' " +
             "group by c2.id, c2.name, a2.attendance_date, a2.attendance_start_time " +
             "order by c2.id";
-       
+
         // console.log('Query ', queryStudentsPerSession);
         const response2 = await db.query(queryStudentsPerSession, queryParamForClassesQuery);
         //console.log('Students per session: ', response);

@@ -212,7 +212,8 @@ export default function index({
   isVendorView = false,
   isLot = 0,
   printPageClassname,
-  emptyFields = {}
+  emptyFields = {},
+  vendor_id
 }) {
   const hasSelectAll = false;
 
@@ -349,7 +350,7 @@ export default function index({
   let readOnlyChildLivesWith = "";
 
   if (
-    childProfile.child_lives_with &&
+    childProfile?.child_lives_with &&
     childProfile.child_lives_with.length > 0 &&
     isReadonly
   ) {
@@ -364,7 +365,7 @@ export default function index({
 
   let readOnlyProgram = "";
 
-  if (childProfile.program && childProfile.program.length > 0 && isReadonly) {
+  if (childProfile?.program && childProfile.program.length > 0 && isReadonly) {
     childProfile.program.forEach(item => {
       readOnlyProgram += item.name + "\n";
     });
@@ -375,7 +376,7 @@ export default function index({
   let readOnlyEthinicity = "";
 
   if (
-    childProfile.ethinicity &&
+    childProfile?.ethinicity &&
     childProfile.ethinicity.length > 0 &&
     isReadonly
   ) {
@@ -459,7 +460,7 @@ export default function index({
     return <span style={{ fontSize: 14, position: 'relative', top: -10 }}>®</span>
   }
 
-  console.log('childProfile',childProfile)
+  console.log('childProfile', childProfile)
   let profile = pastChildInformation?.image || childProfile?.image || ''
   if (profile) {
     profile = profile.includes('file/') ? 'https://bcombs.s3.amazonaws.com/' + profile : profile;
@@ -495,7 +496,41 @@ export default function index({
           )}
 
         </div>
+        <div>
+          {!vendor_id && <div className="form-group">
+            <div className="field">
+              <input
+                required={true}
+                readOnly={isReadonly}
+                id={`ch_new_childId_${counter - 1}`}
+                name={"ch_new_childId_" + (counter - 1)}
+                className={
+                  `${(emptyFields.new_childId && !childProfile.new_childId) && 'highlights'} ${isReadonly &&
+                    !isVendorView &&
+                    pastChildInformation &&
+                    (pastChildInformation.new_childId ||
+                      pastChildInformation.new_childId == "") &&
+                    pastChildInformation.new_childId != childProfile.new_childId
+                    ? "field-input highlights"
+                    : "field-input"}`
+                }
+                placeholder="Child ID"
+                onChange={({ target }) => {
+                  handleChildFormDetailsChange(
+                    counter - 1,
+                    "profile",
+                    "new_childId",
+                    target.value
+                  );
+                }}
+                ref={register({ required: true })}
+                defaultValue={childProfile.new_childId}
+              />
+            </div>
+          </div>}
+        </div>
         <div className="grid">
+
           <div className="form-group">
             <div className="field">
               <input
@@ -1004,13 +1039,13 @@ export default function index({
                 <input
                   name="ch_phone_number"
                   className={`${isReadonly &&
-                      !isVendorView &&
-                      pastChildInformation &&
-                      pastChildInformation.phone_number &&
-                      pastChildInformation.phone_number !=
-                      childProfile.phone_number
-                      ? "field-input highlights"
-                      : "field-input"
+                    !isVendorView &&
+                    pastChildInformation &&
+                    pastChildInformation.phone_number &&
+                    pastChildInformation.phone_number !=
+                    childProfile.phone_number
+                    ? "field-input highlights"
+                    : "field-input"
                     } ${emptyFields.child_phone_invalid && childProfile.phone_number.includes('_') && 'highlights'}`}
                   placeholder="Phone"
                   readOnly={isReadonly}
@@ -1184,14 +1219,14 @@ export default function index({
                 id={`ch_email_address_${counter - 1}`}
                 name={"ch_email_address" + (counter - 1)}
                 className={`${isReadonly &&
-                    !isVendorView &&
-                    pastChildInformation &&
-                    (pastChildInformation.email_address ||
-                      pastChildInformation.email_address == "") &&
-                    pastChildInformation.email_address !=
-                    childProfile.email_address
-                    ? "field-input highlights"
-                    : "field-input"
+                  !isVendorView &&
+                  pastChildInformation &&
+                  (pastChildInformation.email_address ||
+                    pastChildInformation.email_address == "") &&
+                  pastChildInformation.email_address !=
+                  childProfile.email_address
+                  ? "field-input highlights"
+                  : "field-input"
                   } ${emptyFields.child_email_invalid && childProfile.email_address !== '' && 'highlights'}`}
                 placeholder="Email Address"
                 onChange={({ target }) => {
@@ -1708,18 +1743,16 @@ export default function index({
             <div className="field customMultiselect">
               {isReadonly ? (
                 <p
-                  className={`${
-                    
-                    isReadonly &&
-                      !isVendorView &&
-                      pastChildInformation &&
-                      (pastChildInformation.child_lives_with ||
-                        pastChildInformation.child_lives_with == "") &&
-                      pastChildInformation.child_lives_with !=
-                      readOnlyChildLivesWith.split("\n").join(",")
-                      ? "field-input readonly highlights"
-                      : "field-input readonly"
-                  }
+                  className={`${isReadonly &&
+                    !isVendorView &&
+                    pastChildInformation &&
+                    (pastChildInformation.child_lives_with ||
+                      pastChildInformation.child_lives_with == "") &&
+                    pastChildInformation.child_lives_with !=
+                    readOnlyChildLivesWith.split("\n").join(",")
+                    ? "field-input readonly highlights"
+                    : "field-input readonly"
+                    }
                   ${(emptyFields.child_lives_with && (!childProfile.child_lives_with)) && 'highlights'}
                   
                   `}
@@ -1737,16 +1770,16 @@ export default function index({
               ) : (
                 <Multiselect
                   selectedValues={childProfile.child_lives_with}
-                  className={`${(emptyFields.child_lives_with && (!childProfile.child_lives_with )) && 'highlights'} field-input`}
+                  className={`${(emptyFields.child_lives_with && (!childProfile.child_lives_with)) && 'highlights'} field-input`}
                   options={CHILD_LIVES_OPTION}
                   hasSelectAll={hasSelectAll}
                   placeholder="Choose Multiple"
                   displayValue="name"
                   style={{
                     multiselectContainer: {
-                      backgroundColor:emptyFields.child_lives_with && (!childProfile.child_lives_with || (Array.isArray(childProfile.child_lives_with) && childProfile.child_lives_with.length === 0)) && '#f26e21'
+                      backgroundColor: emptyFields.child_lives_with && (!childProfile.child_lives_with || (Array.isArray(childProfile.child_lives_with) && childProfile.child_lives_with.length === 0)) && '#f26e21'
                     }
-                   
+
                   }}
                   closeIcon="cancel"
                   id={"ch_lives_with" + (counter - 1)}
@@ -1776,7 +1809,7 @@ export default function index({
                 <span className="required">*</span> Child lives with
               </label>
 
-    
+
             </div>
             {/* <input
               type="checkbox"

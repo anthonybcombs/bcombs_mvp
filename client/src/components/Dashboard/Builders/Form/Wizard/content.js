@@ -24,6 +24,7 @@ export default ({
     onChange(id, JSON.stringify(answers))
   }
 
+  console.log(';fieldssssssssssss',fields)
   return (
     <div className='wizard-content' id={`page_${pageId}`}>
       {

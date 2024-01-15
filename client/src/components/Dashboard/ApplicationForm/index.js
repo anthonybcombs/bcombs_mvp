@@ -456,7 +456,8 @@ export default function index() {
       location_site: "",
       ethinicity: [],
       program: [],
-      child_lives_with: ""
+      child_lives_with: "",
+      new_childId: ''
     },
     general_information: {
       grade: "",
@@ -568,6 +569,8 @@ export default function index() {
   const renderChildform = () => {
     let items = [];
 
+
+    console.log('vendor_idaaaaaaaaaa', vendor_id)
     for (let i = 1; i <= childsInformation.length; i++) {
       if (i == childsInformation.length) {
         items.push(
@@ -590,6 +593,7 @@ export default function index() {
             ProfileImg={ProfileImg}
             app_programs={vendor.app_programs}
             location_sites={vendor.location_sites}
+            vendor_id={vendor_id}
           />
         );
       } else {
@@ -614,6 +618,7 @@ export default function index() {
               ProfileImg={ProfileImg}
               app_programs={vendor.app_programs}
               location_sites={vendor.location_sites}
+              vendor_id={vendor_id}
             />
             <hr className="style-eight"></hr>
           </div>
@@ -827,7 +832,7 @@ export default function index() {
           (profile.zip_code && profile.zip_code.length < 5) ||
           // !profile.location_site ||
           !profile.child_lives_with ||
-          (Array.isArray(profile.child_lives_with) && profile.child_lives_with.length === 0)  ||
+          (Array.isArray(profile.child_lives_with) && profile.child_lives_with.length === 0) ||
           gi.school_name === '' ||
           gi.grade === '' ||
           (isLot && (!gi.allergies_to_medicine || !gi.food_allergies || !gi.insect_allergies || !gi.other_allergies || !gi.mentee_gain)) ||
@@ -1051,7 +1056,7 @@ export default function index() {
       };
 
     } else if (section === 3) {
-      console.log('errorFields termsWaiver',termsWaiver)
+      console.log('errorFields termsWaiver', termsWaiver)
       if ((!termsWaiver.section1.checked || !termsWaiver.section1.signature) && vendor.section1_show > 0 ||
         (!termsWaiver.section2.checked || !termsWaiver.section1.signature) && vendor.section2_show > 0 ||
         (!termsWaiver.section3.checked || !termsWaiver.section3.signature) && vendor.section3_show > 0) {
@@ -1205,12 +1210,30 @@ export default function index() {
 
   const onSubmit = () => {
 
+
     let payload = []
     for (let i = 0; i < childsInformation.length; i++) {
       //setup Application Object
+
+      // console.log('onSubmit dateeee', format(
+      //   new Date(childsInformation[i].profile.date_of_birth),
+      //   'MMddyy'))
+      // console.log('onSubmit zipcode', childsInformation[i].profile.zip_code)
+
+      const birthDateIdFormat = format(
+        new Date(childsInformation[i].profile.date_of_birth),
+        'MMddyy')
+
+      const zipcodeIdFormat = childsInformation[i].profile.zip_code;
+
+      const newChildId = `${birthDateIdFormat}${zipcodeIdFormat}`;
+
+
+
       let request_params = {
         vendor: vendor.id,
         child: {
+          new_childId: newChildId,
           ch_id: childsInformation[i].id,
           firstname: childsInformation[i].profile.first_name,
           lastname: childsInformation[i].profile.last_name,
@@ -1599,7 +1622,7 @@ export default function index() {
 
                               /// setEmptyFields({});
 
-    
+
                               if (!isFormValid(selectedStep).isValid) {
 
                                 formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));

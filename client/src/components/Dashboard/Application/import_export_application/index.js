@@ -1,16 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { CSVLink, CSVDownload } from "react-csv";
 import styled from "styled-components";
+import { format } from 'date-fns';
+import { isValidJSONString } from '../../../../helpers/Arrays';
 
-function removeCarriageReturn(inputString) {
+function removeCarriageReturn(inputString = '') {
     return inputString.replace(/\r/g, '');
 }
 
+function formatDate(inputDate = '') {
+    // Use toISOString to get the date in ISO format and then substring to extract the date portion
+    return inputDate.substring(0, 10);
+}
+
+function isValidDate(dateString) {
+    // Check if the given string can be successfully converted to a Date object
+    const parsedDate = new Date(dateString);
+    return !isNaN(parsedDate.getTime());
+}
+
+
+function parseValues(str = '') {
+    str = str.replace(/"/g, '')
+    return str.replace(/^"(.*)"$/, '$1').replace(/\\/g, '');
+}
 
 function convertToQuotedString(inputString) {
     return '"' + inputString + '"';
 }
-
+  
 const importCustomForm = async (data, formType) => {
 
     // Default options are marked with *
@@ -32,8 +50,21 @@ const importCustomForm = async (data, formType) => {
 }
 
 
-const parentFields = {
+const reOrderColumns = (array) => {
+    const indexOfUniqueId = array.indexOf('Unique ID');
+  
+    if (indexOfUniqueId !== -1) {
+      // Remove 'unique_id' from its original position
+      array.splice(indexOfUniqueId, 1);
+      
+      // Insert 'unique_id' at index 2
+      array.splice(2, 0, 'Unique ID');
+    }
+  
+    return array;
+  }
 
+const parentFields = {
     firstname: 'Parent Firstname',
     lastname: 'Parent Lastname',
     phone_type: 'Parent Phone Type',
@@ -59,16 +90,25 @@ const parentFields = {
     // create_profile: 'Create Profile'
 }
 
+// const instructorFields = {
 
-const customFormParentField = {
-    'Parent Title': 'title',
-    'Parent First Name': 'first name',
-    'Parent Middle Name': 'middle name',
-    'Parent Last Name': 'last name'
+//     firstname: 'Instructor Firstname',
+//     lastname: 'Instructor Lastname',
+//     // create_profile: 'Create Profile'
+// }
 
-}
+
+// const customFormParentField = {
+//     'Parent Title': 'title',
+//     'Parent First Name': 'first name',
+//     'Parent Middle Name': 'middle name',
+//     'Parent Last Name': 'last name'
+// }
 
 const childFields = {
+    application_id: 'Application ID',
+    ch_id: 'Child ID',
+    new_childId: 'UniqueID',
     firstname: 'Child Firstname',
     lastname: 'Child Lastname',
     nickname: 'Child Nickname',
@@ -209,19 +249,22 @@ const ImportExportApplicationStyled = styled.div`
 `;
 
 const ImportExportApplication = props => {
-    const { vendor, form, formType = 'mentoring', isLot = false, createProfileFeature = false, refreshData } = props;
+    const { vendor, form, formType = 'mentoring', isLot = false, createProfileFeature = false, selectedApplications = [], refreshData } = props;
 
     const [columns, setColumns] = useState([]);
     const [content, setContent] = useState(null);
+
+    const [existingData, setExistingData] = useState([]);
+
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [currentFormPayload, setCurrentFormPayload] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isCreateProfile, setIsCreateProfile] = useState(false);
+    const [exportWithData, setExportWithData] = useState(false);
     const [isImportSuccess, setIsImportSuccess] = useState(false);
     const applicationName = `${formType === 'custom' && !isLot ? form?.form_contents?.formTitle || 'Custom Form' : isLot ? 'LOT Form' : 'Mentoring Application'}`;
 
-    console.log('form', form)
-
+    console.log('selectedApplications',selectedApplications)
     let currentFormData = form?.form_contents?.formData ? form?.form_contents?.formData.map(item => {
         let fields = item.fields;
         if (
@@ -262,7 +305,7 @@ const ImportExportApplication = props => {
                 if (item.type !== 'terms') {
                     let fields = [];
                     const title = item.label.toLowerCase();
-                    if (title === 'parent') {
+                    if (title === 'parent' || title === 'instructor') {
                         fields = item.fields.map(item2 => `${item.label} ${item2.label}`)
                     }
                     else {
@@ -287,13 +330,25 @@ const ImportExportApplication = props => {
                     ...accum
                 }
             }, {});
-            console.log('currentFormContents', currentFormContents)
+         
+
 
             let currentColumns = Object.keys(currentFormContents).map((key) => {
                 return currentFormContents[key].fields
             }, []).flat().filter(field => field);
 
-
+            let defaultColumns = ['Application ID', 'Child ID']
+            if (!currentColumns.includes('Unique ID')) {
+                defaultColumns = [...defaultColumns, 'Unique ID']
+            }
+            else if(currentColumns.includes('Unique ID')) {
+                currentColumns = [...defaultColumns, ...currentColumns];
+                currentColumns = reOrderColumns(currentColumns)
+            }
+            else {
+                currentColumns = [...defaultColumns, ...currentColumns];
+            }
+  
             setColumns(currentColumns);
             setContent(currentFormContents);
         }
@@ -307,9 +362,8 @@ const ImportExportApplication = props => {
             }, []).flat();
 
 
-            let totalColumns = [...childColumns, ...parentColumns]
+            let totalColumns = [...childColumns, ...parentColumns];
             //  totalColumns = createProfileFeature ? [...totalColumns, 'Create Profile'] : totalColumns;
-
 
 
             setColumns([...totalColumns]);
@@ -338,7 +392,7 @@ const ImportExportApplication = props => {
                 importedData = importedData.filter(item => {
                     return !item.every(val => !val)
                 })
-  
+
                 console.log('formattedRows', formattedRows)
                 console.log('formattedRows importedColumns', importedColumns)
                 console.log('formattedRows importedData', importedData)
@@ -346,9 +400,17 @@ const ImportExportApplication = props => {
                 if (formType === 'custom') {
                     let formattedImportData = importedData.map((data, index) => {
                         const item = data.reduce((accum, data2, index2) => {
+                            const currentKey = removeCarriageReturn(importedColumns[index2]);
+
+                            if (accum.hasOwnProperty(currentKey)) {
+                                return {
+                                    ...accum,
+                                    [`${currentKey} 2`]: data2
+                                }
+                            }
                             return {
                                 ...accum,
-                                [removeCarriageReturn(importedColumns[index2])]: data2
+                                [currentKey]: data2
                             }
                         }, {});
 
@@ -359,18 +421,17 @@ const ImportExportApplication = props => {
                     });
 
 
-                    console.log('formattedRows formattedImportData', formattedImportData)
-                    console.log('formattedRows currentFormData', currentFormData)
-
+    
                     const getCurrentData = (data, field) => {
                         return Object.keys(data).find(key => key && key.includes(field.label))
                     }
 
                     const formWithValues = formattedImportData.map(item => {
-
+                        const existingApplication = selectedApplications.find(app => item['Child ID'] && (app?.child?.ch_id === item['Child ID']));
+                        console.log('existingApplication',existingApplication)
                         const formContentWithValues = currentFormData.map(formData => {
 
-
+                      
                             let parentKey = null;
 
                             if (formData.type === 'date') {
@@ -381,7 +442,7 @@ const ImportExportApplication = props => {
 
                                 if (!['formattedText', 'staticImage', 'pageBreak'].includes(field.tag) && !['terms'].includes(field.type)) {
                                     const currentData = getCurrentData(item, field);
-
+                                    console.log('currentData', currentData)
                                     let currentKey = currentData && Object.keys(item).find(key => {
                                         if (formData.type === 'date') {
                                             return key && key.includes(formData.label)
@@ -389,34 +450,50 @@ const ImportExportApplication = props => {
                                         return key && key.includes(field.label)
                                     });
 
-
-
+        
                                     let value = item && item[currentKey]
 
+               
                                     if (formData.type === 'name') {
-                                        value = convertToQuotedString(item[formData.label === 'Parent' ? `Parent ${field.label}` : field.label]);
+                                        let key = (formData.label === 'Parent' || formData.label === 'Instructor') ? `${formData.label} ${field.label}` : field.label;
+                                      
+                                        if(item[`"${key}"`]) {
+                                            value = parseValues(item[`"${key}"`]);
+                                        }
+                                        else {
+                                            value = parseValues(item[`${key}`]);
+                                        }
+                                        console.log('item',item)
+                                        value = convertToQuotedString(value);
+                          
                                     }
 
-                                    else if ((field.tag.includes('multipleChoice')) && value) {
+                                    else if ((field.tag.includes('multipleChoice') || field.tag.includes('dropdown')) && value) {
+                                   
 
-                                        value = field.options.find(opt => opt.label.includes(removeCarriageReturn(value)));
-
+                                        value = parseValues(value);
+               
+                                        value = field.options.find(opt => opt.label.includes(removeCarriageReturn(value)) ||  opt.name.includes(removeCarriageReturn(value)));
+                    
                                         if (typeof value === 'object') {
                                             value = JSON.stringify({ [value.name]: value.label });
                                         }
 
                                     }
-                                    else if (field.type === 'text' && formData.type === 'date') {
-                                        const dateValue = item[parentKey] && item[parentKey].split('-');
+
+                                    else if (/* field.type === 'text' &&  */formData.type === 'date') {
+                                        const dateValue = item[parentKey] && item[parentKey].split(/[-/]/);
+
                                         if (Array.isArray(dateValue) && dateValue.length > 0) {
                                             if (field.label === 'YYYY') {
-                                                value = dateValue[2]
+                                                value = parseValues(dateValue[2]);
+                                                value = removeCarriageReturn(value);
                                             }
                                             else if (field.label === 'DD') {
-                                                value = dateValue[1]
+                                                value = parseValues(dateValue[1])
                                             }
                                             else if (field.label === 'MM') {
-                                                value = dateValue[0]
+                                                value = parseValues(dateValue[0])
                                             }
                                         }
 
@@ -443,20 +520,26 @@ const ImportExportApplication = props => {
                             }
                         });
 
-                        return formContentWithValues;
-                    }).map(formData => {
+                        return {
+                            formData: formContentWithValues,
+                            application: existingApplication || null
+                        }
+                    }).map((item, index) => {
+                    
                         return {
                             ...form,
+                            application_id: item?.application?.app_id,
+                            child_id: item?.application?.child?.ch_id,
                             form: form?.form_id,
                             vendor,
                             form_contents: {
                                 formTitle: form?.form_contents?.formTitle,
-                                formData: formData
+                                formData: item.formData
                             }
                         }
                     });
-                    console.log('formWithValues', formWithValues)
 
+                    console.log('formWithValues',formWithValues)
                     setCurrentFormPayload(formWithValues);
                 }
                 // END OF CUSTOM FORM IMPORT DATA //
@@ -478,15 +561,14 @@ const ImportExportApplication = props => {
 
 
                         Object.keys(childFields).forEach((key, index) => {
-                            childPayload[key] = childInfo[index];
+                            childPayload[key] = parseValues(childInfo[index]);
                         });
 
                         Object.keys(parentFields).forEach((key, index) => {
-                            parentPayload[key] = parentInfo[index];
+                            parentPayload[key] = parseValues(parentInfo[index]);
                         });
 
-                        console.log('payload!!!! child', childPayload)
-                        console.log('payload!!!! parent', parentPayload)
+                
 
                         return {
                             child: {
@@ -503,6 +585,7 @@ const ImportExportApplication = props => {
 
                     });
 
+                    console.log('formattedApplication', formattedApplication)
                     console.log('formattedApplicationnnn', JSON.stringify({
                         data: formattedApplication
                     }))
@@ -535,8 +618,8 @@ const ImportExportApplication = props => {
                         if (isCreateProfile) {
 
                             const loginForms = item.form_contents.formData.find(frm => frm.type === 'login');
-                            const nameForms = item.form_contents.formData.find(frm => frm.label.toLowerCase() === 'parent' || frm.type === 'name');
-    
+                            const nameForms = item.form_contents.formData.find(frm => (frm.label.toLowerCase() === 'parent' || frm.label.toLowerCase() === 'instructor') || frm.type === 'name');
+
                             if (loginForms && nameForms) {
                                 const loginDetails = loginForms?.fields?.reduce((accum, field) => {
                                     return {
@@ -569,16 +652,19 @@ const ImportExportApplication = props => {
                             create_profile: isCreateProfile
                         }
                     }) : currentFormPayload.map(item => {
+       
                         return {
                             ...item,
                             child: {
                                 ...item.child,
+                                birthdate: isValidDate(item?.child?.birthdate) ? format(new Date(formatDate(item.child.birthdate)), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
                                 has_suspended: item.child.has_suspended && item.child.has_suspended.toLowerCase() === 'yes' ? 1 : 0,
                                 create_profile: isCreateProfile
                             },
                             parents: {
                                 ...item.parents,
                                 age: removeCarriageReturn(item.parents.age), // LAST FIELD FROM CSV
+                                birthdate: isValidDate(item?.parents?.birthdate) ? format(new Date(formatDate(item.parents.birthdate)), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
                                 create_profile: isCreateProfile
                             },
                             vendor,
@@ -587,8 +673,8 @@ const ImportExportApplication = props => {
                     });
                 }
 
-
                 console.log('updatedPayload', updatedPayload)
+
 
                 setIsUploadLoading(true);
                 await importCustomForm(updatedPayload, formType);
@@ -616,6 +702,89 @@ const ImportExportApplication = props => {
     }
 
 
+    const handleExportWithDataChange = e => {
+
+        const { checked } = e.target;
+
+        if (checked) {
+
+            let data = [];
+            if (formType === 'mentoring') {
+                data = selectedApplications.map(item => {
+                    let childData = Object.keys(childFields).reduce((accum, key) => {
+                        if (key === 'application_id') {
+                            return [
+                                ...accum,
+                                item.id
+                            ]
+                        }
+                        return [
+                            ...accum,
+                            item.child[key]
+                        ]
+                    }, []);
+
+                    let parentData = Object.keys(parentFields).reduce((accum, key) => {
+                        return [
+                            ...accum,
+                            item?.parents[0] && item.parents[0][key]
+                        ]
+                    }, []);
+
+
+                    return [...childData, ...parentData]
+                });
+            }
+            else {
+
+                data = selectedApplications.map(item => {
+                    let fields = item.form_contents.formData.map(item2 => {
+
+                        let values = []
+                      
+                        if(item2.type === 'dropDown' || item2.type === 'multipleChoice') {
+                    
+                            let value = isValidJSONString(item2.fields[0].value) ? JSON.parse(item2.fields[0].value) : item2.fields[0].value;
+
+                            value = Object.values(value)[0];
+                          
+                            values = [(value || '')];
+                        }
+                        else if (item2.groupType === 'standard' && !['Student ID', 'Unique ID'].includes(item2.label)) {
+                            values = [(item2.fields[0].value || '')]
+                        }
+                        else if (item2.groupType === 'prime') {
+
+                            if (item2.type === 'date' && item2.fields.length > 0) {
+                                values = [`${item2.fields[2].value}-${item2.fields[0].value}-${item2.fields[1].value}`]
+                            }
+                            else {
+                                values = item2.fields.map(item3 => parseValues(item3.value || ''))
+                            }
+                        }
+
+
+                        return [...values]
+                    });
+
+                    fields = [item.app_id, item?.child?.ch_id, item?.child?.new_childId, ...fields]
+                    return fields;
+
+                })
+
+                data = data.map(item => item.flat());
+            }
+
+            setExistingData(data)
+
+        }
+        else {
+            setExistingData([]);
+        }
+        setExportWithData(checked);
+    }
+
+
 
     return <ImportExportApplicationStyled>
 
@@ -640,7 +809,7 @@ const ImportExportApplication = props => {
                         <br />
                         <div>
                             <label style={{ color: 'orange' }}>Note:</label>
-                           
+
                         </div>
                         {formType === 'mentoring' && <div style={{ paddingTop: 12 }}>
 
@@ -670,6 +839,13 @@ const ImportExportApplication = props => {
                             </div>}
                         <br />
 
+                        {
+                            <div>
+                                <label>Export with Data</label>
+                                <input type="checkbox" onChange={handleExportWithDataChange} checked={exportWithData} />
+                            </div>}
+                        <br />
+
                         {isImportSuccess && <div style={{ color: 'green', paddingBottom: 12 }}>Data has been imported successfully!</div>}
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -695,11 +871,12 @@ const ImportExportApplication = props => {
                                 onClick={() => {
                                 }}
 
-                                data={[columns]}
+                                data={[columns, ...existingData]}
 
                                 filename={applicationName}>
                                 <span >Download {applicationName} CSV</span>
                             </CSVLink>
+
                         </div>
                     </div>
 

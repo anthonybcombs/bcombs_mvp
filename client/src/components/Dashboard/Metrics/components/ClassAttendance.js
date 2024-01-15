@@ -6,7 +6,7 @@ import Loading from "../../../../helpers/Loading.js";
 import { OPTION_SCHOOL_YEAR } from '../../../../constants/options';
 
 const apiCallClassAttendance = async (vendor, id, year, formId, lotVendorId2s = []) => {
-    console.log('TESTTTTTTTTTTTTTTTTTTT')
+
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/class_attendance`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -92,7 +92,7 @@ const ClassAttendance = props => {
                     setFormList(res.formArray);
                 }
                 setClassId('id_0');
-                console.log("classStats aaaaa: ", res.classStats);
+
                 setClassStatsData(res.classStats);
                 setClassIdToValue(classIdLocal, res.classStats[classIdLocal])
             }
@@ -168,7 +168,7 @@ const ClassAttendance = props => {
 
     const yearChange = (event) => {
         setYear(event.target.value);
-        console.log("year2 ", event.target.value); // ;year);
+
         triggerApiCallAttendance(auth.user_id, event.target.value, 'fid_0', 'id_0');
         setFormId('fid_0');
         setClassId('id_0');
@@ -176,7 +176,7 @@ const ClassAttendance = props => {
 
     const formChange = (event) => {
         setFormId(event.target.value);
-        console.log("form ", event.target.value); // ;form);
+     
         let formIdIn = event.target.value;
         setClassId('id_0');
         triggerApiCallAttendance(auth.user_id, year, formIdIn, 'id_0');
@@ -191,7 +191,7 @@ const ClassAttendance = props => {
         //     triggerApiCallAttendance(auth.user_id, year, formId, classIdIn);
         //     return;
         // }
-        // triggerApiCallAttendance(auth.user_id, year, formId, classIdIn);
+        triggerApiCallAttendance(auth.user_id, year, formId, classIdIn);
         setClassIdToValue(classIdIn, classStatsData[classIdIn]);
     };
 
@@ -223,7 +223,7 @@ const ClassAttendance = props => {
                             )
                             }
                         </select>
-                        <select id="mentee-class" onChange={classChange} value={classIdLocal}>
+                        <select id="mentee-class" onChange={classChange} value={classId}>
                             {classList && classList.length > 0 && classList.map((elem) =>
                                 <option value={elem.key} key={elem.key}>{elem.name}</option>
                             )

@@ -748,6 +748,7 @@ export default function index(props) {
 
 			dispatch(requestAttendance(searchParams.appGroupId, 'forms'));
 		}
+	
 		else if (searchParams && searchParams.type !== 'custom' && app_group_id && !attendance.isLoading) {
 
 			dispatch(requestAttendance(searchParams.type === 'all' ? 'all' : app_group_id, 'bcombs'));
@@ -757,11 +758,15 @@ export default function index(props) {
 			dispatch(requestAttendance('all', 'forms'));
 			dispatch(requestEventAttendance(app_group_id));
 		}
+		else if (searchParams.formId) {
+	
+			dispatch(requestAttendance(searchParams.formId, 'forms'));
+		}
 	}, []);
 	useEffect(() => {
 
 		const appGroupIDLists = searchParams.appGroupIds && searchParams.appGroupIds.split(',')
-
+	
 
 		if (attendance.list) {
 
@@ -794,9 +799,7 @@ export default function index(props) {
 				let formApplication = {};
 
 
-				if (searchParams && searchParams.type === 'custom' && searchParams.appGroupIds) {
-					const appGroupIDList = searchParams.appGroupIds.split(',')
-
+				if (searchParams && searchParams.type === 'custom' && searchParams.formId) {
 
 
 					formApplication = applications.customActiveApplications.find(item => {
@@ -804,9 +807,7 @@ export default function index(props) {
 						/// item.child.ch_id === att.child_id || 
 						// if ((item.app_id === att.child_id) && item.form === searchParams.formId) {
 						// 	const classTeacher = item.class_teacher && item.class_teacher.split(',');
-
 						// 	return classTeacher && classTeacher.some(grpId => appGroupIDList?.includes(grpId))
-
 						//  }	
 
 						return item.app_id === att.child_id && item.form === searchParams.formId
@@ -851,7 +852,7 @@ export default function index(props) {
 					},
 				};
 			}, {});
-
+			
 
 			currentAttendance = Object.keys(currentAttendance)
 				.map(key => {
@@ -923,7 +924,6 @@ export default function index(props) {
 
 
 			setDisplayDays(displayDayList);
-
 			setAttendanceDisplay([...(currentAttendance || [])]);
 			setDefaultAttendanceDisplay([...(currentAttendance || [])]);
 
@@ -1222,7 +1222,6 @@ export default function index(props) {
 		// }
 	};
 
-	console.log('defaultAttendanceDisplay', defaultAttendanceDisplay)
 
 	const handleChangeDateFilter = date => {
 

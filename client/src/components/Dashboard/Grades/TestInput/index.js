@@ -214,16 +214,22 @@ export default ({ child_id }) => {
 
     return grades;
   }
-
   let studentList = type === 'all' ? group_type === 'bcombs' ? (applications?.activeapplications || []) : applications?.customActiveApplications
     || [] : gradeList;
 
-
   if (studentList.length > 0) {
-    console.log('studentListtttttt', studentList)
+
     studentList.map((gr) => {
 
-      const stardarizedTestList = gr.standardized_test || [];
+      let stardarizedTestList = gr?.standardized_test || [];
+
+      if(gr.hasOwnProperty('standardized_test')) {
+        stardarizedTestList = gr?.standardized_test || []
+      }
+      else {
+        stardarizedTestList = gradeList.filter(item => item.child_id === gr.app_id)
+      }
+
       let formVal = null;
       let studentName = '';
       if (gr?.form_contents) {
@@ -540,6 +546,7 @@ export default ({ child_id }) => {
   useEffect(() => {
     requestList();
     if (request_type === 'forms') {
+      console.log('triggeredddd')
       dispatch(requestGetCustomApplications(group_id));
     }
 
@@ -717,6 +724,7 @@ export default ({ child_id }) => {
 
   }
 
+  console.log('form_iddd',form_id)
 
   return (
     <GradeInputStyled>
@@ -792,6 +800,7 @@ export default ({ child_id }) => {
             selectedChild={selected_child}
             isParent={is_parent}
             vendorId={group_id}
+            gradeList={gradeList}
 
           />
           <div className='gradeInputView-header' style={{ 'marginTop': '1rem' }}>
@@ -812,7 +821,7 @@ export default ({ child_id }) => {
               {!is_parent && <>  <button
                 className='btn-save'
                 onClick={() => { setSelecteExportType('grades-export') }}
-                style={{ marginLeft: 5, marginRight: 5}}
+                style={{ marginLeft: 5, marginRight: 5 }}
               >
                 <FontAwesomeIcon icon={faDownload} />
                 <span>Export</span>
@@ -821,7 +830,7 @@ export default ({ child_id }) => {
                 <button
                   className='btn-save'
                   onClick={handleGradesImport}
-                  style={{ marginLeft: 5, marginRight: 5}}
+                  style={{ marginLeft: 5, marginRight: 5 }}
                 >
                   <FontAwesomeIcon icon={faUpload} />
                   <span>Import</span>
@@ -832,7 +841,7 @@ export default ({ child_id }) => {
                   onClick={() => {
                     setIsQRCodePreviewModalVisible(true)
                   }}
-                  style={{ marginLeft: 5, marginRight: 5}}
+                  style={{ marginLeft: 5, marginRight: 5 }}
                 >
                   <FontAwesomeIcon icon={faQrcode} />
                   <span>View QR Code</span>

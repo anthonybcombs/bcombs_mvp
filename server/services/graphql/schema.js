@@ -256,6 +256,7 @@ const inputs = `
         other_allergies: String
         current_medications: String
         health_insurance_information: String
+        new_childId: String
     }
 
     input ParentInfoInput {

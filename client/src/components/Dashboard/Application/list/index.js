@@ -466,6 +466,9 @@ export default function index({
     else if (student_status == "resubmitted") {
       studentStatusVal = "Resubmitted";
     }
+    else if (student_status == "completed") {
+      studentStatusVal = "Completed";
+    }
     else {
       studentStatusVal = "In process";
     }
@@ -562,10 +565,10 @@ export default function index({
 
     if (!child || (!child.age && child <= -1)) return "";
 
-    let birthdate = child.birthdate && format(new Date(child.birthdate), DATE_FORMAT);
+    // let birthdate = child.birthdate && format(new Date(child.birthdate), DATE_FORMAT);
     return (
       <div>
-        {child.age}&nbsp; ({birthdate})
+        {child.age}
       </div>
     );
   };
@@ -651,10 +654,19 @@ export default function index({
       cell: row => row.is_daycare ? "-" : row?.child?.grade_desc
     },
     {
-      name: "Age (Bdate)",
+      name: "Age",
       selector: "birthDate",
       sortable: true,
       cell: row => getAgeBdate(row.child)
+    },
+    {
+      name: "ID",
+      selector: "new_childId",
+      sortable: true,
+      cell: row => {
+        console.log('row', row)
+        return <div>{row?.child?.new_childId}</div>
+      }
     },
     {
       name: "Verified Account",
@@ -995,6 +1007,8 @@ export default function index({
     setShowExportFilter(false);
   };
 
+
+  console.log('dataaaaaa',data)
   return (
     <ApplicationListStyled>
       <div id="applicationList">

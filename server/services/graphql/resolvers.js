@@ -126,7 +126,8 @@ import {
   addDaycareChild,
   addChildChildRelationship,
   getChildChildRelationship,
-  getChildByChildId
+  getChildByChildId,
+  updateChildUniqueId
 } from "../../api/child";
 import {
   addParent,
@@ -160,7 +161,7 @@ import {
 } from "../../api/cron";
 import { exists } from "fs";
 
-import { ASSESSMENT_FORM_ID } from '../../constants';
+import { ASSESSMENT_FORM_ID, UNIQUE_ID_LABELS } from '../../constants';
 
 const util = require('util');
 
@@ -1617,22 +1618,26 @@ const resolvers = {
     },
     async submitCustomApplicationForm(root, { application }, context) {
 
-      const customFormId = ASSESSMENT_FORM_ID
+      const customFormId = ASSESSMENT_FORM_ID;
+   
+      const uniqueIdForm = application.form_contents.formData.find(item => UNIQUE_ID_LABELS.includes(item.label));
+      let uniqueId = uniqueIdForm &&  uniqueIdForm.fields && uniqueIdForm.fields[0] && uniqueIdForm.fields[0].value;
+
+      uniqueId = uniqueId && uniqueId.replace(/"/g, "")
 
       if (customFormId === application.form) {
         // TEST ID = C110001
         try {
-          const uniqueIdForm = application.form_contents.formData.find(item => item.label === 'Student ID');
-          const studentInfo = application.form_contents.formData.find(item => item.label === 'Name');
+ 
+          const studentInfo = application.form_contents.formData.find(item => item.label === 'Student');
 
-          let studentFirstname = studentInfo && studentInfo.fields[1].value;
-          let studentLastname = studentInfo && studentInfo.fields[3].value;
+          let studentFirstname = studentInfo && (studentInfo.fields[1].value || '');
+          let studentLastname = studentInfo && ( studentInfo.fields[3].value || '');
+
 
           studentFirstname = studentFirstname.replace(/"/g, "");
           studentLastname = studentLastname.replace(/"/g, "")
 
-          let uniqueId = uniqueIdForm.fields[0].value;
-          uniqueId = uniqueId.replace(/"/g, "")
 
           const currentChild = await getChildByChildId(uniqueId);
           console.log('currentChild',currentChild)
@@ -1835,7 +1840,8 @@ const resolvers = {
           const chObj = {
             firstname: firstname.value,
             lastname: lastname.value,
-            middlename: middlename.value
+            middlename: middlename.value,
+            new_childId: uniqueId || ''
           }
 
           console.log('chObj', chObj);
@@ -1982,8 +1988,14 @@ const resolvers = {
         application.class_teacher = "";
       }
 
+ 
+
       let formData = application?.form_contents?.formData;
       let formTitle = application?.form_contents?.formTitle;
+
+      const uniqueIdForm = application.form_contents.formData.find(item => UNIQUE_ID_LABELS.includes(item.label));
+      let uniqueId = uniqueIdForm &&  uniqueIdForm.fields && uniqueIdForm.fields[0] && uniqueIdForm.fields[0].value;
+      uniqueId = uniqueId && uniqueId.replace(/"/g, "")
 
       let primeFiles = formData.filter((item) => {
         return item.type == "primeFile"
@@ -2050,6 +2062,15 @@ const resolvers = {
       let formContentsString = application.form_contents ? JSON.stringify(application.form_contents) : "{}";
       application.form_contents = Buffer.from(formContentsString, "utf-8").toString("base64");
 
+      if(previousApplication && uniqueId) {
+
+        let child = await getChildInformation(previousApplication.child);
+        if(child && child[0]) {
+          await updateChildUniqueId(child[0].new_childId, uniqueId)
+        }
+
+      }
+
       await updateSubmitCustomApplication(application);
 
       const params = {
@@ -2063,7 +2084,7 @@ const resolvers = {
       const col = {
         custom_app_id: application.app_id,
         received_reminder: 0,
-        received_update: application.received_update ? 1 : 0
+        received_update: application.received_update ? 1 : 0,
       };
 
       updateApplicationUser(col);
@@ -2074,7 +2095,8 @@ const resolvers = {
         color_designation: previousApplication.color_designation,
         class_teacher: previousApplication.class_teacher,
         notes: previousApplication.class_teacher,
-        app_id: previousApplication.app_id
+        app_id: previousApplication.app_id,
+        unique_id: uniqueId
       })
 
       return {

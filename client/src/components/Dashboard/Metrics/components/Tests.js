@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react'
 
 import Charts from './Charts';
-import { OPTION_SCHOOL_YEAR } from '../../../../constants/options';
+import { OPTION_SCHOOL_YEAR, getOptionTestName } from '../../../../constants/options';
+
 
 const apiCallTests = async (vendor, id, testName, grade, formId, classId, lotVendorId2s) => {
-    
+
     // Default options are marked with *
     const response = await fetch(`${process.env.API_HOST}/api/metrics/tests`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -19,19 +20,19 @@ const apiCallTests = async (vendor, id, testName, grade, formId, classId, lotVen
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify({
             'id': id,
-            'testName': testName, 
-            'grade' : grade,
-            'vendorId' : vendor?.id2,
-            'isLot' : vendor?.is_lot,
-            'formId' :  vendor?.is_lot ? 'lotid_0' : formId,
-            'classId' : classId, 
+            'testName': testName,
+            'grade': grade,
+            'vendorId': vendor?.id2,
+            'isLot': vendor?.is_lot,
+            'formId': vendor?.is_lot ? 'lotid_0' : formId,
+            'classId': classId,
             'lotVendorIds': lotVendorId2s
         }) // body data type must match "Content-Type" header
     });
     return response.json(); // parses JSON response into native JavaScript objects
 }
 
-const years = OPTION_SCHOOL_YEAR.map(item => item.value);
+const years = OPTION_SCHOOL_YEAR.map(item => item.value).reverse();
 
 const Tests = props => {
     const { auth, vendors, lotVendorId2s, selectedVendor, defaultFormId } = props;
@@ -44,6 +45,7 @@ const Tests = props => {
     const [formIdLocal, setFormIdLocal] = useState('fid_0');
     const [classIdLocal, setClassIdLocal] = useState('id_0');
     const chart = useRef();
+    const currentTestOptions = getOptionTestName(formIdLocal);
 
     useEffect(() => {
         if (auth && auth.user_id) {
@@ -53,12 +55,12 @@ const Tests = props => {
         }
     }, [auth, selectedVendor]);
 
-    console.log('selectedVendor',selectedVendor)
+    console.log('selectedVendor', selectedVendor)
 
     const triggerApiCallTests = async (id, testName, grade, formId, classId) => {
         console.log('triggerApiCallTests', testName, grade);
         try {
-            if (!vendors ||!vendors.length) {
+            if (!vendors || !vendors.length) {
                 setIsLoading(false);
                 defineChart(null, null);
                 return;
@@ -93,8 +95,8 @@ const Tests = props => {
         let chartOptions = {
             chart: {
                 type: 'spline'
-            },            
-            title : {
+            },
+            title: {
                 text: ''
             },
             yAxis: {
@@ -114,24 +116,24 @@ const Tests = props => {
                         lineWidth: 1
                     }
                 }
-            },                
-            series : [ ]
+            },
+            series: []
         }
         chartOptions['series'] = [
             {
-                name: ((gradeDisplay(gradeLevel) == '') ? 
-                    'Average Scores for All Mentees' : 
-                    'Average Score For ' + gradeDisplay(gradeLevel)), 
+                name: ((gradeDisplay(gradeLevel) == '') ?
+                    'Average Scores for All Mentees' :
+                    'Average Score For ' + gradeDisplay(gradeLevel)),
                 marker: {
                     symbol: 'diamond'
-                },                
+                },
                 data: []
             },
         ];
 
         if (dataSeries && dataSeries.length > 0) {
             chartOptions['series'][0]['data'] = dataSeries;
-        }    
+        }
         console.log('chartOptions: ', chartOptions);
         setTempOptionsData(chartOptions);
     }
@@ -147,33 +149,34 @@ const Tests = props => {
     }
 
     const exportChart = () => {
-        console.log('chart',chart)
+        console.log('chart', chart)
         if (chart && chart.current && chart.current.chart) {
             chart.current.chart.setTitle(
-                {text: 'Test Scores: ' + gradeDisplay(grade)
+                {
+                    text: 'Test Scores: ' + gradeDisplay(grade)
                 });
             chart.current.chart.exportChart({
-                type:'application/pdf'
+                type: 'application/pdf'
             });
-            chart.current.chart.setTitle({text:''});
+            chart.current.chart.setTitle({ text: '' });
         }
-      };
+    };
 
-    const testChange =(event) => {
+    const testChange = (event) => {
         setTestName(event.target.value);
         console.log("event ", event);
         console.log("test ", event.target.value); // ;year);
         triggerApiCallTests(auth.user_id, event.target.value, grade, formIdLocal, classIdLocal);
     };
 
-    const gradeChange =(event) => {
+    const gradeChange = (event) => {
         setGrade(event.target.value);
         console.log("event ", event);
         console.log("grade ", event.target.value); // ;grade);
         triggerApiCallTests(auth.user_id, testName, event.target.value, formIdLocal, classIdLocal);
     };
 
-    const formChange =(event) => {
+    const formChange = (event) => {
         let formIdIn = event.target.value;
         setFormIdLocal(formIdIn);
         console.log("=========== form_id: ", formIdIn);
@@ -181,7 +184,7 @@ const Tests = props => {
         setClassIdLocal('id_0');
     };
 
-    const classChange =(event) => {
+    const classChange = (event) => {
         let classIdIn = event.target.value;
         setClassIdLocal(classIdIn);
         console.log("=========== class_id: ", classIdIn);
@@ -189,34 +192,36 @@ const Tests = props => {
     };
 
 
-return <div style={{ padding: 24 }}>
+    return <div style={{ padding: 24 }}>
         <div className="grid grid-2b">
             <div className="top-left">
-                <h4>Average Test Reuslts </h4>
-            
-                { isLoading ? ( <></>) : (
-                        <>
-                    <select id="vendor-form" onChange={formChange} value={formIdLocal} style={{ maxWidth: 300 }}>
-                        { formList && formList.length > 0 && formList.map((elem) => 
-                                <option value={elem.key} key={elem.key}>{elem.name}</option> 
+                <h4>Average Test Results </h4>
+
+                {isLoading ? (<></>) : (
+                    <>
+                        <select id="vendor-form" onChange={formChange} value={formIdLocal} style={{ maxWidth: 300 }}>
+                            {formList && formList.length > 0 && formList.map((elem) =>
+                                <option value={elem.key} key={elem.key}>{elem.name}</option>
                             )
-                        }
+                            }
                         </select>
-                    <select id="mentee-class" onChange={classChange} value={classIdLocal}>
-                        { classList && classList.length > 0 && classList.map((elem) => 
-                                <option value={elem.key} key={elem.key}>{elem.name}</option> 
-                            )
-                        }
+                        <select id="mentee-class" onChange={classChange} value={classIdLocal}>
+                            {classList && classList.length > 0 && classList.map((elem) =>
+                                <option value={elem.key} key={elem.key}>{elem.name}</option>
+                            )}
                         </select>
-                        </>
-                    )}
+                    </>
+                )}
                 <select id="mentee-test-taken" onChange={testChange} value={testName}>
-                    <option value="sat">SAT</option>
+                    {/* <option value="sat">SAT</option>
                     <option value="act" >ACT</option>
                     <option value="psat">PSAT</option>
-                    <option value="eog">End of Grade</option>
-                    </select>
-                    {/*
+                    <option value="eog">End of Grade</option> */}
+                    {currentTestOptions.map(opt => {
+                        return <option value={opt.value}>{opt.label}</option>
+                    })}
+                </select>
+                {/*
                 <select id="child-grade" onChange={gradeChange} value={grade}>
                     <option value="all">All</option>
                     <option value="12" >Seniors</option>

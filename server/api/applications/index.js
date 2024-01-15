@@ -435,7 +435,8 @@ export const updateApplication = async ({
   color_designation,
   class_teacher,
   notes,
-  app_id
+  app_id,
+  unique_id
 }) => {
   const db = makeDb();
   let result = {};
@@ -459,6 +460,19 @@ export const updateApplication = async ({
         app_id
       ]
     );
+
+    if (unique_id && (result && result[0])) {
+      await db.query(
+        `UPDATE child SET
+          new_childId=?
+         WHERE ch_id=UUID_TO_BIN(?)`,
+        [
+          unique_id,
+          result[0].child
+        ]
+      );
+    }
+
     if (class_teacher && currentApplication && currentApplication[0]) {
       let previousClassTeacher = currentApplication && currentApplication[0] && currentApplication[0].class_teacher;
       previousClassTeacher = previousClassTeacher && previousClassTeacher.split(',');
@@ -958,7 +972,7 @@ export const createCustomApplication = async ({
   let application;
 
   try {
-//    console.log('form_contents createCustomApplication', form_contents)
+    //    console.log('form_contents createCustomApplication', form_contents)
     result = await db.query(
       `INSERT INTO vendor_custom_application(
         form_id,
@@ -1001,7 +1015,7 @@ export const createCustomApplication = async ({
     if (application.length > 0) {
       application = application[0];
       application.form_contents = application.form_contents ? Buffer.from(application.form_contents, "base64").toString("utf-8") : "{}";
-     // console.log("get custom application string", application);
+      // console.log("get custom application string", application);
       application.form_contents = JSON.parse(application.form_contents);
     } else {
       application = ""
@@ -1383,6 +1397,7 @@ export const getCustomFormApplicantById = async ({ app_id, is_archived = 0 }) =>
         BIN_TO_UUID(form) as form,
         BIN_TO_UUID(vendor) as vendor,
         BIN_TO_UUID(app_id) as app_id,
+        BIN_TO_UUID(child) as child,
         CONVERT(form_contents USING utf8) as form_contents,
         application_date,
         archived_date,
@@ -1528,7 +1543,7 @@ export const updateApplicationUser = async ({
   application,
   custom_app_id,
   received_reminder,
-  received_update
+  received_update,
 }) => {
   const db = makeDb();
   let result;
