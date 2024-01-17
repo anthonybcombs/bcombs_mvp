@@ -110,8 +110,8 @@ const LoginFormStyled = styled.form`
 export default function Form({
   onSubmit,
   handleInputChange,
-  handleGoogleSignIn,
-  handleFacebookSignIn,
+  // handleGoogleSignIn,
+  // handleFacebookSignIn,
   hideForgotPassword = false
 }) {
   const theme = useContext(ThemeContext);
@@ -128,7 +128,8 @@ export default function Form({
 
   useEffect(() => {
     register({ name: "not_robot" }, { required: true });
-  });
+  }, []);
+
 
   return (
     <LoginFormStyled
