@@ -744,9 +744,8 @@ export default function index() {
         if (newDefaultVendor[0] && newDefaultVendor[0]?.name.includes('LOT')) {
           setSelectedForm('lot');
         }
-
-        if (queryParams && queryParams.form) {
-          dispatch(requestGetFormAppGroup(queryParams.form));
+        if (queryParams && queryParams.form || (selectedForm !== 'default' && selectedForm !== 'lot')) {
+          dispatch(requestGetFormAppGroup(queryParams?.form || selectedForm));
         } else {
           setAppGroups(newDefaultVendor[0].app_groups);
         }
@@ -766,10 +765,9 @@ export default function index() {
 
 
         let defaultVendor = null;
-        console.log('vendorzxczxczxcs',vendors)
+      
         const hasDefaultVendor = vendors.find(item => item.is_default);
-
-
+   
         if (auth && auth?.nickname === 'lot') {
           defaultVendor = vendors[vendors.length - 1]
           setSelectedVendor(defaultVendor);
@@ -778,7 +776,13 @@ export default function index() {
         else if (hasDefaultVendor) {
           defaultVendor = hasDefaultVendor;
           setSelectedVendor(hasDefaultVendor);
-          setAppGroups(hasDefaultVendor?.app_groups);
+
+          if (hasDefaultVendor?.default_form !== 'default' && hasDefaultVendor?.default_form !== 'lot') {
+            dispatch(requestGetFormAppGroup(hasDefaultVendor?.default_form));
+          }
+          else {
+            setAppGroups(hasDefaultVendor?.app_groups);
+          }
         }
         else {
           const hasLot = vendors.some(item => item.is_lot)
@@ -788,6 +792,10 @@ export default function index() {
           }
           else {
             defaultVendor = vendors.find(item => !item.is_lot);
+
+            if(defaultVendor?.default_form !== 'default' &&  defaultVendor?.default_form !== 'lot') {
+              dispatch(requestGetFormAppGroup(defaultVendor?.default_form));
+            }
             setSelectedVendor(defaultVendor);
           }
         }
@@ -802,8 +810,9 @@ export default function index() {
         //   setSelectedForm('lot');
         // }
 
-        if (queryParams && queryParams.form) {
-          dispatch(requestGetFormAppGroup(queryParams.form));
+        if ((queryParams?.form) || (selectedForm !== 'default' && selectedForm !== 'lot')) {
+
+          dispatch(requestGetFormAppGroup(queryParams?.form || selectedForm));
         } else if (!hasDefaultVendor) {
           setAppGroups(defaultVendor?.app_groups);
 
@@ -868,13 +877,13 @@ export default function index() {
     } else {
       setExportFilename(selectedVendor?.name);
 
-      if(isUUID(selectedForm)) {
+      if (isUUID(selectedForm)) {
 
         const tempForm = formList.find((form) => {
           return form.form_id == selectedForm;
         });
         setCurrentForm(tempForm);
-  
+
       }
       else {
         if (selectedVendor?.default_form && selectedVendor?.default_form !== 'default') {
@@ -884,7 +893,7 @@ export default function index() {
           dispatch(requestGetApplications(selectedVendor?.id || ''));
         }
       }
-  
+
 
     }
 
@@ -896,7 +905,6 @@ export default function index() {
     if (selectedVendor) {
 
       const isLot = (selectedVendor && selectedVendor?.name && selectedVendor.name.includes('LOT')) || (auth && auth.nickname === 'lot');
-      console.log('selectedVendor', selectedVendor)
 
       if (selectedVendor?.default_form && selectedVendor?.default_form !== 'default') {
 
@@ -916,6 +924,7 @@ export default function index() {
   }, [formAppGroups])
 
 
+  console.log('formAppGroupszzzz', formAppGroups)
   const handleWaiverFormDetailsChange = (section, id, value) => {
 
     let subTermsWaiver = termsWaiver;
@@ -2061,6 +2070,7 @@ export default function index() {
     }
   }
 
+  console.log('selectedFormmmm11', selectedForm)
 
   // const handleSetDefaultVendor = () => {
   //   if (!isSettingDefaultVendorLoading) {
@@ -2083,7 +2093,7 @@ export default function index() {
 
 
   const handleSetDefaultForm = () => {
-    console.log('selectedFormmmm', selectedForm)
+
     if (!isSettingDefaultVendorLoading) {
       setIsSettingDefaultVendorLoading(true);
 
@@ -2199,6 +2209,7 @@ export default function index() {
   }
 
 
+
   const handleDuplicateVendor = () => {
 
     if (selectedForm == "default" || selectedForm == "lot") {
@@ -2277,7 +2288,8 @@ export default function index() {
   let formOptions = renderForms && renderForms.length > 0 ? renderForms.sort((a, b) => a.form_contents?.formTitle?.localeCompare(b.form_contents?.formTitle)) : [];
   console.log('vendors', vendors)
 
-  console.log('applications',applications)
+  console.log('applications', applications)
+
   return (
     <ApplicationStyled>
       <div style={{ display: "flex", alignItems: "center" }}>

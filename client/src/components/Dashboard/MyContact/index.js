@@ -29,7 +29,7 @@ import {
   requestUserGroup,
   requestMembers
 } from "../../../redux/actions/Groups";
-import { requestVendor, requestUserVendorForms } from "../../../redux/actions/Vendors";
+import { requestVendor, requestUserVendorForms, requestGetFormAppGroup, } from "../../../redux/actions/Vendors";
 import { requestParentByVendor } from "../../../redux/actions/Parents";
 
 import {
@@ -171,6 +171,14 @@ export default function index() {
   const [selectedGroupByVendor, setSelectedGroupbyVendor] = useState(null);
   const [isAppGroupEditMode, setIsAppGroupEditMode] = useState(false);
   const [currentAppGroup, setCurrentAppGroup] = useState(null);
+
+
+  const [appGroups, setAppGroups] = useState([]);
+  const [apiStatus, setApiStatus] = useState();
+  const [selectedForms, setSelectedForms] = useState([]);
+  const [formattedVendors, setFormattedVendors] = useState([]);
+  const [appGroupDetails, setAppGroupDetails] = useState();
+
   const {
     auth,
     groups,
@@ -207,8 +215,6 @@ export default function index() {
       dispatch(requestUserGroup(auth.email));
       dispatch(requestUserVendorForms(auth.user_id));
 
-
-
     }
     if (contacts) {
       setCurrentContacts(contacts);
@@ -232,7 +238,9 @@ export default function index() {
 
 
 
+
   useEffect(() => {
+
     if (vendors && Array.isArray(vendors) && vendors.length > 0) {
 
       const hasDefaultVendor = vendors.find(item => item.is_default);
@@ -252,6 +260,10 @@ export default function index() {
           }
         })
 
+        if (hasDefaultVendor?.default_form !== 'default' && hasDefaultVendor?.default_form !== 'lot') {
+          console.log('triggereddddasdasd')
+          dispatch(requestGetFormAppGroup(hasDefaultVendor?.default_form));
+        }
 
 
         dispatch(requestParentByVendor({
@@ -268,7 +280,7 @@ export default function index() {
             categories: []
           }))
         }
-        else if(formList.length > 0){
+        else if (formList.length > 0) {
           const updatedForms = formList.map(item => {
             return {
               ...item,
@@ -277,13 +289,26 @@ export default function index() {
               is_form: true
             }
           });
-    
-          filteredGroups = [...filteredGroups, ...updatedForms ];
 
-  
+          filteredGroups = [...filteredGroups, ...updatedForms];
+
+
         }
 
-        setSelectedGroupbyVendorOptions([...filteredGroups ]);
+        setSelectedGroupbyVendorOptions([...filteredGroups]);
+      }
+      else {
+        const defaultVendor = vendors && vendors[0];
+
+        if (defaultVendor) {
+          setSelectedVendor(defaultVendor);
+          if (defaultVendor?.default_form === 'default' || defaultVendor?.default_form === 'lot') {
+            setAppGroups(defaultVendor?.app_groups || [])
+          }
+          else {
+            dispatch(requestGetFormAppGroup(defaultVendor?.default_form));
+          }
+        }
       }
 
     }
@@ -316,49 +341,65 @@ export default function index() {
   //   window.location.reload();
   // }
 
-  const [appGroups, setAppGroups] = useState([]);
-  const [apiStatus, setApiStatus] = useState();
-  const [selectedForms, setSelectedForms] = useState([]);
-  const [formattedVendors, setFormattedVendors] = useState([]);
-  const [appGroupDetails, setAppGroupDetails] = useState();
 
   useEffect(() => {
+    const currentVendor = vendors && vendors[0];
 
-    if (groups && groups.application_groups && groups.application_groups.length > 0) {
-      let ap = [];
-      let oAp = [];
+    if ((currentVendor?.default_form === 'default' && currentVendor?.default_form === 'lot') || !currentVendor?.default_form ) {
+      if (groups && groups.application_groups && groups.application_groups.length > 0) {
+        let ap = [];
+        let oAp = [];
 
-      let newAp = []
+        let newAp = []
 
-      ap = groups.application_groups;
-      oAp = groups.application_groups;
+        ap = groups.application_groups;
+        oAp = groups.application_groups;
 
-      console.log("ap1", ap);
-      console.log("oAp", oAp);
+        console.log("ap1", ap);
+        console.log("oAp", oAp);
 
-      ap = ap.filter((elem, index) =>
-        ap.findIndex(obj => obj.pool_id === elem.pool_id) === index);
+        ap = ap.filter((elem, index) =>
+          ap.findIndex(obj => obj.pool_id === elem.pool_id) === index);
 
 
-      for (const [i, gr] of ap.entries()) {
-        const members = oAp.filter((x) => {
+        for (const [i, gr] of ap.entries()) {
+          const members = oAp.filter((x) => {
 
-          //if(x.members) delete x.members;
-          return x.pool_id == gr.pool_id && gr.app_grp_id != x.app_grp_id;
-        });
+            //if(x.members) delete x.members;
+            return x.pool_id == gr.pool_id && gr.app_grp_id != x.app_grp_id;
+          });
 
-        console.log("members", members);
+          console.log("members", members);
 
-        ap[i].members = members;
-        // console.log("gr gr", gr);
+          ap[i].members = members;
+          // console.log("gr gr", gr);
+        }
+
+        console.log("ap", ap);
+
+        setAppGroups(ap);
+        setApiStatus(groups.status);
       }
-
-      console.log("ap", ap);
-
-      setAppGroups(ap);
-      setApiStatus(groups.status);
     }
-  }, [groups])
+
+    else if ((currentVendor?.default_form !== 'default') && (currentVendor?.default_form !== 'lot')) {
+      setAppGroups(formAppGroups);
+      // dispatch(requestVendor(auth.user_id));
+ 
+    }
+
+    // if (selectedVendor?.default_form !== 'default' && selectedVendor?.default_form !== 'lot') {
+    //   setAppGroups(formAppGroups);
+    //   // dispatch(requestVendor(auth.user_id));
+    // }
+    // else if (selectedVendor) {
+    //   setAppGroups(selectedVendor?.app_groups || []);
+
+    // }
+
+    dispatch(requestVendor(auth.user_id));
+
+  }, [formAppGroups, groups])
 
   useEffect(() => {
 
@@ -477,14 +518,11 @@ export default function index() {
     setIsAppGroupEditMode(true);
     let sForms = getSelectedForms(group);
 
-    console.log('vendorForms', vendorForms)
+
     const formattedVendors = getFormattedVendors(vendorForms.formList);
     sForms = formattedVendors.filter((form) => {
       return sForms.includes(form.id)
     });
-    console.log("group group", group);
-    console.log("formattedVendors", formattedVendors);
-    console.log("sForms", sForms);
 
     setSelectedForms(sForms);
     setAppGroupDetails({ ...appGroupDetails, ["vendors"]: sForms });
@@ -516,8 +554,8 @@ export default function index() {
 
   const isVendorMode = isVendor();
 
-  const isForm = selectedGroupByVendor && selectedGroupByVendorOptions &&  selectedGroupByVendorOptions.find(item => (item.value === selectedGroupByVendor) && item.is_form);
-        
+  const isForm = selectedGroupByVendor && selectedGroupByVendorOptions && selectedGroupByVendorOptions.find(item => (item.value === selectedGroupByVendor) && item.is_form);
+
 
   return (
     <MyContactsStyled>
@@ -678,8 +716,8 @@ export default function index() {
                 className="field-input"
                 value={selectedGroupByVendor}
                 onChange={(e) => {
-                  
-                  const isCustomForm  =  selectedGroupByVendorOptions &&  selectedGroupByVendorOptions.find(item => (item.value === e.target.value) && item.is_form);
+
+                  const isCustomForm = selectedGroupByVendorOptions && selectedGroupByVendorOptions.find(item => (item.value === e.target.value) && item.is_form);
                   dispatch(requestParentByVendor({
                     vendor: selectedVendor,
                     app_group_id: e.target.value || '',

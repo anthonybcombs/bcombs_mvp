@@ -99,7 +99,7 @@ export default function index({
     }
   };
   const handleSubmit = () => {
-    console.log("cant edit edit");
+
     if (isEditMode) {
       let payload = {
         size: groupDetails.size,
@@ -112,8 +112,7 @@ export default function index({
       const editVendors = groupDetails.vendors && groupDetails.vendors.length > 0 ? groupDetails.vendors : [];
       //payload.vendors = editVendors;
 
-      console.log("editvendors", editVendors);
-
+ 
       payload.vendors = editVendors.map((v) => {
         if(v.is_form) {
           v.app_grp_id = v.id == currentAppGroup.form ? currentAppGroup.app_grp_id : ""
@@ -121,7 +120,7 @@ export default function index({
           v.app_grp_id = v.id == currentAppGroup.vendor ? currentAppGroup.app_grp_id : ""
         }
 
-        const currentMembers = currentAppGroup.members;
+        const currentMembers = currentAppGroup?.members || [];
         const matchMember = currentMembers.filter((member) => {
           if(v.is_form) {
             return v.id == member.form;
@@ -141,14 +140,14 @@ export default function index({
 
 
       payload.size = parseInt(payload.size);
-      console.log("PAYLOADDD EDIT", payload);
+
       dispatch(requestEditVendorAppGroup(payload));
       // setGroupDetails({
       //   name: "",
       //   size: "",
       //   vendors: []
       // });
-      //toggleCreateAppGroupModal(false);
+      toggleCreateAppGroupModal(false);
     } else {
       if (groupDetails.vendors.length > 0) {
         let payload = {
