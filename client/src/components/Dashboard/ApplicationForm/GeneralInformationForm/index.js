@@ -168,6 +168,14 @@ export default function index({
     {
       id: 7,
       value: 6
+    },
+    {
+      id: 8,
+      value: 5
+    },
+    {
+      id: 9,
+      value: 4
     }
   ];
 
