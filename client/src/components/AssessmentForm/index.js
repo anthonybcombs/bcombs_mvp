@@ -189,7 +189,7 @@ const AssessmentForm = props => {
   const targetRef = useRef()
 
   const [currentForm, setCurrentForm] = useState(null);
-  const [currentStudentId, setCurrentStudentId] = useState('C110007');
+  const [currentStudentId, setCurrentStudentId] = useState('');
   const [assessment, setAssessment] = useState({
     assessment: []
   });
